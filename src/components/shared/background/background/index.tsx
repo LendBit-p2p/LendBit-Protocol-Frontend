@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Background() {
     return (
-        <section className="w-full min-h-screen bg-cover relative z-0 overflow-hidden">
+        <section className="w-full min-h-screen bg-cover relative z-0 overflow-hidden bg-black">
             <Image
                 className="object-center" 
                 src="/bg.png"

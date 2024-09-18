@@ -3,8 +3,8 @@ import Link from "next/link";
 
 export const Header = () => {
     return (
-        <header className="bg-black text-white p-4 w-full top-0 left-0">
-            <div className="flex justify-between items-center mx-auto max-w-7xl">
+        <header className="bg-black text-white p-4 w-full top-0 left-0 relative custom-corner-header">
+            <div className="flex justify-between items-center w-full">
                 <div className="flex items-center gap-4">
                     <Image
                         src="/logo.png"
@@ -28,10 +28,10 @@ export const Header = () => {
                     <Link href="/dashboard" className="hover:underline">
                         Dashboard
                     </Link>
-                    <Link href="/dashboard" className="hover:underline">
+                    <Link href="/order" className="hover:underline">
                         Orders
                     </Link>
-                    <Link href="/dashboard" className="hover:underline">
+                    <Link href="/marketplace" className="hover:underline">
                         Marketplace
                     </Link>
                 </nav>

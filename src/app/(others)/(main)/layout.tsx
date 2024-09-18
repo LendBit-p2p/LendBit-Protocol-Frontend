@@ -8,7 +8,7 @@ export default function OtherScreensLayout({
     return (
         <section className="relative top-16 mx-auto w-11/12">
            <Header /> 
-            <main>
+            <main className="mt-10 max-w-6xl mx-auto">
                 {children}
             </main>
         </section>

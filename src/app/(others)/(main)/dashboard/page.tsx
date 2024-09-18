@@ -3,9 +3,9 @@
 export default function DashboardPage() {
     return (
         <main className="w-full">
-            {Array.from({ length: 100}, (_, i) => (
+            {Array.from({ length: 30}, (_, i) => (
                 <ul key={i}>
-                <li className="flex flex-col gap-12">
+                <li className="">
                     DASHBOARD
                 </li>
                 </ul>
