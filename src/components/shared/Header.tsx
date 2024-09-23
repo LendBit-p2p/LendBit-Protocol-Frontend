@@ -3,41 +3,40 @@ import Link from "next/link";
 
 export const Header = () => {
     return (
-        <header className="bg-black text-white p-4 w-full top-0 left-0 relative custom-corner-header">
+        <header className="bg-black p-6 w-full top-0 left-0 relative custom-corner-header">
             <div className="flex justify-between items-center w-full">
-                <div className="flex items-center gap-4">
+                <Link href={"/"} className="flex items-center gap-[6px]">
                     <Image
                         src="/logo.png"
                         alt="logo"
                         width={50}
-                        height={50}
+                        height={42}
                         priority
                         quality={100}
                     />
                     <Image
                         src="/white-word.png"
                         alt="brand text"
-                        width={120}
-                        height={50}
+                        width={92}
+                        height={20}
                         priority
                         quality={100}
                     />
-                </div>
+                </Link>
 
-                <nav className="space-x-6 text-sm">
-                    <Link href="/dashboard" className="hover:underline">
+                <nav className="space-x-6 text-sm font-medium">
+                    <Link href="/dashboard" className="">
                         Dashboard
                     </Link>
-                    <Link href="/order" className="hover:underline">
+                    <Link href="/order" className="">
                         Orders
                     </Link>
-                    <Link href="/marketplace" className="hover:underline">
+                    <Link href="/marketplace" className="">
                         Marketplace
                     </Link>
                 </nav>
 
                 <div>
-                    {/* Add additional elements like user profile, notifications, or more logos here */}
                     icons
                 </div>
             </div>
