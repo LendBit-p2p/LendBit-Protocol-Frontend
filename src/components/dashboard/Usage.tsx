@@ -27,7 +27,7 @@ const Usage = () => {
     },
   ];
 
-  const powerLeft = 60;
+  const powerLeft = 35;
   
   return (
     <div className="bg-black py-6 w-full border border-[#ff4d00] rounded-lg">
@@ -48,10 +48,12 @@ const Usage = () => {
         <div style={{ width: 290, height: 290 }}>
             <CircularProgressbar
             value={powerLeft}
+            circleRatio={4.7/5}
             counterClockwise
+            // strokeWidth={10}
             maxValue={100}
             styles={buildStyles({
-                pathColor: `rgba(255, 0, 0, ${powerLeft / 100})`,
+                pathColor: `rgba(255, 0, 0,1)`,
                 trailColor: "#EFEFEF",
             })}
             />
