@@ -1,6 +1,7 @@
 "use client"
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { Btn } from '../shared/Btn';
 
 const Usage = () => {
   const balanceData = [
@@ -87,9 +88,9 @@ const Usage = () => {
                   {item.netProfit}
                 </td>
                 <td className="pt-2 flex justify-center">
-                  <div className="text-white/90 bg-[#2A2A2ACC] w-fit px-2 py-1 text-center rounded-lg cursor-pointer">
-                    Repay
-                  </div>
+                  <Btn text='Repay'
+                    css='text-white/90 text-center'
+                  />
                 </td>
               </tr>
             ))}

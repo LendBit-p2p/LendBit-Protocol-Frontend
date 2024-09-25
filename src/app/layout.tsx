@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Zen_Dots } from 'next/font/google';
+import { Zen_Dots, Outfit } from 'next/font/google';
 import "./globals.css";
 
 const geistSans = localFont({
@@ -24,6 +24,13 @@ const zenDots = Zen_Dots({
   subsets: ['latin'],  // Add other subsets if needed
 });
 
+const outfit = Outfit({
+  weight: ["400","500", "600"],  
+  subsets: ['latin'],
+  variable: "--font-outfit",
+
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -32,7 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${zenDots.className} ${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden`}
+        className={`${zenDots.className}  ${outfit.variable} ${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden`}
       >
         {children}
       </body>

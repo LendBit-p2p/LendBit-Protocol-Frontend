@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Btn } from "../shared/Btn";
 
 const Balance = () => {
   const balanceData = [
@@ -80,12 +81,10 @@ const Balance = () => {
                 {/* Deposit and Withdraw */}
                 <td className="pt-2">
                   <div className="flex justify-center gap-2">
-                    <div className="bg-[#2A2A2ACC] px-2 py-1 rounded-lg cursor-pointer">
-                      Deposit
-                    </div>
-                    <div className="bg-[#2A2A2ACC] px-2 py-1 rounded-lg cursor-pointer">
-                      Withdraw
-                    </div>
+                    <Btn text='Deposit'
+                    />
+                   <Btn text='Withdraw'
+                    />
                   </div>
                 </td>
               </tr>

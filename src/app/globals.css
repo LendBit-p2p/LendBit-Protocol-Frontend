@@ -135,6 +135,27 @@ body {
 	background: linear-gradient(
 		180deg,
 		rgba(255, 0, 0, 0.9) 0%,
-		/* Bright Red */ rgba(139, 0, 0, 0.9) 100% /* Dark Red */
+		rgba(139, 0, 0, 0.9) 100%
 	);
 }
+
+.filledInActive {
+	background: linear-gradient(
+		180deg,
+		rgba(255, 255, 255, 0.03) 0%,
+		rgba(255, 255, 255, 0) 100%
+	);
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+	display: none;
+}
+.scrollbar-hide {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+.scroll-smooth {
+	scroll-behavior: smooth;
+}
+
+/* rgba(25, 75, 255, 0.34) */

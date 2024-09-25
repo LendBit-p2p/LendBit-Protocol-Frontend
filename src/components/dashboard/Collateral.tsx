@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Btn } from "../shared/Btn";
 
 const Collateral = () => {
   // Array of assets with their details
@@ -70,9 +71,8 @@ const Collateral = () => {
                         </div>
                         </td>
                         <td className="pt-2">
-                            <div className="bg-[#2A2A2ACC] w-fit py-1 px-2 rounded-lg cursor-pointer">
-                            Deposit
-                            </div>
+                          <Btn text='Deposit'
+                          />
                         </td>
                     </tr>
                     ))}

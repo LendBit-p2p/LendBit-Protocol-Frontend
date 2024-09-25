@@ -1,0 +1,35 @@
+<svg width="64" height="110" viewBox="0 0 64 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_140_1495)">
+<mask id="mask0_140_1495" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="-12" width="92" height="345">
+<rect x="45.0576" y="333.01" width="341.362" height="47.7974" rx="4.98339" transform="rotate(-97.5718 45.0576 333.01)" fill="#C4C4C4"/>
+</mask>
+<g mask="url(#mask0_140_1495)">
+<path d="M-23.8509 -97.3424L57.8915 425.296" stroke="#FCC232" stroke-width="1.86877"/>
+<path d="M-20.8656 -97.7389L60.8769 424.9" stroke="white" stroke-width="1.86877"/>
+<path d="M-17.8812 -98.1353L63.8613 424.503" stroke="#FCC232" stroke-width="1.86877"/>
+<path d="M-14.8968 -98.5299L66.8456 424.109" stroke="#FFDF6B" stroke-width="1.86877"/>
+<path d="M-11.9124 -98.9273L69.83 423.711" stroke="#FFC46B" stroke-width="1.86877"/>
+<path d="M-8.92904 -99.3258L72.8134 423.313" stroke="#FF986B" stroke-width="1.86877"/>
+<path d="M-5.94271 -99.7223L75.7997 422.916" stroke="#FF746B" stroke-width="1.86877"/>
+<path d="M-2.96126 -100.118L78.7812 422.521" stroke="#FF6B74" stroke-width="1.86877"/>
+<path d="M0.0240869 -100.516L81.7665 422.123" stroke="#FF6BB2" stroke-width="1.86877"/>
+<path d="M3.00944 -100.91L84.7519 421.728" stroke="#EC70FF" stroke-width="1.86877"/>
+<path d="M5.99381 -101.306L87.7363 421.332" stroke="#E16BFF" stroke-width="1.86877"/>
+<path d="M8.97819 -101.705L90.7206 420.934" stroke="#AC6BFF" stroke-width="1.86877"/>
+<path d="M11.9606 -102.102L93.7031 420.537" stroke="#916BFF" stroke-width="1.86877"/>
+<path d="M14.946 -102.498L96.6884 420.141" stroke="#6E6BFF" stroke-width="1.86877"/>
+<path d="M17.9313 -102.896L99.6738 419.743" stroke="#2463D6" stroke-width="1.86877"/>
+<path d="M20.9147 -103.292L102.657 419.347" stroke="#4B84EB" stroke-width="1.86877"/>
+<path d="M23.8991 -103.689L105.642 418.95" stroke="#6BB8FF" stroke-width="1.86877"/>
+<path d="M26.8844 -104.086L108.627 418.553" stroke="#6BCAFF" stroke-width="1.86877"/>
+<path d="M29.8659 -104.482L111.608 418.157" stroke="#6BF6FF" stroke-width="1.86877"/>
+<path d="M32.8532 -104.879L114.596 417.759" stroke="#43BA7F" stroke-width="1.86877"/>
+<path d="M35.8366 -105.278L117.579 417.361" stroke="#FCC232" stroke-width="1.86877"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_140_1495">
+<rect width="47.8787" height="121.212" fill="white" transform="translate(0.555664 -1.77148) rotate(-7.57179)"/>
+</clipPath>
+</defs>
+</svg>
