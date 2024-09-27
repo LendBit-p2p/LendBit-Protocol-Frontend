@@ -4,15 +4,15 @@ import { OpenOrder } from "./OpenOrder";
 
 const OrdersDetails = () => {
   return (
-    <div className="bg-black py-6 w-full px-6 max-h-[547px]">
+    <div className="bg-black py-6 w-full px-6 max-h-[560px]">
       <div className="flex justify-between w-full gap-4 h-full">
-        <div className="w-[30%] h-full max-h-full">
+        <div className="w-[25%] h-full max-h-full">
           <FilledOrder />
         </div>
-        <div className="w-[50%]">
+        <div className="w-[55%] py-8 h-full max-h-full">
           <OpenOrder />
         </div>
-        <div className="w-[20%]">
+        <div className="w-[20%] flex">
           <CreateOrder />
         </div>
       </div>

@@ -4,12 +4,10 @@ import { OrderCardProps } from "@/constants/types";
 
 
 
-export const OrderCard = ({ id, type, amount, token, date, icon1, icon2 }: OrderCardProps) => {
+export const OrderCard = ({ id, type, amount, token, date, icon1, icon2, isSelected, style }: OrderCardProps) => {
   return (
-    <div className="w-full font-[family-name:var(--font-outfit)] bg-[#E5E5E5] h-full rounded-2xl overflow-hidden border-black border shadow-[#194BFF57]"
-      style={{
-          boxShadow: '0 0 15px 10px rgba(25, 75, 255, 0.34)',
-      }}
+    <div className="w-full font-[family-name:var(--font-outfit)] bg-[#E5E5E5] h-full rounded-2xl overflow-hidden border-black border"
+    style={style}
     >
       <div className="flex flex-col h-full">
         <div className="h-2/6 relative">

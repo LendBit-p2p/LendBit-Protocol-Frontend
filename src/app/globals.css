@@ -158,4 +158,12 @@ body {
 	scroll-behavior: smooth;
 }
 
-/* rgba(25, 75, 255, 0.34) */
+.scale-110 {
+	transform: scale(1.1);
+	transition: transform 0.3s ease;
+}
+
+.scale-100 {
+	transform: scale(1);
+	transition: transform 0.3s ease;
+}

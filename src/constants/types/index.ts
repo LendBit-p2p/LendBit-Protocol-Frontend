@@ -14,7 +14,7 @@ export interface HistoryProps {
   balance: string;
 }
 
-export interface OrderCardProps {
+export type OrderCardProps = {
   id: number;
   type: string;
   amount: string;
@@ -22,4 +22,6 @@ export interface OrderCardProps {
   date: string;
   icon1: string;
   icon2: string;
+  isSelected?: boolean;
+  style?: React.CSSProperties;
 }
