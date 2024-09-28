@@ -7,7 +7,7 @@ export default function OrderPage() {
     return (
         <main className="max-w-[1370px] mx-auto mt-10">
             <div className="w-full px-1">
-                <div className="mb-4">
+                <div className="mb-6">
                     <OrdersDetails />  
                 </div>
 
