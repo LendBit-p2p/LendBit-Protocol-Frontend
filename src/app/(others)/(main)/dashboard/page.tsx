@@ -9,7 +9,7 @@ export default function DashboardPage() {
     return (
         <main className="max-w-[1190px] mx-auto p-4">
             <div className="w-full">
-                <h3 className="mb-8 text-sm">Welcome, [User].</h3>
+                <h3 className="mb-4 text-xl">Welcome, [User].</h3>
 
                 {/* Top section: Dashboard Cards */}
                 <div className="flex flex-wrap gap-4 mb-14">

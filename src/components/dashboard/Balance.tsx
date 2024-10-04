@@ -14,7 +14,7 @@ const Balance = () => {
       collateralStatus: "On",
     },
     {
-      assetName: "ETH",
+      assetName: "ETHe",
       assetImg: "/eth.svg",
       balance: "1.75",
       marketValue: "$4,525",
