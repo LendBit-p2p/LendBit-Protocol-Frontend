@@ -42,7 +42,7 @@ const Collateral = () => {
             <h3>Deposit Collateral</h3>
         </div>
         <div className="px-6">
-            <table className="min-w-full text-[10.5px]">
+        <table className="min-w-full text-center text-[10px] sm:text-[12px] ">
                 <thead>
                     <tr className="text-center">
                     <th className="py-2 text-start">Asset</th>

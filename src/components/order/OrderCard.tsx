@@ -39,10 +39,10 @@ export const OrderCard = ({ id, type, amount, token, date, icon1, icon2, isSelec
 
           <div className="flex justify-end space-x-[-8px] relative pr-4 h-1/6 items-start">
             <div className="bg-[#1F1E29] rounded-full w-6 h-6 flex items-center justify-center">
-              <Image src={icon1} alt="icon" width={18} height={18} priority quality={100} />
+              <Image src={icon1} alt="icon" width={12} height={12} priority quality={100} />
             </div>
             <div className="bg-[#1F1E29] rounded-full w-6 h-6 flex items-center justify-center">
-              <Image src={icon2} alt="icon" width={18} height={18} priority quality={100} />
+              <Image src={icon2} alt="icon" width={12} height={12} priority quality={100} />
             </div>
           </div>
         </div>

@@ -261,7 +261,7 @@ transition: ease-out 0.5s;
 /* Custom Button Hover Effect */
 .u-btn1:hover{
 	background-color: #dd4f00;
-	transform: scale(1.1);
+	transform: scale(1.05);
 }
 
 .u-btn1::before,
@@ -270,6 +270,14 @@ transition: ease-out 0.5s;
 .u-btn1 div::after {
 	border: none !important;
 }
+
+/* Open Orders */
+.open-orders, .filled-orders{
+	cursor: grab;
+	 user-select: none;
+	 -webkit-user-select: none;
+}
+
 
 /* UI MODIFICATION LIBRARY END*/
 /* UI MODIFICATION LIBRARY END*/
