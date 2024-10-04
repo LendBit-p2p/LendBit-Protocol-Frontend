@@ -38,7 +38,7 @@ const Collateral = () => {
             boxShadow: '0 0 5px 5px rgba(255, 255, 255, 0.1)',
         }}
     >
-        <div className="text-[16px] px-6 mb-3">
+        <div className="text-xl px-6 mb-3">
             <h3>Deposit Collateral</h3>
         </div>
         <div className="px-6">

@@ -32,10 +32,10 @@ const Usage = () => {
   
   return (
     <div className="bg-black py-6 w-full border border-[#ff4d00] rounded-lg">
-      <div className="text-[16px] px-6 mb-1">
+      <div className="text-xl px-6 mb-1">
         <h3>Your Usage</h3>
       </div>
-      <div className="flex justify-between items-center border-y text-white/50 text-[11px] p-1 mb-6">
+      <div className="flex justify-between items-center border-y text-white/50 text-xs p-1 mb-6">
         <h4 className="p-1">
           Total Collateral: <span className="pl-1">$12,345.67</span>
         </h4>
@@ -46,7 +46,7 @@ const Usage = () => {
     
        <div className="flex flex-col items-center mb-4 relative">
         
-        <div style={{ width: 290, height: 290 }}>
+        <div style={{ width: 250, height: 250 }}>
             <CircularProgressbar
             value={powerLeft}
             circleRatio={4.7/5}
@@ -61,9 +61,10 @@ const Usage = () => {
         </div>
 
         <div className="absolute inset-0 flex flex-col justify-center items-center gap-3">
-            <div className="text-[#FB3B52] text-lg border border-[#FB3B52] bg-white pl-[6px] pr-1 rounded-2xl flex items-center">
-            <span className="font-extrabold pr-[2px]">
-                <img src={"/Vector.svg"} alt={"arrow"} className="w-3" />
+          <div className="text-[#FB3B52] text-lg border border-[#FB3B52] bg-[#efefef] py-2 px-2 rounded-xl flex items-center">
+            <span className="font-extrabold pr-[2px] m-auto">
+              {/* <img src={"/Vector.svg"} alt={"arrow"} className="w-3" /> */}
+              {/* &#x2193; */}
             </span>
             {powerLeft}%
             </div>
@@ -99,7 +100,7 @@ const Usage = () => {
       </div>
       
       <div className="px-6 w-4/6 m-auto mt-1">
-        <button className="bg-[#FF4D00] text-xs rounded-xl font-normal w-full py-3">
+        <button className="bg-[#FF4D00] text-xs rounded-xl font-normal w-full py-3 hover:scale-105">
             Create Order
         </button>
       </div>
