@@ -3,11 +3,11 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
     title: "Lendbit",
-    description: "Lendbit, Your gateway to seamless crypto lending & borrowing. Secure, transparent, and flexible. Unlock the full potential of your digital assets.",
+    description: "Lendbit, Your gateway to seamless peer-to-peer crypto lending & borrowing. Secure, transparent, and flexible. Unlock the full potential of your digital assets.",
     icons: "./favicon.ico",
     openGraph: {
         title: "Lendbit",
-        description: "Lendbit, Your gateway to seamless crypto lending & borrowing. Secure, transparent, and flexible. Unlock the full potential of your digital assets.",
+        description: "Lendbit, Your gateway to seamless peer-to-peer crypto lending & borrowing. Secure, transparent, and flexible. Unlock the full potential of your digital assets.",
         images: `/public/lendbit-oranglogo-horizontal.png`, 
     },
     other: {},

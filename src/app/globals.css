@@ -167,3 +167,36 @@ body {
 	transform: scale(1);
 	transition: transform 0.3s ease;
 }
+
+
+/* UI MODIFICATION LIBRARY START*/
+/* UI MODIFICATION LIBRARY START*/
+
+/* Define the active-link class */
+.active-link {
+  position: relative;
+}
+
+.active-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -30px; /* Adjust the distance between the underline and the link text */
+  height: 5px; /* Adjust the thickness of the underline */
+  background-color: #DD4F00; /* Adjust to your custom color */
+  transform: scaleX(0); /* Start with the underline hidden */
+  transform-origin: left;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  transition: transform 0.3s ease-out; /* Animation for the underline */
+}
+
+.active-link:hover::after,
+.active-link.active::after {
+  transform: scaleX(1); /* Expand the underline when active or hovered */
+}
+
+
+/* UI MODIFICATION LIBRARY END*/
+/* UI MODIFICATION LIBRARY END*/

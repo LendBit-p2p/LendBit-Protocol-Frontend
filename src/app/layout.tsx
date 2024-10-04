@@ -15,8 +15,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Lendbit",
-  description: "Lendbit, Your gateway to seamless crypto lending & borrowing. Secure, transparent, and flexible. Unlock the full potential of your digital assets.",
+  title: "Lendbit | P2P Lending",
+  description: "Lendbit, Your gateway to seamless peer-to-peer crypto lending & borrowing. Secure, transparent, and flexible. Unlock the full potential of your digital assets.",
   icons: "./favicon.ico"
 };
 const zenDots = Zen_Dots({
