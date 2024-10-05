@@ -16,7 +16,7 @@ export default function DashboardPage() {
                     <DashboardCard
                         text={"Your Portfolio"}
                         figure={"$19,022.44"}
-                        extraCSS={"portfolio-card"}  // Add extraCSS for customization
+                        extraCSS="portfolio-card"  // Add extraCSS for customization
                         icon={
                             <Image
                                 src="/dollar.png"
@@ -32,7 +32,7 @@ export default function DashboardPage() {
                     <DashboardCard
                         text={"Net Profit"}
                         figure={"14.7%"}
-                        extraCSS={"profit-card"}  // Add extraCSS for customization
+                        extraCSS="profit-card"  // Add extraCSS for customization
                         icon={
                             <Image
                                 src="/percentage.png"
@@ -48,7 +48,7 @@ export default function DashboardPage() {
                     <DashboardCard
                         text={"Health Factor "}
                         figure={3.7}
-                        extraCSS={"health-card"}  // Add extraCSS for customization
+                        extraCSS="health-card"  // Add extraCSS for customization
                         icon={
                             <div className='bg-white/80 shadow shadow-[#C2C2C21A] w-[24.6px] h-11 pt-1 px-[0.6px] flex place-items-end'>
                                 <div className={`${battryCSS(3.7)} w-full`}></div>
