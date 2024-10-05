@@ -1,6 +1,6 @@
 import { Header } from "@/components/shared/Header";
 
-export default function OtherScreensLayout({
+export default function MainScreensLayout({
     children,
 }: {
     children: React.ReactNode;

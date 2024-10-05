@@ -2,17 +2,15 @@ import Image from "next/image";
 import { Gradients } from "../shared/Gradients";
 import { OrderCardProps } from "@/constants/types";
 
-
-
-export const OrderCard = ({ id, type, amount, token, date, icon1, icon2, isSelected, style }: OrderCardProps) => {
+export const OrderCard = ({ id, type, amount, token, date, icon1, icon2, isSelected, style, cardGradient }: OrderCardProps) => {
   return (
     <div className="w-full font-[family-name:var(--font-outfit)] bg-[#E5E5E5] h-full rounded-2xl overflow-hidden border-black border"
-    style={style}
+      style={style}
     >
       <div className="flex flex-col h-full">
         <div className="h-2/6 relative">
           <div className="">
-            <Gradients />
+            <Gradients cardGradient={cardGradient} />
           </div>
           <div className="top-2 left-4 absolute">
             <Image src={"/Union.svg"} alt="icon" width={17} height={17} priority quality={100} />

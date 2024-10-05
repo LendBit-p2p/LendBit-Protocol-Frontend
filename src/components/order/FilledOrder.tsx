@@ -1,12 +1,12 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-import { orderSample } from "@/constants/utils/orderSample";
 import { OrderCard } from "./OrderCard";
+import { cardGradient } from "@/constants/utils/cardGradient";
 
-export const FilledOrder = () => {
-  const [selectedOrder, setSelectedOrder] = useState<number | null>(0); 
+export const FilledOrder = ({ orderSample }: any) => {
+  const [selectedOrder, setSelectedOrder] = useState<number | null>(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]); 
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -15,7 +15,6 @@ export const FilledOrder = () => {
     }
   }, [orderSample]);
 
-  // Function to check which card is in focus
   const handleScroll = () => {
     if (containerRef.current) {
       const containerTop = containerRef.current.getBoundingClientRect().top;
@@ -28,7 +27,7 @@ export const FilledOrder = () => {
           const cardBottom = cardRect.bottom;
 
           if (cardTop >= containerTop && cardBottom <= containerBottom) {
-            setSelectedOrder(index); 
+            setSelectedOrder(index);
           }
         }
       });
@@ -44,33 +43,39 @@ export const FilledOrder = () => {
         onScroll={handleScroll}
         className="px-6 h-[410px] overflow-y-auto scrollbar-hide scroll-smooth"
       >
-        {orderSample.map((order, index) => (
-          <div
-            key={order.id}
-            ref={(el) => { cardRefs.current[index] = el; }} // Do not return the element, just set it in the array
-            className={`py-4 transition-all duration-500 ${
-              selectedOrder === index ? "z-10" : "filledInActive z-0"
-                }`}
+        {orderSample.map((order: any, index: number) => {
+          const randomGradient = cardGradient[Math.floor(Math.random() * cardGradient.length)] || "/gradients1.svg";
+          return (
+            <div
+              key={order.id}
+              ref={(el) => {
+                cardRefs.current[index] = el;
+              }}
+              className={`py-4 transition-all duration-500 ${
+                selectedOrder === index ? "z-10" : "filledInActive z-0"
+              }`}
             >
-            <div className="w-[192px] h-[296px] m-auto">
-              <OrderCard
-                id={order.id}
-                type={order.type}
-                amount={order.amount}
-                token={order.token}
-                date={order.date}
-                icon1={order.icon1}
-                icon2={order.icon2}
-                isSelected={selectedOrder === index}
-                style={
-                  selectedOrder === index
-                    ? { boxShadow: '0 0 15px 10px rgba(25, 75, 255, 0.4)' }
-                    : { filter: 'blur(3px)' }
-                }
-              />
+              <div className="w-[192px] h-[296px] m-auto">
+                <OrderCard
+                  id={order.id}
+                  type={order.type}
+                  amount={order.amount}
+                  token={order.token}
+                  date={order.date}
+                  icon1={order.icon1}
+                  icon2={order.icon2}
+                  isSelected={selectedOrder === index}
+                  cardGradient={randomGradient}
+                  style={
+                    selectedOrder === index
+                      ? { boxShadow: "0 0 15px 10px rgba(25, 75, 255, 0.4)" }
+                      : { filter: "blur(3px)" }
+                  }
+                />
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

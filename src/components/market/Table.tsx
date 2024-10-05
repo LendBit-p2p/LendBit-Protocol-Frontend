@@ -111,7 +111,7 @@ const Table = () => {
 
             {/* Tables for Borrow/Lend */}
             {activeTable === "borrow" && (
-                <>
+                <div>
                     {filteredTableData.map((data, index) => (
                         <div
                             key={index}
@@ -136,11 +136,11 @@ const Table = () => {
                             </div>
                         </div>
                     ))}
-                </>
+                </div>
             )}
 
             {activeTable === "lend" && (
-                <>
+                <div>
                     {filteredTableData.map((data, index) => (
                         <div
                             key={index}
@@ -165,7 +165,7 @@ const Table = () => {
                             </div>
                         </div>
                     ))}
-                </>
+                </div>
             )}
         </div>
     );

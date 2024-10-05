@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Zen_Dots, Outfit } from 'next/font/google';
+import { Zen_Dots, Outfit, Inter, Montserrat } from 'next/font/google';
 import "./globals.css";
+import { RadixTheme } from "@/config/radix";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -20,9 +21,23 @@ export const metadata: Metadata = {
   icons: "./favicon.ico"
 };
 const zenDots = Zen_Dots({
-  weight: '400',  // Zen Dots has only 400 weight
-  subsets: ['latin'],  // Add other subsets if needed
+  weight: '400',  
+  subsets: ['latin'],  
 });
+
+const montserrat = Montserrat({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "800"],
+  subsets: ["latin"],
+  variable: "--font-montserrat",
+})
+
+
+const inter = Inter({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "800"],
+  subsets: ["latin"],
+  variable: "--font-inter",
+})
+
 
 const outfit = Outfit({
   weight: ["400","500", "600"],  
@@ -38,10 +53,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${zenDots.className}  ${outfit.variable} ${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden`}
-      >
-        {children}
+      <body className="overflow-hidden">
+        <RadixTheme>
+          <div
+            className={`${zenDots.className}  ${outfit.variable} ${geistSans.variable} ${geistMono.variable} ${inter.variable} ${montserrat.variable} antialiased`}
+          >
+            {children}
+          </div>
+        </RadixTheme>
       </body>
     </html>
   );
