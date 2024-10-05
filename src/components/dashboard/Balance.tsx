@@ -26,7 +26,7 @@ const Balance = () => {
   ];
 
   return (
-    <div className="bg-black py-6 w-full custom-corner-header">
+    <div className="bg-black py-6 w-full custom-corner-header u-class-shadow-3">
       <div className="text-xl px-6 mb-1">
         <h3>Your Balances</h3>
       </div>

@@ -22,7 +22,7 @@ const historyData = [
 
 const TransactionHistory = () => {
   return (
-    <div className="bg-black py-6 w-full px-4 sm:px-6 font-[family-name:var(--font-outfit)]">
+    <div className="bg-black py-6 w-full px-4 sm:px-6 font-[family-name:var(--font-outfit)] u-class-shadow-2">
       <div className="flex justify-between items-center pb-4">
         <h3 className="text-xl text-[#F6F6F6] font-medium">Transaction History</h3>
         <div className="flex gap-2 items-center">

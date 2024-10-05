@@ -4,9 +4,9 @@ import { OpenOrder } from "./OpenOrder";
 
 const OrdersDetails = () => {
   return (
-    <div className="bg-black py-6 w-full px-6">
+    <div className="bg-black py-6 w-full px-6 u-class-shadow-2">
       {/* Responsive Layout - Stack on small screens */}
-      <div className="flex flex-col md:flex-row justify-between w-full gap-4">
+      <div className="flex flex-col md:flex-row justify-between w-full gap-4 ">
         {/* Filled Orders Section */}
         <div className="w-full md:w-[30%]">
           <FilledOrder />

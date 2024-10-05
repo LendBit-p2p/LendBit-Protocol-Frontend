@@ -26,7 +26,7 @@ const paymentsData = [
 
 const PendingRepayments = () => {
   return (
-    <div className="bg-black py-6 w-full px-4 sm:px-6 font-[family-name:var(--font-outfit)]">
+    <div className="bg-black py-6 w-full px-4 sm:px-6 font-[family-name:var(--font-outfit)] u-class-shadow">
       <div className="flex justify-between items-center pb-4">
         <h3 className="text-xl text-[#F6F6F6] font-medium">Pending Repayments</h3>
         <Image

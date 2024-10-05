@@ -31,7 +31,7 @@ const Usage = () => {
   const powerLeft = 35;
   
   return (
-    <div className="bg-black py-6 w-full border border-[#ff4d00] rounded-lg">
+    <div className="bg-black py-6 w-full border border-[#ff4d00] rounded-lg u-class-shadow-2">
       <div className="text-xl px-6 mb-1">
         <h3>Your Usage</h3>
       </div>

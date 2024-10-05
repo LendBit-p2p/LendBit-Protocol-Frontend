@@ -14,12 +14,12 @@ export default function OrderPage() {
                 {/* Stack PendingRepayments and TransactionHistory vertically on small screens */}
                 <div className="flex flex-col md:flex-row justify-between w-full gap-6">
                     {/* Pending Repayments Section */}
-                    <div className="w-full md:w-5/12  p-4 rounded-lg shadow-md">
+                    <div className="w-full md:w-5/12  p-4 rounded-lg">
                         <PendingRepayments />
                     </div>
 
                     {/* Transaction History Section */}
-                    <div className="w-full md:w-7/12  p-4 rounded-lg shadow-md">
+                    <div className="w-full md:w-7/12  p-4 rounded-lg">
                         <TransactionHistory />
                     </div>
                 </div>

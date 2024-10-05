@@ -2,7 +2,7 @@ import MktIcons from "./MktIcons";
 
 const MktHeader = () => {
   return (
-    <header className="bg-black px-4 sm:px-10 py-6 w-full border border-[#FF4D00] rounded-lg">
+    <header className="bg-black sm:px-10 w-full border border-[#FF4D00] rounded-lg">
       <div className="flex flex-col lg:flex-row justify-between w-full items-start lg:items-center">
         {/* Title and Description */}
         <div className="w-full lg:w-2/3 text-start">

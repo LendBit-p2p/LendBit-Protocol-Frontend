@@ -278,6 +278,31 @@ transition: ease-out 0.5s;
 	 -webkit-user-select: none;
 }
 
+.u-no-scroll-y{
+	overflow: hidden;
+}
+
+/* Shadow Link */
+.u-class-shadow{
+	 box-shadow: rgba(255, 255, 255, 0.4) 0px 30px 190px;
+	 border-radius: 5px;
+}
+
+.u-class-shadow-2{
+box-shadow: 13px 15px 77px 8px rgba(255,255,255,0.29);
+-webkit-box-shadow: 13px 15px 77px 8px rgba(255,255,255,0.29);
+-moz-box-shadow: 13px 15px 77px 8px rgba(255,255,255,0.29);
+	 border-radius: 5px;
+
+}
+
+.u-class-shadow-3{
+box-shadow: -197px -42px 363px -52px  rgba(255,255,255,0.35);
+-webkit-box-shadow: -197px -42px 363px -52px  rgba(255,255,255,0.35);
+-moz-box-shadow: -197px -42px 363px -52px  rgba(255,255,255,0.35);
+	 border-radius: 5px;
+
+}
 
 /* UI MODIFICATION LIBRARY END*/
 /* UI MODIFICATION LIBRARY END*/

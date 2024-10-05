@@ -61,12 +61,16 @@ export const OpenOrder = () => {
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUpOrLeave}
         onMouseLeave={handleMouseUpOrLeave}
+        onScroll={handleScroll}
       >
-        <div className="flex gap-6">
+        <div className="flex gap-6 u-no-scroll-y">
           {orderSample.map((order, index) => (
             <div
               key={order.id}
-              className={`py-4 transition-all duration-500 z-10 flex-none ${index === currentIndex ? "scale-110" : "scale-100"}`}
+              className={`py-4 transition-all duration-500 z-10 flex-none ${index === currentIndex
+                  ? "scale-110 shadow-lg shadow-[#FF4D00]/50" // Center card is bigger with shadow
+                  : "scale-100"
+                }`}
             >
               <div className="w-32 h-52 sm:w-44 sm:h-72 m-auto ml-4">
                 <OrderCard
