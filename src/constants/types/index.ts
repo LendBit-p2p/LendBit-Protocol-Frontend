@@ -24,4 +24,5 @@ export type OrderCardProps = {
   icon2: string;
   isSelected?: boolean;
   style?: React.CSSProperties;
+  cardGradient: string;
 }
