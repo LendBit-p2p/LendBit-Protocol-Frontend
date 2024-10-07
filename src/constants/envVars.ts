@@ -1,6 +1,6 @@
 export const envVars = {
-    
-    protocolDiamondAddress: process.env.NEXT_PUBLIC_Protocol_Diamond_Contract,
+
+    lendbitDiamondAddress: process.env.NEXT_PUBLIC_Lendbit_Diamond_Address,
 
     httpRPC: process.env.NEXT_PUBLIC_HTTP_RPC,
 
