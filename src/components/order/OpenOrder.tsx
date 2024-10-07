@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { OrderCard } from "./OrderCard";
+import { cardGradient } from "@/constants/utils/cardGradient";
 
 export const OpenOrder = ({orderSample}:any) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -63,28 +64,32 @@ export const OpenOrder = ({orderSample}:any) => {
         onScroll={handleScroll}
       >
         <div className="flex gap-6 u-no-scroll-y">
-          {orderSample.map((order: any, index: number) => (
-            <div
-              key={order.id}
-              className={`py-4 transition-all duration-500 z-10 flex-none ${index === currentIndex
+          {orderSample.map((order: any, index: number) => {
+            const randomGradient = cardGradient[Math.floor(Math.random() * cardGradient.length)] || "/gradients2.svg";
+            return(
+              <div
+                key={order.id}
+                className={`py-4 transition-all duration-500 z-10 flex-none ${index === currentIndex
                   ? "scale-110 shadow-lg shadow-[#FF4D00]/50" // Center card is bigger with shadow
                   : "scale-100"
-                }`}
-            >
-              <div className="w-32 h-52 sm:w-44 sm:h-72 m-auto ml-4">
-                <OrderCard
-                  id={order.id}
-                  type={order.type}
-                  amount={order.amount}
-                  token={order.token}
-                  date={order.date}
-                  icon1={"/edit.svg"}
-                  icon2={"/delete.svg"}
-                  isSelected={currentIndex === index}
-                />
+                  }`}
+              >
+                <div className="w-32 h-52 sm:w-44 sm:h-72 m-auto ml-4">
+                  <OrderCard
+                    id={order.id}
+                    type={order.type}
+                    amount={order.amount}
+                    token={order.token}
+                    date={order.date}
+                    icon1={"/edit.svg"}
+                    icon2={"/delete.svg"}
+                    isSelected={currentIndex === index}
+                    cardGradient={randomGradient}
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
 
