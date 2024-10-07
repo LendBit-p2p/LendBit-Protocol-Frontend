@@ -6,7 +6,7 @@ export default function VolumePage() {
 
 
     return (
-        <div className="bg-black rounded-md py-2 px-4 font-medium text-white">
+        <div className="bg-black rounded-md py-2 px-4 font-medium text-white u-class-shadow">
             <Link
                 href={"/create-order"}
                 className="flex items-center gap-1 cursor-pointer"
