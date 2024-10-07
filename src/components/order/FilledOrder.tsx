@@ -1,12 +1,15 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-import { orderSample } from "@/constants/utils/orderSample";
 import { OrderCard } from "./OrderCard";
 
-export const FilledOrder = () => {
-  const [selectedOrder, setSelectedOrder] = useState<number | null>(0); 
+export const FilledOrder = ({orderSample}:any) => {
+  const [selectedOrder, setSelectedOrder] = useState<number | null>(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]); 
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const [isDragging, setIsDragging] = useState(false);
+  const [startY, setStartY] = useState(0);
+  const [scrollTop, setScrollTop] = useState(0);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -15,7 +18,7 @@ export const FilledOrder = () => {
     }
   }, [orderSample]);
 
-  // Function to check which card is in focus
+  // Handle scroll
   const handleScroll = () => {
     if (containerRef.current) {
       const containerTop = containerRef.current.getBoundingClientRect().top;
@@ -28,31 +31,56 @@ export const FilledOrder = () => {
           const cardBottom = cardRect.bottom;
 
           if (cardTop >= containerTop && cardBottom <= containerBottom) {
-            setSelectedOrder(index); 
+            setSelectedOrder(index);
           }
         }
       });
     }
   };
 
+  // Handle the start of mouse drag
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (containerRef.current) {
+      setIsDragging(true);
+      setStartY(e.pageY - containerRef.current.offsetTop);
+      setScrollTop(containerRef.current.scrollTop);
+    }
+  };
+
+  // Handle mouse movement during drag
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging || !containerRef.current) return;
+    e.preventDefault();
+    const y = e.pageY - containerRef.current.offsetTop;
+    const walk = (y - startY) * 2;
+    containerRef.current.scrollTop = scrollTop - walk;
+  };
+
+  // Stop dragging
+  const handleMouseUpOrLeave = () => {
+    setIsDragging(false);
+  };
+
   return (
-    <div className="w-full">
+    <div className="w-full filled-orders">
       <h3 className="text-lg font-normal mb-4">Filled Orders</h3>
 
       <div
         ref={containerRef}
         onScroll={handleScroll}
-        className="px-6 h-[410px] overflow-y-auto scrollbar-hide scroll-smooth"
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUpOrLeave}
+        onMouseLeave={handleMouseUpOrLeave}
+        className="px-6 h-[410px] overflow-y-auto scrollbar-hide scroll-smooth cursor-grab"
       >
-        {orderSample.map((order, index) => (
+        {orderSample.map((order : any, index : number) => (
           <div
             key={order.id}
-            ref={(el) => { cardRefs.current[index] = el; }} // Do not return the element, just set it in the array
-            className={`py-4 transition-all duration-500 ${
-              selectedOrder === index ? "z-10" : "filledInActive z-0"
-                }`}
-            >
-            <div className="w-[192px] h-[296px] m-auto">
+            ref={(el) => { cardRefs.current[index] = el; }}
+            className={`py-4 transition-all duration-500 ${selectedOrder === index ? "z-10" : "filledInActive z-0"}`}
+          >
+            <div className="w-32 h-44 sm:w-44 sm:h-72 m-auto"> {/* Adjusted to make responsive */}
               <OrderCard
                 id={order.id}
                 type={order.type}
@@ -64,8 +92,8 @@ export const FilledOrder = () => {
                 isSelected={selectedOrder === index}
                 style={
                   selectedOrder === index
-                    ? { boxShadow: '0 0 15px 10px rgba(25, 75, 255, 0.4)' }
-                    : { filter: 'blur(3px)' }
+                    ? { boxShadow: "0 0 15px 10px rgba(25, 75, 255, 0.4)" }
+                    : { filter: "blur(3px)" }
                 }
               />
             </div>

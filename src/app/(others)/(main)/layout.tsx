@@ -6,8 +6,8 @@ export default function OtherScreensLayout({
     children: React.ReactNode;
 }) {
     return (
-        <section className="relative top-16 mx-auto w-[91%] text-white">
-           <Header /> 
+        <section className="relative top-8 sm:top-15 mx-auto w-[91%] text-white">
+            <Header />
             <main className="mt-6 pb-4">
                 {children}
             </main>

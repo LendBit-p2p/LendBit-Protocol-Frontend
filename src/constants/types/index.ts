@@ -1,7 +1,7 @@
 export type DashboardCardProps = {
   text: string;
   figure: string | number;
-  extraCSS?: React.CSSProperties; 
+  extraCSS?: string; 
   icon?: React.ReactNode; 
 };
 

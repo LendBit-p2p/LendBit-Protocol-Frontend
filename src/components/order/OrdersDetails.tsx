@@ -2,17 +2,23 @@ import { CreateOrder } from "./CreateOrder";
 import { FilledOrder } from "./FilledOrder";
 import { OpenOrder } from "./OpenOrder";
 
-const OrdersDetails = () => {
+const OrdersDetails = ({orderSample}:any) => {
   return (
-    <div className="bg-black py-6 w-full px-6 max-h-[560px]">
-      <div className="flex justify-between w-full gap-4 h-full">
-        <div className="w-[25%] h-full max-h-full">
-          <FilledOrder />
+    <div className="bg-black py-6 w-full px-6 u-class-shadow-2">
+      {/* Responsive Layout - Stack on small screens */}
+      <div className="flex flex-col md:flex-row justify-between w-full gap-4 ">
+        {/* Filled Orders Section */}
+        <div className="w-full md:w-[30%]">
+          <FilledOrder orderSample ={orderSample} />
         </div>
-        <div className="w-[55%] py-8 h-full max-h-full">
-          <OpenOrder />
+
+        {/* Open Orders Section */}
+        <div className="w-full md:w-[50%] py-8">
+          <OpenOrder orderSample ={orderSample} />
         </div>
-        <div className="w-[20%] flex">
+
+        {/* Create Order Section - Hidden on small screens */}
+        <div className="hidden md:flex w-[20%]">
           <CreateOrder />
         </div>
       </div>
@@ -21,4 +27,3 @@ const OrdersDetails = () => {
 };
 
 export default OrdersDetails;
-

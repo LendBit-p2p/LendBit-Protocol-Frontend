@@ -33,16 +33,13 @@ const Collateral = () => {
   ];
 
   return (
-    <div className="bg-black py-6 w-full rounded-lg"
-        style = {{
-            boxShadow: '0 0 5px 5px rgba(255, 255, 255, 0.1)',
-        }}
+    <div className="bg-black py-6 w-full rounded-lg u-class-shadow-3"
     >
-        <div className="text-[16px] px-6 mb-3">
+        <div className="text-xl px-6 mb-3">
             <h3>Deposit Collateral</h3>
         </div>
         <div className="px-6">
-            <table className="min-w-full text-[10.5px]">
+        <table className="min-w-full text-center text-[10px] sm:text-[12px] ">
                 <thead>
                     <tr className="text-center">
                     <th className="py-2 text-start">Asset</th>
