@@ -1,10 +1,9 @@
 "use client";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { orderSample } from "@/constants/utils/orderSample";
 import { OrderCard } from "./OrderCard";
 
-export const OpenOrder = () => {
+export const OpenOrder = ({orderSample}:any) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -64,7 +63,7 @@ export const OpenOrder = () => {
         onScroll={handleScroll}
       >
         <div className="flex gap-6 u-no-scroll-y">
-          {orderSample.map((order, index) => (
+          {orderSample.map((order: any, index: number) => (
             <div
               key={order.id}
               className={`py-4 transition-all duration-500 z-10 flex-none ${index === currentIndex

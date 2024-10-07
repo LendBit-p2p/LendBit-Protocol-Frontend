@@ -1,9 +1,8 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-import { orderSample } from "@/constants/utils/orderSample";
 import { OrderCard } from "./OrderCard";
 
-export const FilledOrder = () => {
+export const FilledOrder = ({orderSample}:any) => {
   const [selectedOrder, setSelectedOrder] = useState<number | null>(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -75,7 +74,7 @@ export const FilledOrder = () => {
         onMouseLeave={handleMouseUpOrLeave}
         className="px-6 h-[410px] overflow-y-auto scrollbar-hide scroll-smooth cursor-grab"
       >
-        {orderSample.map((order, index) => (
+        {orderSample.map((order : any, index : number) => (
           <div
             key={order.id}
             ref={(el) => { cardRefs.current[index] = el; }}

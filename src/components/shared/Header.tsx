@@ -60,7 +60,7 @@ export const Header = () => {
 
                 {/* Navigation Links - Only show on large screens */}
                 <nav className={`hidden lg:flex space-x-6 text-sm font-medium`}>
-                    <Link href="/dashboard" className={isActive("/dashboard")}>
+                    <Link href="/" className={isActive("/dashboard")}>
                         Dashboard
                     </Link>
                     <Link href="/order" className={isActive("/order")}>
@@ -80,7 +80,7 @@ export const Header = () => {
             {/* Mobile Menu - Show when isMenuOpen is true */}
             {isMenuOpen && (
                 <nav className="lg:hidden mt-4">
-                    <Link href="/dashboard" className={`block py-2 ${isActive("/dashboard")}`}>
+                    <Link href="/" className={`block py-2 ${isActive("/dashboard")}`}>
                         Dashboard
                     </Link>
                     <Link href="/order" className={`block py-2 ${isActive("/order")}`}>

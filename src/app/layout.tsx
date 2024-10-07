@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Share_Tech_Mono} from 'next/font/google';
+import { Share_Tech_Mono, Outfit} from 'next/font/google';
 import "./globals.css";
+import { RadixTheme } from "@/config/radix";
+import Background from "@/components/shared/background/background";
 
 // const geistSans = localFont({
 //   src: "./fonts/GeistVF.woff",
@@ -20,16 +22,16 @@ export const metadata: Metadata = {
   icons: "./favicon.ico"
 };
 const shareTechMono = Share_Tech_Mono({
-  weight: '400',  // Zen Dots has only 400 weight
-  subsets: ['latin'],  // Add other subsets if needed
+  weight: '400',  
+  subsets: ['latin'], 
 });
 
-// const outfit = Outfit({
-//   weight: ["400","500", "600"],  
-//   subsets: ['latin'],
-//   variable: "--font-outfit",
+const outfit = Outfit({
+  weight: ["400","500", "600"],  
+  subsets: ['latin'],
+  variable: "--font-outfit",
 
-// });
+});
 
 export default function RootLayout({
   children,
@@ -39,9 +41,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${shareTechMono.className} antialiased overflow-hidden`}
+        className={`overflow-hidden`}
       >
-        {children}
+        <RadixTheme>
+           <div
+            className={`${shareTechMono.className}  ${outfit.variable} antialiased`}
+          >
+            <section className="w-full relative px-4 py-2 bg-black"
+            >
+              <Background />
+                
+              <main className="w-full h-screen overflow-y-auto absolute left-0 top-0 z-10">
+                {children}
+              </main>
+            </section>
+          </div>
+        </RadixTheme>   
       </body>
     </html>
   );
