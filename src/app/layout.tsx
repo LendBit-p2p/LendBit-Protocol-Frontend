@@ -1,20 +1,10 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
-import { Share_Tech_Mono, Outfit} from 'next/font/google';
+import { Share_Tech_Mono} from 'next/font/google';
 import "./globals.css";
-import { RadixTheme } from "@/config/radix";
+import { RadixTheme } from "@/context/radix";
 import Background from "@/components/shared/background/background";
-
-// const geistSans = localFont({
-//   src: "./fonts/GeistVF.woff",
-//   variable: "--font-geist-sans",
-//   weight: "100 900",
-// });
-// const geistMono = localFont({
-//   src: "./fonts/GeistMonoVF.woff",
-//   variable: "--font-geist-mono",
-//   weight: "100 900",
-// });
+import { Web3Modal } from "@/context/web3Modal";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   title: "Lendbit | P2P Lending",
@@ -26,12 +16,11 @@ const shareTechMono = Share_Tech_Mono({
   subsets: ['latin'], 
 });
 
-const outfit = Outfit({
-  weight: ["400","500", "600"],  
-  subsets: ['latin'],
-  variable: "--font-outfit",
 
-});
+export const viewport = {
+  width: "device-width",
+  initialScale: 1.0,
+};
 
 export default function RootLayout({
   children,
@@ -41,22 +30,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`overflow-hidden`}
+        className={`overflow-hidden w-full`}
       >
+       
         <RadixTheme>
-           <div
-            className={`${shareTechMono.className}  ${outfit.variable} antialiased`}
-          >
-            <section className="w-full relative px-4 py-2 bg-black"
+          <Web3Modal>
+            <section className={`${shareTechMono.className} antialiased w-full relative px-4 py-2 bg-black`}
             >
-              <Background />
-                
-              <main className="w-full h-screen overflow-y-auto absolute left-0 top-0 z-10">
-                {children}
-              </main>
+              <Background /> 
+                <main className="w-full h-screen overflow-y-auto absolute left-0 top-0 z-10">
+                  {children}
+                </main>
             </section>
-          </div>
-        </RadixTheme>   
+            <Toaster richColors position="top-right" />
+          </Web3Modal> 
+        </RadixTheme>
+           
       </body>
     </html>
   );
