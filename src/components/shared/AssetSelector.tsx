@@ -24,7 +24,7 @@ const tokenData = [
     },
     {
         token: "USDT",
-        icon: "/USDT.svg",
+        icon: "/usdt.svg",
         tokenPrice: 1,
     },
 ];

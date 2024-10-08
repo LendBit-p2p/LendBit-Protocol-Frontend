@@ -73,7 +73,7 @@ export const Header = () => {
 
                 {/* Icons - Visible on all screen sizes */}
                 <div className="text-white">
-                    icons
+                    <w3m-button />               
                 </div>
             </div>
 
