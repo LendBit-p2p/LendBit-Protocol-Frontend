@@ -7,6 +7,7 @@ import { getProvider } from "@/config/provider";
 import { getLendbitContract } from "@/config/contracts";
 import { useRouter } from "next/navigation";
 import { ErrorWithReason } from "@/constants/types";
+import { ethers } from "ethers";
 
 const useCreateLoanListing = () => {
   const { chainId } = useWeb3ModalAccount();
@@ -22,7 +23,9 @@ const useCreateLoanListing = () => {
       const contract = getLendbitContract(signer);
 
       try {
-        const transaction = await contract.createLoanListing(_amount, _min_amount, _max_amount, _returnDate, _interest, _loanCurrency);
+        const _min_amount_wei = ethers.parseUnits(_min_amount.toString(), 18);
+        const _max_amount_wei = ethers.parseUnits(_max_amount.toString(), 18);
+        const transaction = await contract.createLoanListing(_amount, _min_amount_wei, _max_amount_wei, _returnDate, _interest, _loanCurrency);
         const receipt = await transaction.wait();
 
         if (receipt.status) {
@@ -44,7 +47,7 @@ const useCreateLoanListing = () => {
         if (err?.reason === "Protocol__InsufficientAllowance()") {
           errorText = "insufficient allowance!";
         }
-         if (err?.reason === "Protocol__TransferFailed") {
+        if (err?.reason === "Protocol__TransferFailed") {
           errorText = "listing action failed!";
         }
         else {

@@ -7,6 +7,7 @@ import { getProvider } from "@/config/provider";
 import { getLendbitContract } from "@/config/contracts";
 import { useRouter } from "next/navigation";
 import { ErrorWithReason } from "@/constants/types";
+import { ethers } from "ethers";
 
 const useCreateLendingRequest = () => {
   const { chainId } = useWeb3ModalAccount();
@@ -14,15 +15,18 @@ const useCreateLendingRequest = () => {
   const router = useRouter();
 
   return useCallback(
-    async (_amount: number, _interest: number, _returnDate: number, _loanCurrency: string) => {
-      if (!isSupportedChain(chainId)) return toast.warning("SWITCH TO BASE");
+    async (_amount: string, _interest: number, _returnDate: number, _loanCurrency: string) => {
+      if (!isSupportedChain(chainId)) return toast.warning("SWITCH TO BASE", { duration: 2000 });
       const readWriteProvider = getProvider(walletProvider);
       const signer = await readWriteProvider.getSigner();
 
       const contract = getLendbitContract(signer);
 
       try {
-        const transaction = await contract.createLendingRequest(_amount, _interest,_returnDate,_loanCurrency);
+        // TODO: change unit to the decimal of the token
+        const _weiAmount = ethers.parseUnits(_amount, 18)
+        const _basisPointInterest = _interest * 10000
+        const transaction = await contract.createLendingRequest(_weiAmount, _basisPointInterest, _returnDate, _loanCurrency);
         const receipt = await transaction.wait();
 
         if (receipt.status) {
