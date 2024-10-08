@@ -8,13 +8,13 @@ import { getLendbitContract } from "@/config/contracts";
 import { useRouter } from "next/navigation";
 import { ErrorWithReason } from "@/constants/types";
 
-const useDepositCollateral = () => {
+const useCreateLoanListing = () => {
   const { chainId } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
   const router = useRouter();
 
   return useCallback(
-    async (_tokenCollateralAddress: string, _amountOfCollateral: number) => {
+    async (_amount: number, _min_amount: number, _max_amount: number, _returnDate: number, _interest: number, _loanCurrency: string) => {
       if (!isSupportedChain(chainId)) return toast.warning("SWITCH TO BASE");
       const readWriteProvider = getProvider(walletProvider);
       const signer = await readWriteProvider.getSigner();
@@ -22,11 +22,11 @@ const useDepositCollateral = () => {
       const contract = getLendbitContract(signer);
 
       try {
-        const transaction = await contract.depositCollateral(_tokenCollateralAddress, _amountOfCollateral);
+        const transaction = await contract.createLoanListing(_amount, _min_amount, _max_amount, _returnDate, _interest, _loanCurrency);
         const receipt = await transaction.wait();
 
         if (receipt.status) {
-          toast.success("collateral deposited!");
+          toast.success("loan order created!");
           return router.push('/successful');
         }
 
@@ -35,9 +35,19 @@ const useDepositCollateral = () => {
         const err = error as ErrorWithReason;
         let errorText: string;
 
-        if (err?.reason === "Protocol__TransferFailed()") {
-          errorText = "deposit action failed!";
-        } else {
+        if (err?.reason === "Protocol__TokenNotLoanable()") {
+          errorText = "token not loanable!";
+        }
+        if (err?.reason === "Protocol__InsufficientBalance()") {
+          errorText = "insufficient balance!";
+        }
+        if (err?.reason === "Protocol__InsufficientAllowance()") {
+          errorText = "insufficient allowance!";
+        }
+         if (err?.reason === "Protocol__TransferFailed") {
+          errorText = "listing action failed!";
+        }
+        else {
           errorText = "trying to resolve error!";
         }
 
@@ -48,4 +58,4 @@ const useDepositCollateral = () => {
   );
 };
 
-export default useDepositCollateral;
+export default useCreateLoanListing;

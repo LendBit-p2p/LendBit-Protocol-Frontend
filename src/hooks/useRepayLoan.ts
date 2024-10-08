@@ -8,13 +8,13 @@ import { getLendbitContract } from "@/config/contracts";
 import { useRouter } from "next/navigation";
 import { ErrorWithReason } from "@/constants/types";
 
-const useDepositCollateral = () => {
+const useRepayLoan = () => {
   const { chainId } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
   const router = useRouter();
 
   return useCallback(
-    async (_tokenCollateralAddress: string, _amountOfCollateral: number) => {
+    async (_requestId: number, _amount: number) => {
       if (!isSupportedChain(chainId)) return toast.warning("SWITCH TO BASE");
       const readWriteProvider = getProvider(walletProvider);
       const signer = await readWriteProvider.getSigner();
@@ -22,12 +22,12 @@ const useDepositCollateral = () => {
       const contract = getLendbitContract(signer);
 
       try {
-        const transaction = await contract.depositCollateral(_tokenCollateralAddress, _amountOfCollateral);
+        const transaction = await contract.repayLoan(_requestId, _amount);
         const receipt = await transaction.wait();
 
         if (receipt.status) {
           toast.success("collateral deposited!");
-          return router.push('/successful');
+          return router.push('/marketplace');
         }
 
         toast.error("failed!");
@@ -35,9 +35,16 @@ const useDepositCollateral = () => {
         const err = error as ErrorWithReason;
         let errorText: string;
 
-        if (err?.reason === "Protocol__TransferFailed()") {
+        if (err?.reason === "Protocol__RequestNotServiced()") {
           errorText = "deposit action failed!";
-        } else {
+        }
+        if (err?.reason === "Protocol__InsufficientBalance()") {
+          errorText = "insufficient balance!";
+        }
+        if (err?.reason === "Protocol__InsufficientAllowance()") {
+          errorText = "insufficient allowance!";
+        }
+        else {
           errorText = "trying to resolve error!";
         }
 
@@ -48,4 +55,4 @@ const useDepositCollateral = () => {
   );
 };
 
-export default useDepositCollateral;
+export default useRepayLoan;
