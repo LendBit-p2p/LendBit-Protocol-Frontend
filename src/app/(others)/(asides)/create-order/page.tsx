@@ -63,7 +63,8 @@ export default function CreateOrderPage() {
     };
 
     return (
-        <div className="bg-black rounded-md p-2 u-class-shadow">
+        <div className="my-12">
+            <div className="bg-black rounded-md p-2 u-class-shadow mt-4">
             <p className="text-base text-white pl-2">Order</p>
 
             {/* Buttons section with 50/50 split */}
@@ -236,6 +237,7 @@ export default function CreateOrderPage() {
                     css="text-black bg-[#FF4D00CC]/80 text-base w-full py-2 rounded flex items-center justify-center"
                 />
             </Link>
+        </div>
         </div>
     );
 }

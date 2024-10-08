@@ -1,22 +1,71 @@
 "use client";
 
+import { formatAddress } from "@/constants/utils/formatAddress";
+import { SUPPORTED_CHAIN_ID } from "@/context/web3Modal";
+import { Spinner } from "@radix-ui/themes";
+import { useSwitchNetwork, useWalletInfo, useWeb3Modal, useWeb3ModalAccount } from "@web3modal/ethers/react";
+// import { ethers } from "ethers"; 
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export const Header = () => {
     const pathname = usePathname();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { open } = useWeb3Modal();
+    const { address, isConnected, chainId } = useWeb3ModalAccount();
+    const { walletInfo } = useWalletInfo();
+    const { switchNetwork } = useSwitchNetwork();
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [mounted, setMounted] = useState(false);
+    // const [balance, setBalance] = useState<string | null>(null);
 
-    // Function to determine if a link is active
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    // const fetchBalance = async () => {
+    //     if (!address) return; 
+
+    //     const provider = new ethers.BrowserProvider(window.ethereum as unknown as ethers.Eip1193Provider);
+    //     try {
+    //         const balanceBigNumber = await provider.getBalance(address);     
+    //         const balanceInEth = ethers.formatEther(balanceBigNumber);
+    //         const formattedBalance = parseFloat(balanceInEth).toFixed(3);
+    //         setBalance(formattedBalance);
+    //     } catch (error) {
+    //         console.error("Error fetching balance:", error);
+    //     }
+    // };
+
+    // useEffect(() => {
+    //     if (isConnected) {
+    //         fetchBalance();
+    //     }
+    // }, [isConnected, address]);
+
     const isActive = (path: string) => {
         return pathname === path ? "active-link active" : "active-link";
     };
 
-    // Function to toggle menu on mobile
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
+    };
+
+    const handleSignout = () => {
+        setIsOpen(!isOpen);
+        open();
+    };
+
+    const walletConnect = () => {
+        if (!isConnected) {
+            open();
+        } else if (isConnected && chainId !== SUPPORTED_CHAIN_ID) {
+            switchNetwork(SUPPORTED_CHAIN_ID);
+        } else {
+            setIsOpen(!isOpen);
+        }
     };
 
     return (
@@ -46,7 +95,6 @@ export const Header = () => {
                     className="text-white block lg:hidden focus:outline-none"
                     onClick={toggleMenu}
                 >
-                    {/* Hamburger Icon */}
                     {isMenuOpen ? (
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -59,7 +107,7 @@ export const Header = () => {
                 </button>
 
                 {/* Navigation Links - Only show on large screens */}
-                <nav className={`hidden lg:flex space-x-6 text-sm font-medium`}>
+                <nav className={`hidden lg:flex space-x-6 text-base font-medium`}>
                     <Link href="/" className={isActive("/dashboard")}>
                         Dashboard
                     </Link>
@@ -71,13 +119,61 @@ export const Header = () => {
                     </Link>
                 </nav>
 
-                {/* Icons - Visible on all screen sizes */}
-                <div className="text-white">
-                    <w3m-button />               
+                <div className="flex items-center gap-2">
+                    <Image
+                        src="/notifications.svg"
+                        alt="notifications"
+                        width={20}
+                        height={20}
+                        priority
+                        quality={100}
+                    />
+                    
+                    {/* Wallet Connect Section */}
+                    <div>
+                        {!mounted ? (
+                            <div className="text-sm text-[#ff4d00] rounded-md bg-[#2a2a2a] py-2 px-5 ml-2">
+                                <Spinner />
+                            </div>
+                        ) : (
+                            <div onClick={walletConnect} className="flex items-center gap-2 cursor-pointer">
+                                <Image
+                                    src="/User.svg"
+                                    alt="User icon"
+                                    width={20}
+                                    height={20}
+                                    priority
+                                    quality={100}
+                                />
+                                <div className="text-sm text-[#ff4d00] flex items-center gap-3 rounded-md bg-[#2a2a2a] p-3">
+                                    {!isConnected ? (
+                                        <p className="uppercase">Connect Wallet</p>
+                                    ) : (
+                                        <>
+                                            {chainId !== SUPPORTED_CHAIN_ID ? (
+                                                <p className="text-red-500 uppercase leading-tight">Switch to Base</p>
+                                            ) : (
+                                                <p className="">{address ? formatAddress(address) : "Address"}</p>)
+                                            }
+                                            
+                                            <Image
+                                                src="/chevronOrange.svg"
+                                                alt="chevron icon"
+                                                width={8}
+                                                height={5}
+                                                priority
+                                                quality={100}
+                                            />
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 
-            {/* Mobile Menu - Show when isMenuOpen is true */}
+            {/* Mobile Menu */}
             {isMenuOpen && (
                 <nav className="lg:hidden mt-4">
                     <Link href="/" className={`block py-2 ${isActive("/dashboard")}`}>
@@ -90,6 +186,27 @@ export const Header = () => {
                         Marketplace
                     </Link>
                 </nav>
+            )}
+
+            {/* Wallet Dropdown */}
+            {isOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-md text-black rounded-lg z-50">
+                    <div className="p-4 flex flex-col items-center gap-2">
+                        <img
+                            src={walletInfo?.icon || "/"}
+                            alt="Wallet Icon"
+                            className="w-6 h-6 object-cover"
+                        />
+                        <span className="text-black text-sm">{address ? formatAddress(address) : "Address"}</span>
+                        {/* <span className="text-black text-sm">{balance ? `${balance} ETH` : "wallet balance..."}</span>  */}
+                        <button
+                            className="w-full bg-[#FF4D00]/70 text-white py-2 rounded-md hover:bg-[#FF4D00] transition-colors text-sm"
+                            onClick={handleSignout}
+                        >
+                            Wallet Actions
+                        </button>
+                    </div>
+                </div>
             )}
         </header>
     );
