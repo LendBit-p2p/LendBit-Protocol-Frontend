@@ -5,7 +5,7 @@ export default function AsidesScreensLayout({
     children: React.ReactNode;
 }) {
     return (
-        <aside className="flex justify-center items-center w-full h-screen z-20">    
+        <aside className="flex justify-center items-center w-full z-20">    
             {children}
         </aside>
     );
