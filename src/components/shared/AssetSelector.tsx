@@ -1,31 +1,20 @@
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useState } from "react";
+import { ethers } from "ethers";
 
+// Sample token data for Base Sepolia
 const tokenData = [
-    {
-        token: "USDC",
-        icon: "/USDC.svg",
-        tokenPrice: 0.99,
-    },
-    {
-        token: "DAI",
-        icon: "/dai.svg",
-        tokenPrice: 0.99,
-    },
     {
         token: "ETH",
         icon: "/eth.svg",
-        tokenPrice: 2500,
+        tokenPrice: 2500, // Hardcoded price
+        address: "", // ETH does not have a contract address
     },
     {
         token: "LINK",
         icon: "/link.svg",
-        tokenPrice: 25,
-    },
-    {
-        token: "USDT",
-        icon: "/usdt.svg",
-        tokenPrice: 1,
+        tokenPrice: 11, // Hardcoded price
+        address: "0xE4aB69C077896252FAFBD49EFD26B5D171A32410", // Sepolia LINK token contract
     },
 ];
 
@@ -33,11 +22,55 @@ interface AssetSelectorProps {
     onTokenSelect: (token: string, tokenPrice: number) => void;
     onAssetValueChange: (value: string) => void;
     assetValue: string; // Controlled by the parent
+    userAddress: string; // The user's connected wallet address
 }
 
-const AssetSelector: React.FC<AssetSelectorProps> = ({ onTokenSelect, onAssetValueChange, assetValue }) => {
+const AssetSelector: React.FC<AssetSelectorProps> = ({
+    onTokenSelect,
+    onAssetValueChange,
+    assetValue,
+    userAddress
+}) => {
     const [selectedToken, setSelectedToken] = useState(tokenData[0]); // Default to the first token
     const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Toggle dropdown state
+    const [walletBalance, setWalletBalance] = useState("0"); // User's token balance
+
+    const provider = new ethers.BrowserProvider(window.ethereum as unknown as ethers.Eip1193Provider);
+
+    // Function to get ETH balance
+    const getEthBalance = async (address: string) => {
+        const balance = await provider.getBalance(address);
+        return ethers.formatEther(balance); // Convert from wei to ether
+    };
+
+    // Function to get LINK token balance
+    const getLinkBalance = async (address: string) => {
+        const linkContract = new ethers.Contract(
+            tokenData[1].address, // LINK contract address
+            [
+                "function balanceOf(address owner) view returns (uint256)"
+            ],
+            provider
+        );
+        const balance = await linkContract.balanceOf(address);
+        return ethers.formatUnits(balance, 18); // Convert from wei to LINK units
+    };
+
+    // Fetch wallet balance based on the selected token
+    useEffect(() => {
+        const fetchBalance = async () => {
+            if (userAddress) {
+                let balance = "0"; // Default balance
+                if (selectedToken.token === "ETH") {
+                    balance = await getEthBalance(userAddress);
+                } else if (selectedToken.token === "LINK") {
+                    balance = await getLinkBalance(userAddress);
+                }
+                setWalletBalance(balance || "0"); // Ensure walletBalance is a valid string
+            }
+        };
+        fetchBalance();
+    }, [selectedToken, userAddress]);
 
     // Function to handle token selection from dropdown
     const handleTokenSelect = (token: string) => {
@@ -64,7 +97,12 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({ onTokenSelect, onAssetVal
         }
     };
 
-    // Calculate fiatEquivalent (Amount in USD) within AssetSelector as well
+    // Handle clicking the "Max" button
+    const handleMaxClick = () => {
+        onAssetValueChange(walletBalance || "0"); // Ensure wallet balance is a valid string
+    };
+
+    // Calculate fiatEquivalent (Amount in USD)
     const fiatEquivalent = (parseFloat(assetValue) * selectedToken.tokenPrice).toFixed(2);
 
     return (
@@ -128,23 +166,30 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({ onTokenSelect, onAssetVal
                     )}
                 </div>
 
-                {/* Asset value input */}
-                <div className="text-black text-xl">
+                {/* Asset value input with Max button */}
+                <div className="flex items-center">
                     <label htmlFor="assetValue" className="sr-only">Enter Amount</label>
                     <input
                         id="assetValue"
                         type="text"
                         value={assetValue} // Use parent's state as controlled input
                         onChange={handleAssetValueChange}
-                        className="text-end bg-transparent w-40 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
+                        className="text-end bg-transparent w-28 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
                         placeholder="Enter amount"
                         inputMode="decimal"
                     />
+                    {/* Max Button */}
+                    <button
+                        onClick={handleMaxClick}
+                        className="ml-2 bg-gray-200 hover:bg-gray-300 text-black px-2 py-1 rounded text-sm"
+                    >
+                        Max
+                    </button>
                 </div>
             </div>
 
-            {/* Helper Text */}
-            <p className="text-xs text-gray-500 mb-2 text-end">Enter the amount of <strong>{selectedToken.token}</strong>.</p>
+            {/* Wallet balance display */}
+            <p className="text-xs text-gray-500 mb-2">Available Balance: {walletBalance || "0"} {selectedToken.token}</p>
 
             {/* Price and Fiat Equivalent */}
             <div className="text-black text-xs flex justify-between">
