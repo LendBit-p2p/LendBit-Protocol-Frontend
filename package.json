@@ -10,10 +10,17 @@
   },
   "dependencies": {
     "@radix-ui/themes": "^3.1.4",
+    "@web3modal/ethers": "5.0.6",
+    "@web3modal/wallet": "5.0.6",
+    "axios": "^1.7.2",
+    "ethers": "6.13.1",
     "next": "^14.2.13",
+    "pino": "9.2.0",
+    "pino-pretty": "^11.2.1",
     "react": "^18",
     "react-circular-progressbar": "^2.1.0",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "sonner": "^1.5.0"
   },
   "devDependencies": {
     "@types/node": "^20",
