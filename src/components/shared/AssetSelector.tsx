@@ -144,7 +144,7 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({ onTokenSelect, onAssetVal
             </div>
 
             {/* Helper Text */}
-            <p className="text-xs text-gray-500 mb-2">Enter the amount you wish to trade in {selectedToken.token}.</p>
+            <p className="text-xs text-gray-500 mb-2 text-end">Enter the amount of <strong>{selectedToken.token}</strong>.</p>
 
             {/* Price and Fiat Equivalent */}
             <div className="text-black text-xs flex justify-between">
