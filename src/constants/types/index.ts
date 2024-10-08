@@ -26,3 +26,8 @@ export type OrderCardProps = {
   style?: React.CSSProperties;
   cardGradient: string;
 }
+
+export type ErrorWithReason = {
+  reason?: string;
+  message?: string;
+};
