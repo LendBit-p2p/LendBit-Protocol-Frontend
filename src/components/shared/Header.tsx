@@ -128,7 +128,7 @@ export const Header = () => {
                         priority
                         quality={100}
                     />
-                    
+
                     {/* Wallet Connect Section */}
                     <div>
                         {!mounted ? (
@@ -155,7 +155,7 @@ export const Header = () => {
                                             ) : (
                                                 <p className="">{address ? formatAddress(address) : "Address"}</p>)
                                             }
-                                            
+
                                             <Image
                                                 src="/chevronOrange.svg"
                                                 alt="chevron icon"
