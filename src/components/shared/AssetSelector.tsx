@@ -57,13 +57,12 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({ onTokenSelect, onAssetVal
     // Handle asset value input change and notify parent component
     const handleAssetValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        const regex = /^\d*\.?\d{0,2}$/; // Updated to allow up to 2 decimal places
+        const regex = /^\d*\.?\d{0,2}$/; // Allow up to 2 decimal places
 
         if (regex.test(value)) {
             onAssetValueChange(value); // Update in parent
         }
     };
-
 
     // Calculate fiatEquivalent (Amount in USD) within AssetSelector as well
     const fiatEquivalent = (parseFloat(assetValue) * selectedToken.tokenPrice).toFixed(2);
@@ -131,16 +130,21 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({ onTokenSelect, onAssetVal
 
                 {/* Asset value input */}
                 <div className="text-black text-xl">
+                    <label htmlFor="assetValue" className="sr-only">Enter Amount</label>
                     <input
+                        id="assetValue"
                         type="text"
                         value={assetValue} // Use parent's state as controlled input
                         onChange={handleAssetValueChange}
-                        className="text-end bg-transparent w-40"
-                        placeholder="0.00"
+                        className="text-end bg-transparent w-40 border-b-2 border-gray-300 focus:border-orange-500 focus:outline-none"
+                        placeholder="Enter amount"
                         inputMode="decimal"
                     />
                 </div>
             </div>
+
+            {/* Helper Text */}
+            <p className="text-xs text-gray-500 mb-2">Enter the amount you wish to trade in {selectedToken.token}.</p>
 
             {/* Price and Fiat Equivalent */}
             <div className="text-black text-xs flex justify-between">
