@@ -1,6 +1,8 @@
 "use client";
 
+import { readOnlyProvider } from "@/config/provider";
 import { formatAddress } from "@/constants/utils/formatAddress";
+import { getEthBalance } from "@/constants/utils/getEthBalance";
 import { SUPPORTED_CHAIN_ID } from "@/context/web3Modal";
 import { Spinner } from "@radix-ui/themes";
 import { useSwitchNetwork, useWalletInfo, useWeb3Modal, useWeb3ModalAccount } from "@web3modal/ethers/react";
@@ -19,31 +21,26 @@ export const Header = () => {
     const { switchNetwork } = useSwitchNetwork();
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [mounted, setMounted] = useState(false);
-    // const [balance, setBalance] = useState<string | null>(null);
+    const [balance, setBalance] = useState<string | null>(null);
 
     useEffect(() => {
         setMounted(true);
     }, []);
 
-    // const fetchBalance = async () => {
-    //     if (!address) return; 
+    useEffect(() => {
+        const fetchBalance = async () => {
+            if (isConnected && address) {
+                try {
+                    const bal = await getEthBalance(address); 
+                    setBalance(bal);
+                } catch (error) {
+                    console.error("Error fetching balance:", error);
+                }
+            }
+        };
+        fetchBalance();
+    }, [isConnected, address]);
 
-    //     const provider = new ethers.BrowserProvider(window.ethereum as unknown as ethers.Eip1193Provider);
-    //     try {
-    //         const balanceBigNumber = await provider.getBalance(address);     
-    //         const balanceInEth = ethers.formatEther(balanceBigNumber);
-    //         const formattedBalance = parseFloat(balanceInEth).toFixed(3);
-    //         setBalance(formattedBalance);
-    //     } catch (error) {
-    //         console.error("Error fetching balance:", error);
-    //     }
-    // };
-
-    // useEffect(() => {
-    //     if (isConnected) {
-    //         fetchBalance();
-    //     }
-    // }, [isConnected, address]);
 
     const isActive = (path: string) => {
         return pathname === path ? "active-link active" : "active-link";
@@ -198,7 +195,7 @@ export const Header = () => {
                             className="w-6 h-6 object-cover"
                         />
                         <span className="text-black text-sm">{address ? formatAddress(address) : "Address"}</span>
-                        {/* <span className="text-black text-sm">{balance ? `${balance} ETH` : "wallet balance..."}</span>  */}
+                        <span className="text-black text-sm">{balance ? `${balance} ETH` : "wallet balance..."}</span> 
                         <button
                             className="w-full bg-[#FF4D00]/70 text-white py-2 rounded-md hover:bg-[#FF4D00] transition-colors text-sm"
                             onClick={handleSignout}

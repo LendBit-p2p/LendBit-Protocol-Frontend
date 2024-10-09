@@ -1,29 +1,12 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ethers } from "ethers";
+import { AssetSelectorProps } from "@/constants/types";
+import { env } from "process";
+import { readOnlyProvider } from "@/config/provider";
+import { getEthBalance } from "@/constants/utils/getEthBalance";
+import { tokenData } from "@/constants/utils/tokenData";
 
-// Sample token data for Base Sepolia
-const tokenData = [
-    {
-        token: "ETH",
-        icon: "/eth.svg",
-        tokenPrice: 2500, // Hardcoded price
-        address: "", // ETH does not have a contract address
-    },
-    {
-        token: "LINK",
-        icon: "/link.svg",
-        tokenPrice: 11, // Hardcoded price
-        address: "0xE4aB69C077896252FAFBD49EFD26B5D171A32410", // Sepolia LINK token contract
-    },
-];
-
-interface AssetSelectorProps {
-    onTokenSelect: (token: string, tokenPrice: number) => void;
-    onAssetValueChange: (value: string) => void;
-    assetValue: string; // Controlled by the parent
-    userAddress: string; // The user's connected wallet address
-}
 
 const AssetSelector: React.FC<AssetSelectorProps> = ({
     onTokenSelect,
@@ -35,13 +18,6 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({
     const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Toggle dropdown state
     const [walletBalance, setWalletBalance] = useState("0"); // User's token balance
 
-    const provider = new ethers.BrowserProvider(window.ethereum as unknown as ethers.Eip1193Provider);
-
-    // Function to get ETH balance
-    const getEthBalance = async (address: string) => {
-        const balance = await provider.getBalance(address);
-        return ethers.formatEther(balance); // Convert from wei to ether
-    };
 
     // Function to get LINK token balance
     const getLinkBalance = async (address: string) => {
@@ -50,7 +26,7 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({
             [
                 "function balanceOf(address owner) view returns (uint256)"
             ],
-            provider
+            readOnlyProvider
         );
         const balance = await linkContract.balanceOf(address);
         return ethers.formatUnits(balance, 18); // Convert from wei to LINK units
@@ -60,13 +36,13 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({
     useEffect(() => {
         const fetchBalance = async () => {
             if (userAddress) {
-                let balance = "0"; // Default balance
+                let balance;
                 if (selectedToken.token === "ETH") {
                     balance = await getEthBalance(userAddress);
                 } else if (selectedToken.token === "LINK") {
                     balance = await getLinkBalance(userAddress);
                 }
-                setWalletBalance(balance || "0"); // Ensure walletBalance is a valid string
+                setWalletBalance(balance || "0");
             }
         };
         fetchBalance();

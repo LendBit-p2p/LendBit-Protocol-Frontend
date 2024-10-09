@@ -7,7 +7,7 @@ import { Slider } from "@radix-ui/themes";
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { ethers } from "ethers";
+import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 
 export default function CreateOrderPage() {
     const [percentage, setPercentage] = useState(0);
@@ -16,22 +16,20 @@ export default function CreateOrderPage() {
     const [tokenPrice, setTokenPrice] = useState(2500); // Initial price of the selected token
     const [assetValue, setAssetValue] = useState("0.00"); // Asset value
     const [range, setRange] = useState([0, 0]); // Volume slider range
-    const [userAddress, setUserAddress] = useState(""); // User's wallet address
+    const [userAddress, setUserAddress] = useState<string | null>(null); // User's wallet address
 
     const [showLendTooltip, setShowLendTooltip] = useState(false);
     const [showBorrowTooltip, setShowBorrowTooltip] = useState(false);
 
-    // Get user's wallet address using ethers.js
-    useEffect(() => {
-        const getAddress = async () => {
-            if (typeof window !== "undefined" && window.ethereum) {
-                const provider = new ethers.BrowserProvider(window.ethereum as unknown as ethers.Eip1193Provider);
-                const accounts = await provider.send("eth_requestAccounts", []);
-                setUserAddress(accounts[0]);
-            }
-        };
-        getAddress();
-    }, []);
+    const { address, isConnected } = useWeb3ModalAccount();
+
+   useEffect(() => {
+        if (isConnected && address) {
+            setUserAddress(address);
+        } else {
+            setUserAddress(null);
+        }
+    }, [address, isConnected]);
 
     // Increment and decrement functions for percentage
     const handleIncrement = () => {
