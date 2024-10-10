@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ethers } from "ethers";
 import { AssetSelectorProps } from "@/constants/types";
-import { env } from "process";
 import { readOnlyProvider } from "@/config/provider";
 import { getEthBalance } from "@/constants/utils/getEthBalance";
 import { tokenData } from "@/constants/utils/tokenData";

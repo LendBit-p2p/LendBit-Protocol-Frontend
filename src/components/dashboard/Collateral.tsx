@@ -1,36 +1,9 @@
 import Image from "next/image";
 import { Btn } from "../shared/Btn";
+import { tokenData2 } from "@/constants/utils/tokenData2";
 
 const Collateral = () => {
-  // Array of assets with their details
-  const balanceData = [
-    {
-      assetName: "USDC",
-      assetImg: "/USDC.svg",
-      balance: "7,979",
-     
-    },
-    {
-      assetName: "ETH",
-      assetImg: "/eth.svg",
-      balance: "4,525 ",
-    },
-    {
-      assetName: "USDT",
-      assetImg: "/usdt.svg",
-      balance: "4,525 ",
-      },
-    {
-      assetName: "DAI",
-      assetImg: "/dai.svg",
-      balance: "4,525 ",
-      },
-    {
-      assetName: "LINK",
-      assetImg: "/link.svg",
-      balance: "4,525 ",
-    },
-  ];
+ 
 
   return (
     <div className="bg-black py-6 w-full rounded-lg u-class-shadow-3"
@@ -48,13 +21,13 @@ const Collateral = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {balanceData.map((item, index) => (
+                    {tokenData2.map((item, index) => (
                     <tr key={index} className="text-center text-[10px]">
                         <td className="pt-3 flex gap-1 items-center text-start">
-                            <img src={item.assetImg} alt={item.assetName} className="w-4" />
-                            <span>{item.assetName}</span>
+                            <img src={item.icon} alt={item.icon} className="w-4" />
+                            <span>{item.token}</span>
                         </td>
-                        <td className="pt-2">{item.balance}</td>
+                        <td className="pt-2">{item.tokenPrice}</td>
                         <td className="pt-2">
                         <div className="flex flex-col items-center">
                             <Image

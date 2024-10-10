@@ -36,5 +36,5 @@ export interface AssetSelectorProps {
     onTokenSelect: (token: string, tokenPrice: number) => void;
     onAssetValueChange: (value: string) => void;
     assetValue: string; // Controlled by the parent
-    userAddress: string | null; // The user's connected wallet address
+    userAddress?: string | null; // The user's connected wallet address
 }

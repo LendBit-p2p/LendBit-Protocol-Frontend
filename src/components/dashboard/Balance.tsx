@@ -1,7 +1,8 @@
+"use client"
+
 import Image from "next/image";
 import { Btn } from "../shared/Btn";
-
-const Balance = () => {
+import Link from "next/link";
   const balanceData = [
     {
       assetName: "USDC",
@@ -24,7 +25,7 @@ const Balance = () => {
       collateralStatus: "Off",
     },
   ];
-
+const Balance = () => {  
   return (
     <div className="bg-black py-6 w-full custom-corner-header u-class-shadow-3">
       <div className="text-xl px-6 mb-1">
@@ -86,8 +87,12 @@ const Balance = () => {
                 {/* Deposit and Withdraw */}
                 <td className="pt-2">
                   <div className="flex justify-center gap-2">
-                    <Btn text="Deposit" />
-                    <Btn text="Withdraw" />
+                    <Link href={`/transact/deposit`}>
+                      <Btn text="Deposit" />
+                    </Link>
+                    <Link href="/transact/withdraw">
+                      <Btn text="Withdraw" />
+                    </Link>
                   </div>
                 </td>
               </tr>
