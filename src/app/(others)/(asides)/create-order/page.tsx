@@ -244,10 +244,16 @@ export default function CreateOrderPage() {
                     </div>
                 </div>
 
-                <Link href={"/volume"} className="my-4 px-4 cursor-pointer">
+                <Link href={"/volume"} className="mt-4 px-4 cursor-pointer">
                     <Btn
                         text={"Create Order"}
                         css="text-black bg-[#FF4D00CC]/80 text-base w-full py-2 rounded flex items-center justify-center"
+                    />
+                </Link>
+                <Link href={"/order"} className="px-4 cursor-pointer">
+                    <Btn
+                        text={"Cancel"}
+                        css="text-black bg-[#a2a8b4]/80 text-base w-full py-2 rounded flex items-center justify-center"
                     />
                 </Link>
             </div>
