@@ -55,7 +55,7 @@ export default function TransactPage({ params }: { params: { action: string } })
 
   return (
     <div className="h-screen flex items-center">
-      <div className="bg-black rounded-md p-2">
+      <div className="bg-black rounded-md p-2 u-class-shadow">
         <p className="text-base text-white pl-2">{actionText}</p>
 
         <AssetSelector
