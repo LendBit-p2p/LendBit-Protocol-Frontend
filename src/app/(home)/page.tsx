@@ -9,7 +9,12 @@ import useGetValueAndHealth from "@/hooks/useGetValueAndHealth";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { formatAddress } from "@/constants/utils/formatAddress";
 import { useEffect, useState } from "react";
-import { getBasename } from '@superdevfavour/basename'; // Import basename package
+import { getBasename } from '@superdevfavour/basename'; 
+
+
+const capitalizeFirstLetter = (str: string): string => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
 
 export default function DashboardPage() {
   const [user, setUser] = useState("User");
@@ -50,9 +55,9 @@ export default function DashboardPage() {
     <main className="max-w-[1190px] mx-auto p-4">
       <div className="w-full">
         <h3 className="mb-4 text-xl">
-          {`Welcome, `}
-          <span className="text-[#DD4F00]">{user}</span>
-        </h3>
+  {`Welcome, `}
+          [<span className="text-[#DD4F00]">{capitalizeFirstLetter(user)}</span>]
+</h3>
 
 
         {/* Top section: Dashboard Cards */}
