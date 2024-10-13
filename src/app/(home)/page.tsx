@@ -9,6 +9,7 @@ import useGetValueAndHealth from "@/hooks/useGetValueAndHealth";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { formatAddress } from "@/constants/utils/formatAddress";
 import { useEffect, useState } from "react";
+import { getBasename } from '@superdevfavour/basename'; // Import basename package
 
 export default function DashboardPage() {
   const [user, setUser] = useState("User");
@@ -20,20 +21,39 @@ export default function DashboardPage() {
     const firstDigit = parseInt(bigNumberString[0], 10);
     return firstDigit;
   };
-  
+
   const healthFactor = data2 ? getFirstDigit(data2) : 0;
 
   useEffect(() => {
-    if (isConnected && address) {
-      const userr = formatAddress(address);
-      setUser(userr);
-    }
+    const fetchBasename = async () => {
+      if (isConnected && address) {
+        try {
+          const basename = await getBasename(address);
+          if (basename) {
+            setUser(basename); // Set user to basename if available
+          } else {
+            const formattedAddress = formatAddress(address);
+            setUser(formattedAddress); // Fallback to formatted address
+          }
+        } catch (error) {
+          console.error("Error fetching basename:", error);
+          const formattedAddress = formatAddress(address);
+          setUser(formattedAddress); // Fallback to formatted address on error
+        }
+      }
+    };
+
+    fetchBasename();
   }, [isConnected, address]); // Only run when isConnected or address changes
 
   return (
     <main className="max-w-[1190px] mx-auto p-4">
       <div className="w-full">
-        <h3 className="mb-4 text-xl">{`Welcome, [${user}].`}</h3>
+        <h3 className="mb-4 text-xl">
+          {`Welcome, `}
+          <span className="text-[#DD4F00]">{user}</span>
+        </h3>
+
 
         {/* Top section: Dashboard Cards */}
         <div className="flex flex-wrap gap-4 mb-14">
@@ -105,9 +125,9 @@ const battryCSS = (figure: number | string) => {
   if (value > 1) {
     return 'above1 h-full';
   } else if (value == 1) {
-    return 'btw051_099 h-6'; 
+    return 'btw051_099 h-6';
   } else if (value >= 0.51) {
-    return 'below03 h-3'; 
+    return 'below03 h-3';
   } else if (value > 0.29) {
     return 'below03 h-2';
   } else {
