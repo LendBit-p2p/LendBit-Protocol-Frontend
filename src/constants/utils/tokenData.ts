@@ -14,10 +14,10 @@ export const tokenData = [
         tokenPrice: 11, // Hardcoded price
         address: "0xE4aB69C077896252FAFBD49EFD26B5D171A32410", // Sepolia LINK token contract
     },
-    {
-      token: "USDC",
-      icon: "/USDC.svg",
-      tokenPrice: 1,
-      address: ZeroAddress,  
-    },
+    // {
+    //   token: "USDC",
+    //   icon: "/USDC.svg",
+    //   tokenPrice: 1,
+    //   address: ZeroAddress,  
+    // },
 ];

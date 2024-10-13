@@ -1,56 +1,71 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Btn } from "../shared/Btn";
+import useGetAllListings from "@/hooks/useGetAllListings"; // Fetch all listings
+import { formatAddress } from "@/constants/utils/formatAddress";
+import useGetAllRequests from "@/hooks/useGetAllRequests"; // Hook for lending requests
+import { Spinner } from "@radix-ui/themes";
 
-// Define the tableData inside the component or import it if it's in another file
-const tableData = [
-    {
-        token: "USDC",
-        address: "0xabc.....asfd83",
-        amount: "9,999 USD",
-        interest: "12.5%",
-        duration: "31 days",
-        icon: "/USDC.svg",
-    },
-    {
-        token: "DAI",
-        address: "0xdef.....qwerty7",
-        amount: "7,500 USD",
-        interest: "10%",
-        duration: "60 days",
-        icon: "/dai.svg",
-    },
-    {
-        token: "ETH",
-        address: "0xghi.....xyz123",
-        amount: "2.5 ETH",
-        interest: "8%",
-        duration: "45 days",
-        icon: "/eth.svg",
-    },
-    {
-        token: "LINK",
-        address: "0xjkl.....mno456",
-        amount: "90 USD",
-        interest: "4%",
-        duration: "109 days",
-        icon: "/link.svg",
-    },
-    {
-        token: "USDC",
-        address: "0xabc.....asfd83",
-        amount: "9,999 USD",
-        interest: "12.5%",
-        duration: "31 days",
-        icon: "/USDC.svg",
-    },
-];
+const tokenImageMap: { [key: string]: { image: string; label: string } } = {
+    "0xE4aB69C077896252FAFBD49EFD26B5D171A32410": { image: "/link.svg", label: "LINK" },
+    "0x0000000000000000000000000000000000000001": { image: "/eth.svg", label: "ETH" },
+};
 
 const Table = () => {
     const [activeTable, setActiveTable] = useState<"borrow" | "lend">("borrow");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [selectedToken, setSelectedToken] = useState<string>("All Tokens");
+    const [borrowTableData, setBorrowTableData] = useState<any[]>([]); // State for borrow data
+    const [lendTableData, setLendTableData] = useState<any[]>([]); // State for lend data
+    const [filteredBorrowData, setFilteredBorrowData] = useState<any[]>([]); // State for filtered borrow data
+    const [filteredLendData, setFilteredLendData] = useState<any[]>([]); // State for filtered lend data
+    const [loading, setLoading] = useState(true); // State for loading
+
+    // Fetch all listings and requests
+    const allListingForBorrowers = useGetAllListings();
+    const allRequestForLenders = useGetAllRequests();
+
+    useEffect(() => {
+        if (allListingForBorrowers) {
+            setBorrowTableData(allListingForBorrowers);
+        }
+        // Update loading state
+        if (allListingForBorrowers !== undefined) {
+            setLoading(false);
+        }
+    }, [allListingForBorrowers]);
+
+    useEffect(() => {
+        if (allRequestForLenders) {
+            setLendTableData(allRequestForLenders);
+        }
+        if (allRequestForLenders !== undefined) {
+            setLoading(false);
+        }
+    }, [allRequestForLenders]);
+
+    // Filter borrow data based on selected token
+    useEffect(() => {
+        if (selectedToken === "All Tokens") {
+            setFilteredBorrowData(borrowTableData);
+        } else {
+            setFilteredBorrowData(
+                borrowTableData.filter(data => data.tokenAddress === selectedToken)
+            );
+        }
+    }, [selectedToken, borrowTableData]);
+
+    // Filter lend data based on selected token
+    useEffect(() => {
+        if (selectedToken === "All Tokens") {
+            setFilteredLendData(lendTableData);
+        } else {
+            setFilteredLendData(
+                lendTableData.filter(data => data.loanRequestAddr === selectedToken)
+            );
+        }
+    }, [selectedToken, lendTableData]);
 
     const handleTableChange = (table: "borrow" | "lend") => {
         setActiveTable(table);
@@ -64,11 +79,6 @@ const Table = () => {
         setSelectedToken(token);
         setIsDropdownOpen(false);
     };
-
-    const filteredTableData =
-        selectedToken === "All Tokens"
-            ? tableData
-            : tableData.filter((data) => data.token === selectedToken);
 
     return (
         <div className="w-full">
@@ -99,13 +109,13 @@ const Table = () => {
                     >
                         {selectedToken !== "All Tokens" && (
                             <Image
-                                src={tableData.find((token) => token.token === selectedToken)?.icon || ""}
+                                src={tokenImageMap[selectedToken]?.image} // Safeguard with fallback
                                 alt={selectedToken}
                                 width={30}
                                 height={30}
                             />
                         )}
-                        <div className="pl-2">{selectedToken}</div>
+                        <div className="pl-2">{tokenImageMap[selectedToken]?.label || selectedToken}</div>
                         <div className="pl-4">
                             <Image
                                 src={"/chevronDown.svg"}
@@ -126,14 +136,14 @@ const Table = () => {
                             >
                                 All Tokens
                             </div>
-                            {tableData.map((token, index) => (
+                            {Object.keys(tokenImageMap).map((tokenAddress, index) => (
                                 <div
                                     key={index}
                                     className="cursor-pointer hover:bg-gray-800 p-2 flex items-center gap-4"
-                                    onClick={() => handleTokenSelect(token.token)}
+                                    onClick={() => handleTokenSelect(tokenAddress)}
                                 >
-                                    <Image src={token.icon} alt={token.token} width={30} height={30} />
-                                    <p>{token.token}</p>
+                                    <Image src={tokenImageMap[tokenAddress].image} alt={tokenAddress} width={30} height={30} />
+                                    <p>{tokenImageMap[tokenAddress].label}</p> {/* Display label */}
                                 </div>
                             ))}
                         </div>
@@ -147,63 +157,79 @@ const Table = () => {
 
             {/* Borrow/Lend Tables */}
             <div className="px-4 sm:px-12">
-                {activeTable === "borrow" && (
+                {/* Loading State */}
+                {loading ? (
+                    <div className="flex items-center justify-center h-32">
+                         <Spinner size={"3"} />
+                        <p className="text-white mt-2">Fetching...</p>
+                    </div>
+                ) : (
                     <>
-                        {filteredTableData.map((data, index) => (
-                            <div
-                                key={index}
-                               className="w-full bg-black rounded-lg p-4 sm:p-6 mb-4 grid grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-y-2 items-center text-sm sm:text-base"
+                        {activeTable === "borrow" && (
+                            <>
+                                {filteredBorrowData.map((data, index) => (
+                                    <div
+                                        key={index}
+                                        className="w-full bg-black rounded-lg p-4 sm:p-6 mb-4 grid grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-y-2 items-center text-sm sm:text-base"
+                                    >
+                                        <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
+                                            <Image src={tokenImageMap[data.tokenAddress]?.image} alt={data.loanRequestAddr} width={37} height={36} priority quality={100} />
+                                            <p>{tokenImageMap[data.tokenAddress]?.label}</p> {/* Display the token label */}
+                                        </div>
 
-                            >
-                                <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
-                                    <Image src={data.icon} alt={data.token} width={37} height={36} priority quality={100} />
-                                    <p>{data.token}</p>
-                                </div>
+                                        <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
+                                            <Image src={"/avatar.svg"} alt="avatar" width={17} height={16} priority quality={100} />
+                                            <p>{formatAddress(data.author)}</p> {/* Use formatAddress here */}
+                                        </div>
 
-                                <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
-                                    <Image src={"/avatar.svg"} alt="avatar" width={17} height={16} priority quality={100} />
-                                    <p>{data.address}</p>
-                                </div>
+                                        <div className="col-span-2 sm:col-span-1 text-right sm:text-center">
+                                            {parseFloat(data.amount) / 1e18} {tokenImageMap[data.tokenAddress]?.label}
+                                        </div>
+                                        <div className="col-span-2 sm:col-span-1 text-right sm:text-center">{data.interest}%</div>
+                                        <div className="col-span-2 sm:col-span-1 text-right sm:text-center">
+                                            {Math.floor((data.returnDate - Date.now()) / (1000 * 60 * 60 * 24))} days
+                                        </div>
 
-                                <div className="col-span-2 sm:col-span-1 text-right sm:text-center">{data.amount}</div>
-                                <div className="col-span-2 sm:col-span-1 text-right sm:text-center">{data.interest}</div>
-                                <div className="col-span-2 sm:col-span-1 text-right sm:text-center">{data.duration}</div>
+                                        <div className="col-span-2 sm:col-span-1 text-right">
+                                            <Btn text={"Borrow"} css="text-black bg-[#FF4D00] text-sm sm:text-base px-3 py-1 rounded-md" />
+                                        </div>
+                                    </div>
+                                ))}
+                            </>
+                        )}
 
-                                <div className="col-span-2 sm:col-span-1 text-right">
-                                    <Btn text={"Borrow"} css="text-black bg-[#FF4D00] text-sm sm:text-base px-3 py-1 rounded-md" />
-                                </div>
-                            </div>
-                        ))}
-                    </>
-                )}
+                        {activeTable === "lend" && (
+                            <>
+                                {filteredLendData.map((data, index) => (
+                                    <div
+                                        key={index}
+                                        className="w-full bg-black rounded-lg p-4 sm:p-6 mb-4 grid grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-y-2 items-center text-sm sm:text-base"
+                                    >
+                                        <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
+                                            <Image src={tokenImageMap[data.loanRequestAddr]?.image} alt={data.loanRequestAddr} width={37} height={36} priority quality={100} />
+                                            <p>{tokenImageMap[data.loanRequestAddr]?.label}</p> {/* Display the token label */}
+                                        </div>
 
-                {activeTable === "lend" && (
-                    <>
-                        {filteredTableData.map((data, index) => (
-                            <div
-                                key={index}
-                               className="w-full bg-black rounded-lg p-4 sm:p-6 mb-4 grid grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-y-2 items-center text-sm sm:text-base"
+                                        <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
+                                            <Image src={"/avatar.svg"} alt="avatar" width={17} height={16} priority quality={100} />
+                                            <p>{formatAddress(data.author)}</p> {/* Use formatAddress here */}
+                                        </div>
 
-                            >
-                                <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
-                                    <Image src={data.icon} alt={data.token} width={37} height={36} priority quality={100} />
-                                    <p>{data.token}</p>
-                                </div>
+                                        <div className="col-span-2 sm:col-span-1 text-right sm:text-center">
+                                            {parseFloat(data.amount) / 1e18} {tokenImageMap[data.loanRequestAddr]?.label}
+                                        </div>
+                                        <div className="col-span-2 sm:col-span-1 text-right sm:text-center">{data.interest}%</div>
+                                        <div className="col-span-2 sm:col-span-1 text-right sm:text-center">
+                                            {Math.floor((data.returnDate - Date.now()) / (1000 * 60 * 60 * 24))} days
+                                        </div>
 
-                                <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
-                                    <Image src={"/avatar.svg"} alt="avatar" width={17} height={16} priority quality={100} />
-                                    <p>{data.address}</p>
-                                </div>
-
-                                <div className="col-span-2 sm:col-span-1 text-right sm:text-center">{data.amount}</div>
-                                <div className="col-span-2 sm:col-span-1 text-right sm:text-center">{data.interest}</div>
-                                <div className="col-span-2 sm:col-span-1 text-right sm:text-center">{data.duration}</div>
-
-                                <div className="col-span-2 sm:col-span-1 text-right">
-                                    <Btn text={"Lend"} css="text-black bg-[#FF4D00] text-sm sm:text-base px-3 py-1 rounded-md" />
-                                </div>
-                            </div>
-                        ))}
+                                        <div className="col-span-2 sm:col-span-1 text-right">
+                                            <Btn text={"Lend"} css="text-black bg-[#FF4D00] text-sm sm:text-base px-3 py-1 rounded-md" />
+                                        </div>
+                                    </div>
+                                ))}
+                            </>
+                        )}
                     </>
                 )}
             </div>

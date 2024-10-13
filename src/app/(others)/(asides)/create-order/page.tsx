@@ -8,6 +8,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
+import useCreateLoanListing from "@/hooks/useCreateLoanListing";
+import useCreateLendingRequest from "@/hooks/useCreateLendingRequest";
+import { toast } from "sonner";
 
 export default function CreateOrderPage() {
     const [percentage, setPercentage] = useState(0);
@@ -17,11 +20,16 @@ export default function CreateOrderPage() {
     const [assetValue, setAssetValue] = useState("0.00"); // Asset value
     const [range, setRange] = useState([0, 0]); // Volume slider range
     const [userAddress, setUserAddress] = useState<string | null>(null); // User's wallet address
-
+    const [activeOrderType, setActiveOrderType] = useState<"lend" | "borrow">("lend");
+    
     const [showLendTooltip, setShowLendTooltip] = useState(false);
     const [showBorrowTooltip, setShowBorrowTooltip] = useState(false);
+    const [dateValue, setDateValue] = useState<string>("");
 
     const { address, isConnected } = useWeb3ModalAccount();
+
+    const createLoanOrder = useCreateLoanListing() // IF LOAN IS ACTIVE -> _amount: in wei, _min_amount: in wei, _max_amount: in wei, _returnDate: bigint, _interest: bigInt, _loanCurrency: string
+    const createBorrowOrder = useCreateLendingRequest() // IF BORROW IS ACTIVE -> _amount: in wei, _interest: in wei, _returnDate: bigInt, _loanCurrency: string
 
    useEffect(() => {
         if (isConnected && address) {
@@ -87,10 +95,15 @@ export default function CreateOrderPage() {
                             className="relative w-1/2"
                             onMouseEnter={() => setShowLendTooltip(true)}
                             onMouseLeave={() => setShowLendTooltip(false)}
+                            onClick={() => setActiveOrderType("lend")}
                         >
                             <Btn
                                 text={"Lend"}
-                                css="text-black/80 bg-[#FF4D00CC]/80  text-xl py-2 px-4 w-full rounded flex items-center justify-center"
+                                css={`text-black/80 ${
+                                activeOrderType === "lend"
+                                    ? "bg-[#FF4D00CC]/80"
+                                    : "bg-[#D7D7D7CC]/80"
+                                } text-xl py-2 px-4 w-full rounded flex items-center justify-center`}
                             />
                             {/* Tooltip for Lend Button */}
                             {showLendTooltip && (
@@ -105,10 +118,15 @@ export default function CreateOrderPage() {
                             className="relative w-1/2"
                             onMouseEnter={() => setShowBorrowTooltip(true)}
                             onMouseLeave={() => setShowBorrowTooltip(false)}
+                            onClick={() => setActiveOrderType("borrow")}
                         >
                             <Btn
-                                text={"Borrow"}
-                                css="text-black bg-[#D7D7D7CC]/80 text-xl py-2 px-4 w-full rounded flex items-center justify-center"
+                                 text={"Borrow"}
+                                css={`text-black ${
+                                activeOrderType === "borrow"
+                                    ? "bg-[#FF4D00CC]/80"
+                                    : "bg-[#D7D7D7CC]/80"
+                                } text-xl py-2 px-4 w-full rounded flex items-center justify-center`}
                             />
                             {/* Tooltip for Borrow Button */}
                             {showBorrowTooltip && (
@@ -198,58 +216,87 @@ export default function CreateOrderPage() {
 
                 {/* Calendar / DateInputField */}
                 <div className="px-4 sm:px-8">
-                    <DateInputField />
+                    <DateInputField dateValue={dateValue} setDateValue={setDateValue} />
                 </div>
 
                 {/* Volume Slider Section - Below the Calendar */}
-                <div className="px-4 sm:px-8">
-                    <div className="mt-3 rounded-[40px] px-4 py-6">
-                        <p className="text-lg sm:text-xl text-white mb-2">Customize Order Volume per User</p>
+                {activeOrderType === "lend" &&
+                    (<div className="px-4 sm:px-8">
+                        <div className="mt-3 rounded-[40px] px-4 py-6">
+                            <p className="text-lg sm:text-xl text-white mb-2">Customize Order Volume per User</p>
 
-                        <div className="mt-5">
-                            <p className="text-[14.6px] text-white">Borrow Allocation</p>
+                            <div className="mt-5">
+                                <p className="text-[14.6px] text-white">Borrow Allocation</p>
 
-                            <div className="mt-2 w-full bg-[#FFCFB4] rounded-lg">
-                                <Slider
-                                    value={range}
-                                    onValueChange={handleSliderChange}
-                                    className="w-full"
-                                    size="3"
-                                    color="orange"
-                                    radius="large"
-                                    min={0}
-                                    max={fiatAmount}
-                                    step={1}
-                                />
-                            </div>
-
-                            <div className="text-base mt-6 flex justify-between items-center">
-                                <div className="w-full sm:w-[121px]">
-                                    <div className="border border-white w-full py-2 sm:py-3 rounded-lg">
-                                        <p className="pl-4 text-white">${range[0].toFixed(2)}</p> {/* Lower Limit */}
-                                    </div>
-                                    <p className="text-[10px] font-medium text-center mt-1 text-white">Lower Limit</p>
+                                <div className="mt-2 w-full bg-[#FFCFB4] rounded-lg">
+                                    <Slider
+                                        value={range}
+                                        onValueChange={handleSliderChange}
+                                        className="w-full"
+                                        size="3"
+                                        color="orange"
+                                        radius="large"
+                                        min={0}
+                                        max={fiatAmount}
+                                        step={1}
+                                    />
                                 </div>
 
-                                <div className="text-2xl text-white mt-[-25px]">-</div>
-
-                                <div className="w-full sm:w-[121px]">
-                                    <div className="border border-white w-full py-2 sm:py-3 rounded-lg">
-                                        <p className="pl-4 text-white">${range[1]?.toFixed(2)}</p> {/* Upper Limit */}
+                                <div className="text-base mt-6 flex justify-between items-center">
+                                    <div className="w-full sm:w-[121px]">
+                                        <div className="border border-white w-full py-2 sm:py-3 rounded-lg">
+                                            <p className="pl-4 text-white">${range[0].toFixed(2)}</p> {/* Lower Limit */}
+                                        </div>
+                                        <p className="text-[10px] font-medium text-center mt-1 text-white">Lower Limit</p>
                                     </div>
-                                    <p className="text-[10px] font-medium text-center mt-1 text-white">Upper Limit</p>
+
+                                    <div className="text-2xl text-white mt-[-25px]">-</div>
+
+                                    <div className="w-full sm:w-[121px]">
+                                        <div className="border border-white w-full py-2 sm:py-3 rounded-lg">
+                                            <p className="pl-4 text-white">${range[1]?.toFixed(2)}</p> {/* Upper Limit */}
+                                        </div>
+                                        <p className="text-[10px] font-medium text-center mt-1 text-white">Upper Limit</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>)
+                }    
+
+               <div className="mt-4 px-4 cursor-pointer">
+                    <div
+                        onClick={() => {
+                            if (!dateValue) {
+                            toast.warning("Please pick a valid return date for the order!", { duration: 1000 });
+                            return;
+                            }
+                            if (activeOrderType === "lend") {
+                                createLoanOrder(
+                                    assetValue,         
+                                    range[0],                      
+                                    range[1],                     
+                                    (new Date(dateValue).getTime()),
+                                    percentage, 
+                                    selectedToken
+                                );
+                            } else if (activeOrderType === "borrow") {
+                                createBorrowOrder(
+                                    assetValue,         
+                                    percentage, 
+                                    (new Date(dateValue).getTime()),
+                                    selectedToken                         
+                                );
+                            }
+                        }}
+                    >
+                        <Btn
+                            text={"Create Order"}
+                            css="text-black bg-[#FF4D00CC]/80 text-base w-full py-2 rounded flex items-center justify-center"
+                        />
+                    </div>      
                 </div>
 
-                <Link href={"/volume"} className="mt-4 px-4 cursor-pointer">
-                    <Btn
-                        text={"Create Order"}
-                        css="text-black bg-[#FF4D00CC]/80 text-base w-full py-2 rounded flex items-center justify-center"
-                    />
-                </Link>
                 <Link href={"/order"} className="px-4 cursor-pointer">
                     <Btn
                         text={"Cancel"}
@@ -260,3 +307,4 @@ export default function CreateOrderPage() {
         </div>
     );
 }
+

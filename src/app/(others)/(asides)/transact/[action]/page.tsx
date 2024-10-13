@@ -3,25 +3,32 @@
 import AssetSelector from "@/components/shared/AssetSelector";
 import { Btn } from "@/components/shared/Btn";
 import PleaseConnect from "@/components/shared/PleaseConnect";
+import { ADDRESS_1, LINK_ADDRESS } from "@/constants/utils/addresses";
 import useDepositCollateral from "@/hooks/useDepositCollateral";
+import useDepositNativeColateral from "@/hooks/useDepositNativeColateral";
+import useWithdrawCollateral from "@/hooks/useWithdrawCollateral";
 import { Spinner } from "@radix-ui/themes";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function TransactPage({ params }: { params: { action: string } }) {
   const actionText = params.action === "deposit" ? "Deposit" : "Withdraw";
   const [assetValue, setAssetValue] = useState("0.00");
+  const [selectedToken, setSelectedToken] = useState<string | null>("ETH"); // To track selected token
   const [userAddress, setUserAddress] = useState<string | null>(null);
   const { address, isConnected } = useWeb3ModalAccount();
   const [isClient, setIsClient] = useState(false);
+  const router = useRouter();
 
-  // const depositFx = useDepositCollateral()
+  const depositFx = useDepositCollateral(); // For LINK and other tokens
+  const depositNative = useDepositNativeColateral(); // For ETH
+  const withdrawTx = useWithdrawCollateral(); // Withdraw function
 
   useEffect(() => {
     setIsClient(true);
   }, []);
-
 
   useEffect(() => {
     if (isConnected && address) {
@@ -31,6 +38,58 @@ export default function TransactPage({ params }: { params: { action: string } })
     }
   }, [address, isConnected]);
 
+  const handleTokenSelect = (token: string, price: number) => {
+    setSelectedToken(token);
+  };
+
+  const handleAssetValueChange = (value: string) => {
+    setAssetValue(value);
+  };
+
+  const handleAction = async () => {
+    if (!selectedToken) {
+      toast.error("Please select a token.");
+      return;
+    }
+
+    if (parseFloat(assetValue) <= 0) {
+      toast.error("Please enter a valid amount.");
+      return;
+    }
+
+    try {
+      if (params.action === "deposit") {
+
+        if (selectedToken === "ETH" && userAddress) {
+
+          await depositNative(assetValue);
+
+        } else if (selectedToken === "LINK" && userAddress) {
+          await depositFx(assetValue);
+
+        } else {
+          toast.error("Token not supported for deposit.");
+        }
+      } else if (params.action === "withdraw") {
+        if (selectedToken === "ETH" && userAddress) {
+
+          await withdrawTx(ADDRESS_1,  assetValue);
+
+        }
+        if (selectedToken === "LINK" && userAddress) {
+          await withdrawTx(LINK_ADDRESS,  assetValue);
+        } else {
+          // toast.error("Token not supported for withdrawal.");
+        }
+      }
+    } catch (error) {
+      console.error(`${actionText} error:`, error);
+    }
+  };
+
+  const handleCancel = () => {
+    router.push("/");
+  };
 
   if (!isClient) {
     return (
@@ -40,23 +99,14 @@ export default function TransactPage({ params }: { params: { action: string } })
     );
   }
 
-
   if (!isConnected) {
     return <PleaseConnect />;
   }
 
-  const handleTokenSelect = (token: string, price: number) => {
-    // Handle token selection logic here if necessary
-  };
-
-  const handleAssetValueChange = (value: string) => {
-    setAssetValue(value);
-  };
-
   return (
     <div className="h-screen flex items-center">
-      <div className="bg-black rounded-md p-2">
-        <p className="text-base text-white pl-2">{actionText}</p>
+      <div className="bg-black rounded-lg p-4 max-w-[427px] u-class-shadow">
+        <p className="text-base text-white pl-2 pb-2">{actionText}</p>
 
         <AssetSelector
           onTokenSelect={handleTokenSelect}
@@ -66,18 +116,18 @@ export default function TransactPage({ params }: { params: { action: string } })
         />
 
         <div>
-          <Link href={"/successful"} className="mt-4 px-4 cursor-pointer">
+          <div className="mt-4 cursor-pointer" onClick={handleAction}>
             <Btn
               text={actionText}
               css="text-black bg-[#FF4D00CC]/80 text-base w-full py-2 rounded flex items-center justify-center"
             />
-          </Link>
-          <Link href={"/"} className="px-4 cursor-pointer -mt-36">
+          </div>
+          <div className="cursor-pointer mt-4" onClick={handleCancel}>
             <Btn
               text={"Cancel"}
               css="text-black bg-[#a2a8b4]/80 text-base w-full py-2 rounded flex items-center justify-center"
             />
-          </Link>
+          </div>
         </div>
       </div>
     </div>
