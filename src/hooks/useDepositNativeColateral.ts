@@ -4,13 +4,13 @@ import { useWeb3ModalAccount, useWeb3ModalProvider } from "@web3modal/ethers/rea
 import { toast } from "sonner";
 import { isSupportedChain } from "@/config/chain";
 import { getProvider } from "@/config/provider";
-import { getLendbitContract, getERC20Contract } from "@/config/contracts";
+import { getLendbitContract } from "@/config/contracts";
 import { useRouter } from "next/navigation";
 import { ErrorWithReason } from "@/constants/types";
+import { ADDRESS_1 } from "@/constants/utils/addresses";
 import { ethers } from "ethers";
-import { LINK_ADDRESS } from "@/constants/utils/addresses";
 
-const useDepositCollateral = () => {
+const useDepositNativeCollateral = () => {
   const { chainId } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
   const router = useRouter();
@@ -18,51 +18,51 @@ const useDepositCollateral = () => {
   return useCallback(
     async (_amountOfCollateral: string) => {
       if (!isSupportedChain(chainId)) return toast.warning("SWITCH TO BASE");
-
+      
       const readWriteProvider = getProvider(walletProvider);
       const signer = await readWriteProvider.getSigner();
-
-      const erc20contract = getERC20Contract(signer, LINK_ADDRESS);
+      const amount = ethers.parseEther(_amountOfCollateral);
       const contract = getLendbitContract(signer);
 
       let toastId: string | number | undefined;
 
       try {
-        const _weiAmount = ethers.parseUnits(_amountOfCollateral, 18);
+        // Show loading toast when starting the transaction
+        toastId = toast.loading(`Signing deposit transaction...`);
 
-        const allowance = await erc20contract.approve(contract.getAddress(), _weiAmount);        
-        const allReceipt = await allowance.wait();
+        // Start the transaction
+        const transaction = await contract.depositCollateral(ADDRESS_1, amount, {
+          value: amount,
+        });
 
-        if (allReceipt.status) {
-          toastId = toast.loading(`Sign deposit transaction...`);
+        // Wait for the transaction to be mined
+        const receipt = await transaction.wait();
 
-          const transaction = await contract.depositCollateral(LINK_ADDRESS, _weiAmount);
-          const receipt = await transaction.wait();
-          if (receipt.status) {
-            toast.success(`${_amountOfCollateral} LINK successfully deposited as collateral!`, {
-              id: toastId,
-            });
-            return router.push('/');
-          } else {
-            toast.error(`Failed to deposit ${_amountOfCollateral} LINK as collateral.`, {
-              id: toastId,
-            });
-          }
+        // Update the loading toast based on the transaction receipt
+        if (receipt.status) {
+          toast.success(`${_amountOfCollateral} ETH successfully deposited as collateral!`, {
+            id: toastId,
+          });
+          router.push('/');
         } else {
-          toast.error("Approval failed!");
+          toast.error("Transaction failed!", {
+            id: toastId,
+          });
         }
-
       } catch (error: unknown) {
-        console.error(error);
-
+        // Handle error, update the loading toast to show an error message
         const err = error as ErrorWithReason;
         let errorText: string;
 
         if (err?.reason === "Protocol__TransferFailed()") {
           errorText = "Deposit action failed!";
         } else {
-          errorText = "Action canceled or failed!";
+          errorText = "Transaction canceled or failed!";
         }
+
+        console.error(error);
+
+        // If a toast was shown, update it with the error message
         if (toastId) {
           toast.error(`Error: ${errorText}`, { id: toastId });
         } else {
@@ -75,4 +75,4 @@ const useDepositCollateral = () => {
   );
 };
 
-export default useDepositCollateral;
+export default useDepositNativeCollateral;

@@ -1,33 +1,51 @@
-"use client"
+"use client";
 
 import Image from "next/image";
 import { Btn } from "../shared/Btn";
 import Link from "next/link";
+import useGetValueAndHealth from "@/hooks/useGetValueAndHealth";
+
+const Balance = () => {
+  // Fetch data3 and data4 from the hook
+  const { data3, data4, collateralVal} = useGetValueAndHealth();
+  console.log("dt", data3, data4,collateralVal);
+
+  // Initialize the array with dynamic balance and market value calculation
   const balanceData = [
     {
-      assetName: "USDC",
-      assetImg: "/USDC.svg",
-      balance: "8,000",
-      marketValue: "$7,979",
-      netProfit: "2.53%",
-      netProfitColor: "text-green-500",
-      collateralImg: "/toggleOn.svg",
-      collateralStatus: "On",
-    },
-    {
-      assetName: "ETHe",
+      assetName: "ETH",
       assetImg: "/eth.svg",
-      balance: "1.75",
-      marketValue: "$4,525",
+      balance: data3 ?? 0,
+      marketValue: `$${((data3 ?? 0) * 2500).toFixed(2)}`, 
       netProfit: "12.30%",
       netProfitColor: "text-green-500",
       collateralImg: "/toggleOff.svg",
       collateralStatus: "Off",
+      tokenPrice: 11, 
+    },
+    {
+      assetName: "LINK",
+      assetImg: "/link.svg",
+      balance: data4 ?? 0, 
+      marketValue: `$${((data4 ?? 0) * 11).toFixed(2)}`, 
+      netProfit: "2.53%",
+      netProfitColor: "text-green-500",
+      collateralImg: "/toggleOn.svg",
+      collateralStatus: "On",
+      tokenPrice: 2500, 
     },
   ];
-const Balance = () => {  
+
+  // Filter out tokens with 0 balance
+  const filteredBalanceData = balanceData.filter(item => item.balance > 0);
+
+  // If no tokens have a non-zero balance, return null or an alternative message
+  if (filteredBalanceData.length === 0) {
+    return <p className="text-white text-center py-6">No assets available</p>;
+  }
+
   return (
-    <div className="bg-black py-6 w-full custom-corner-header u-class-shadow-3">
+    <div className="bg-black py-6 w-full custom-corner-header">
       <div className="text-xl px-6 mb-1">
         <h3>Your Balances</h3>
       </div>
@@ -35,7 +53,7 @@ const Balance = () => {
       {/* Summary Section */}
       <div className="flex justify-between border-y text-white/50 text-xs p-1 mb-2">
         <h4 className="p-1 sm:p-0">
-          Total Bal: <span className="pl-1">$12,345.67</span>
+          Total Bal: <span className="pl-1">{`$${collateralVal? collateralVal: 0}`}</span>
         </h4>
         <h4 className="p-1 sm:p-0 text-right sm:text-left">
           Max Withdrawal: <span className="pl-1">$2,345.67</span>
@@ -50,16 +68,16 @@ const Balance = () => {
               <th className="py-2">Asset</th>
               <th className="py-2">Balance</th>
               <th className="py-2">Value</th>
-              <th className="py-2">Intrest</th>
+              <th className="py-2">Interest</th>
               <th className="py-2 hidden sm:table-cell">Collateral</th> {/* Hidden on mobile */}
               <th className="py-2">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {balanceData.map((item, index) => (
+            {filteredBalanceData.map((item, index) => (
               <tr key={index} className="text-center text-[10px] sm:text-[12px]">
                 {/* Asset */}
-                <td className=" flex flex-wrap items-center gap-2 justify-center pt-[13px]">
+                <td className="flex flex-wrap items-center gap-2 justify-center pt-[13px]">
                   <img src={item.assetImg} alt={item.assetName} className="w-6 h-6" />
                   <span>{item.assetName}</span>
                 </td>

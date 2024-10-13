@@ -1,12 +1,10 @@
 "use client";
 
-import { readOnlyProvider } from "@/config/provider";
 import { formatAddress } from "@/constants/utils/formatAddress";
 import { getEthBalance } from "@/constants/utils/getEthBalance";
 import { SUPPORTED_CHAIN_ID } from "@/context/web3Modal";
 import { Spinner } from "@radix-ui/themes";
 import { useSwitchNetwork, useWalletInfo, useWeb3Modal, useWeb3ModalAccount } from "@web3modal/ethers/react";
-// import { ethers } from "ethers"; 
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -64,11 +62,11 @@ export const Header = () => {
             setIsOpen(!isOpen);
         }
     };
-
+// font-[family-name:var(--font-outfit)]
     return (
-        <header className="bg-black p-6 w-full top-0 left-0 relative custom-corner-header">
+        <header className="bg-black md:p-6 p-4 w-full top-0 left-0 relative custom-corner-header">
             <div className="flex justify-between items-center w-full">
-                <Link href={"/"} className="flex items-center gap-[6px]">
+                <Link href={"https://www.lendbit.finance/"} className="flex items-center gap-[6px]">
                     <Image
                         src="/logo.png"
                         alt="logo"
@@ -76,6 +74,8 @@ export const Header = () => {
                         height={42}
                         priority
                         quality={100}
+                        className="w-10 md:w-[50px] md:h-[42px]"
+                        // layout="responsive"
                     />
                     <Image
                         src="/white-word.png"
@@ -84,6 +84,7 @@ export const Header = () => {
                         height={20}
                         priority
                         quality={100}
+                        className="hidden md:block"
                     />
                 </Link>
 
@@ -104,7 +105,7 @@ export const Header = () => {
                 </button>
 
                 {/* Navigation Links - Only show on large screens */}
-                <nav className={`hidden lg:flex space-x-6 text-base font-medium`}>
+                <nav className={`hidden lg:flex space-x-6 font-medium text-sm font-[family-name:var(--font-zenDots)]`}>
                     <Link href="/" className={isActive("/dashboard")}>
                         Dashboard
                     </Link>
@@ -142,7 +143,7 @@ export const Header = () => {
                                     priority
                                     quality={100}
                                 />
-                                <div className="text-sm text-[#ff4d00] flex items-center gap-3 rounded-md bg-[#2a2a2a] p-3">
+                                <div className="text-xs md:text-sm text-[#ff4d00] flex items-center gap-3 rounded-md bg-[#2a2a2a] md:p-3 px-3 py-2">
                                     {!isConnected ? (
                                         <p className="uppercase">Connect Wallet</p>
                                     ) : (
@@ -172,7 +173,7 @@ export const Header = () => {
 
             {/* Mobile Menu */}
             {isMenuOpen && (
-                <nav className="lg:hidden mt-4">
+                <nav className="lg:hidden mt-4 font-[family-name:var(--font-zenDots)] text-[10px]">
                     <Link href="/" className={`block py-2 ${isActive("/dashboard")}`}>
                         Dashboard
                     </Link>
@@ -194,10 +195,10 @@ export const Header = () => {
                             alt="Wallet Icon"
                             className="w-6 h-6 object-cover"
                         />
-                        <span className="text-black text-sm">{address ? formatAddress(address) : "Address"}</span>
-                        <span className="text-black text-sm">{balance ? `${balance} ETH` : "wallet balance..."}</span> 
+                        <span className="text-black text-xs md:text-sm">{address ? formatAddress(address) : "Address"}</span>
+                        <span className="text-black text-xs md:text-sm">{balance ? `${balance} ETH` : "wallet balance..."}</span> 
                         <button
-                            className="w-full bg-[#FF4D00]/70 text-white py-2 rounded-md hover:bg-[#FF4D00] transition-colors text-sm"
+                            className="w-full bg-[#FF4D00]/70 text-white py-2 rounded-md hover:bg-[#FF4D00] transition-colors text-xs md:text-sm"
                             onClick={handleSignout}
                         >
                             Wallet Actions

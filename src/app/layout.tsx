@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Share_Tech_Mono} from 'next/font/google';
+import { Share_Tech_Mono, Zen_Dots, Outfit} from 'next/font/google';
 import "./globals.css";
 import { RadixTheme } from "@/context/radix";
 import Background from "@/components/shared/background/background";
@@ -16,6 +16,18 @@ const shareTechMono = Share_Tech_Mono({
   subsets: ['latin'], 
 });
 
+const zenDots = Zen_Dots({
+  weight: '400', 
+  subsets: ['latin'],
+  variable: "--font-zenDots",
+
+})
+
+const outfit = Outfit({
+  weight: ["400","500", "600"],  
+  subsets: ['latin'],
+  variable: "--font-outfit",
+});
 
 export const viewport = {
   width: "device-width",
@@ -35,7 +47,7 @@ export default function RootLayout({
        
         <RadixTheme>
           <Web3Modal>
-            <section className={`${shareTechMono.className} antialiased w-full relative px-4 py-2 bg-black`}
+            <section className={`${shareTechMono.className} ${zenDots.variable} ${outfit.variable} antialiased w-full relative px-4 py-2 bg-black`}
             >
               <Background /> 
                 <main className="w-full h-screen overflow-y-auto absolute left-0 top-0 z-10">

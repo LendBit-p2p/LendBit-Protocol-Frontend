@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import lendbitAbi from "@/abi/ProtocolFacet.json";
 import multicallAbi from "@/abi/multicallAbi.json";
+import erc20Abi from "@/abi/ERC20Abi.json";
 import { envVars } from "@/constants/envVars";
 
 
@@ -19,3 +20,10 @@ new ethers.Contract(
     multicallAbi,
     providerOrSigner
 );
+
+export const getERC20Contract = (providerOrSigner: ethers.Provider | ethers.Signer, tokenAddress: string) =>
+    new ethers.Contract(
+        tokenAddress,
+        erc20Abi,
+        providerOrSigner
+    );

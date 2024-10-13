@@ -33,8 +33,32 @@ export type ErrorWithReason = {
 };
 
 export interface AssetSelectorProps {
-    onTokenSelect: (token: string, tokenPrice: number) => void;
-    onAssetValueChange: (value: string) => void;
-    assetValue: string; // Controlled by the parent
-    userAddress?: string | null; // The user's connected wallet address
+  onTokenSelect: (token: string, tokenPrice: number) => void;
+  onAssetValueChange: (value: string) => void;
+  assetValue: string; // Controlled by the parent
+  userAddress?: string | null; // The user's connected wallet address
+}
+
+export interface LoanListing {
+  listingId: number;
+  author: string;
+  tokenAddress: string;
+  amount: string;
+  min_amount: string;
+  max_amount: string;
+  returnDate: number;
+  interest: number;
+  listingStatus: string; 
+}
+
+export interface Request {
+    requestId: number;
+    author: string;
+    amount: string;
+    interest: number;
+    totalRepayment: string;
+    returnDate: number;
+    lender: string;
+    loanRequestAddr: string;
+    status: string; // Use string to represent OPEN, SERVICED, or CLOSED
 }

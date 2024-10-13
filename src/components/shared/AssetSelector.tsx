@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { ethers } from "ethers";
 import { AssetSelectorProps } from "@/constants/types";
-import { readOnlyProvider } from "@/config/provider";
 import { getEthBalance } from "@/constants/utils/getEthBalance";
 import { tokenData } from "@/constants/utils/tokenData";
+import { getLinkBalance } from "@/constants/utils/getLinkBalance";
 
 
 const AssetSelector: React.FC<AssetSelectorProps> = ({
@@ -18,18 +17,7 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({
     const [walletBalance, setWalletBalance] = useState("0"); // User's token balance
 
 
-    // Function to get LINK token balance
-    const getLinkBalance = async (address: string) => {
-        const linkContract = new ethers.Contract(
-            tokenData[1].address, // LINK contract address
-            [
-                "function balanceOf(address owner) view returns (uint256)"
-            ],
-            readOnlyProvider
-        );
-        const balance = await linkContract.balanceOf(address);
-        return ethers.formatUnits(balance, 18); // Convert from wei to LINK units
-    };
+   
 
     // Fetch wallet balance based on the selected token
     useEffect(() => {

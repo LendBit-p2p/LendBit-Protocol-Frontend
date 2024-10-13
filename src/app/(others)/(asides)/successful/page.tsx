@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function SuccessfulPage() {
     return (
         <div className="h-screen flex items-center">
-            <div className="relative font-semibold w-96 overflow-hidden rounded-3xl">
+            <div className="relative font-semibold w-96 overflow-hidden rounded-3xl u-class-shadow">
             {/* Background Gradient */}
                 <div className="absolute inset-0 bg-gradient-to-tl from-[#1F1F1F] to-[#FF4D00] opacity-90 z-0"></div>
                 

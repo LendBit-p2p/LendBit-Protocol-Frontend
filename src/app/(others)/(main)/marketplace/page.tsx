@@ -15,7 +15,7 @@ export default function MarketPlacePage() {
         setIsClient(true);
     }, []);
 
-    // While rendering on the server, `isClient` will be false, preventing mismatches
+
     if (!isClient) {
         return (
             <div className='text-[#FF4D00] flex justify-center my-64'>
