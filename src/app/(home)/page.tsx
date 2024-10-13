@@ -7,30 +7,39 @@ import DashboardCard from "@/components/dashboard/DashboardCard";
 import Usage from "@/components/dashboard/Usage";
 import useGetValueAndHealth from "@/hooks/useGetValueAndHealth";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
+import { formatAddress } from "@/constants/utils/formatAddress";
+import { useEffect, useState } from "react";
 
 export default function DashboardPage() {
+  const [user, setUser] = useState("User");
   const { data, data2 } = useGetValueAndHealth();
-      // const { address, isConnected, chainId } = useWeb3ModalAccount();
+  const { address, isConnected, chainId } = useWeb3ModalAccount();
 
   const getFirstDigit = (bigNumber: bigint) => {
-    const bigNumberString = bigNumber.toString(); 
-    const firstDigit = parseInt(bigNumberString[0], 10); 
+    const bigNumberString = bigNumber.toString();
+    const firstDigit = parseInt(bigNumberString[0], 10);
     return firstDigit;
   };
-
+  
   const healthFactor = data2 ? getFirstDigit(data2) : 0;
 
-  console.log("DATA 1", data, "DATA2", data2);
+  useEffect(() => {
+    if (isConnected && address) {
+      const userr = formatAddress(address);
+      setUser(userr);
+    }
+  }, [isConnected, address]); // Only run when isConnected or address changes
+
   return (
     <main className="max-w-[1190px] mx-auto p-4">
       <div className="w-full">
-        <h3 className="mb-4 text-xl">Welcome, [User].</h3>
+        <h3 className="mb-4 text-xl">{`Welcome, [${user}].`}</h3>
 
         {/* Top section: Dashboard Cards */}
         <div className="flex flex-wrap gap-4 mb-14">
           <DashboardCard
             text={"Your Portfolio"}
-            figure={`$${data?Number(data): 0}`}
+            figure={`$${data ? Number(data) : 0}`}
             extraCSS="portfolio-card" // Add extraCSS for customization
             icon={
               <Image
@@ -89,7 +98,6 @@ export default function DashboardPage() {
     </main>
   );
 }
-
 
 const battryCSS = (figure: number | string) => {
   const value = typeof figure === 'string' ? parseFloat(figure) : figure;
