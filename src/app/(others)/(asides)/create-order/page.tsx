@@ -19,6 +19,7 @@ export default function CreateOrderPage() {
     const [tokenPrice, setTokenPrice] = useState(2500); // Initial price of the selected token
     const [assetValue, setAssetValue] = useState("0.00"); // Asset value
     const [range, setRange] = useState([0, 0]); // Volume slider range
+    const [rangeInTokenVal, setRangeInTokenVal] = useState([0, 0]);
     const [userAddress, setUserAddress] = useState<string | null>(null); // User's wallet address
     const [activeOrderType, setActiveOrderType] = useState<"lend" | "borrow">("lend");
     const router = useRouter();
@@ -68,7 +69,9 @@ export default function CreateOrderPage() {
         setTokenPrice(price);
         const updatedFiatAmount = parseFloat(assetValue) * price;
         setFiatAmount(updatedFiatAmount); // Update fiat amount when a token is selected
-        setRange([0, updatedFiatAmount]); // Set volume slider range
+        const updatedTokenAmount = parseFloat(assetValue);
+        setRangeInTokenVal([0, updatedTokenAmount]); // Set range in token values
+        setRange([0, updatedFiatAmount]); // Set range in fiat
     };
 
     // Handle asset value change from AssetSelector
@@ -76,12 +79,23 @@ export default function CreateOrderPage() {
         setAssetValue(value);
         const updatedFiatAmount = parseFloat(value) * tokenPrice;
         setFiatAmount(updatedFiatAmount); // Recalculate fiat amount based on new asset value
-        setRange([0, updatedFiatAmount]); // Set volume slider range
+        const updatedTokenAmount = parseFloat(value);
+        setRangeInTokenVal([0, updatedTokenAmount]); // Set range in token values
+        
+        setRange([0, updatedFiatAmount]); // Set range in fiat
     };
 
+    // useEffect(() => {
+    // console.log("Updated rangeInTokenVal:", rangeInTokenVal);
+    // }, [rangeInTokenVal]);
+    
     // Handle slider change
-    const handleSliderChange = (value: number[]) => {
-        setRange(value);
+     const handleSliderChange = (value: number[]) => {
+        setRange(value); // Range in fiat
+        const rangeToken = value.map(v => v / tokenPrice); // Convert fiat to token value
+        setRangeInTokenVal(rangeToken); // Update range in tokens
+        
+        
     };
 
     const handleCancel = () => {
@@ -280,8 +294,8 @@ export default function CreateOrderPage() {
                             if (activeOrderType === "lend") {
                                 createLoanOrder(
                                     assetValue,         
-                                    range[0],                      
-                                    range[1],                     
+                                    rangeInTokenVal[0],                      
+                                    rangeInTokenVal[1],                     
                                     (new Date(dateValue).getTime()),
                                     percentage, 
                                     selectedToken

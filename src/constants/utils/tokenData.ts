@@ -1,4 +1,3 @@
-import { ZeroAddress } from "ethers";
 
 // Sample token data for Base Sepolia
 export const tokenData = [

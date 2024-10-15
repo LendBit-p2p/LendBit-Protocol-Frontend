@@ -10,7 +10,7 @@ import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 const Balance = () => {
 
   const { address, isConnected} = useWeb3ModalAccount();
-  const {data:portfolioBal, data3, data4, collateralVal} = useGetValueAndHealth(address);
+  const {etherPrice, linkPrice, data3, data4, collateralVal} = useGetValueAndHealth();
   // console.log("dt", data3, data4,collateralVal);
 
   // Initialize the array with dynamic balance and market value calculation
@@ -19,7 +19,7 @@ const Balance = () => {
       assetName: "ETH",
       assetImg: "/eth.svg",
       balance: data3 ?? 0,
-      marketValue: `$${((data3 ?? 0) * 2500).toFixed(2)}`, 
+      marketValue: `$${((data3 ?? 0) * Number(etherPrice)).toFixed(3)}`, 
       netProfit: "12.30%",
       netProfitColor: "text-green-500",
       collateralImg: "/toggleOff.svg",
@@ -30,7 +30,7 @@ const Balance = () => {
       assetName: "LINK",
       assetImg: "/link.svg",
       balance: data4 ?? 0, 
-      marketValue: `$${((data4 ?? 0) * 11).toFixed(2)}`, 
+      marketValue: `$${((data4 ?? 0) * Number(linkPrice)).toFixed(3)}`, 
       netProfit: "2.53%",
       netProfitColor: "text-green-500",
       collateralImg: "/toggleOn.svg",
@@ -68,7 +68,7 @@ const Balance = () => {
       {/* Summary Section */}
       <div className="flex justify-between border-y text-white/50 text-xs p-1 mb-2">
         <h4 className="p-1 sm:p-0">
-          Total Bal: <span className="pl-1">{`$${portfolioBal? portfolioBal: 0}`}</span>
+          Total Bal: <span className="pl-1">{`$${collateralVal? collateralVal: 0}`}</span>
         </h4>
         <h4 className="p-1 sm:p-0 text-right sm:text-left">
           Max Withdrawal: <span className="pl-1">$2,345.67</span>
@@ -97,7 +97,7 @@ const Balance = () => {
                   <span>{item.assetName}</span>
                 </td>
                 {/* Balance */}
-                <td className="pt-2">{item.balance}</td>
+                <td className="pt-2">{item.balance.toFixed(4)}</td>
                 {/* Market Value */}
                 <td className="pt-2">{item.marketValue}</td>
                 {/* Net Profit */}

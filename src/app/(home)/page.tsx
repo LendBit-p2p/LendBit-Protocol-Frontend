@@ -20,27 +20,27 @@ export default function DashboardPage() {
   const [health, setHealth] = useState<number | string>("N/A");
   const [fig, setFig] = useState<number | string>(0);
   const { address, isConnected } = useWeb3ModalAccount();
-  const { data, data2, data5 } = useGetValueAndHealth(address);
+  const { data2, data5, collateralVal} = useGetValueAndHealth();
 
-  // console.log("DATAAAAA",data5);
+  // console.log("DATAAAAA",Number(data2)*(1e-19));
 
   
   // Function to get the first digit of a BigNumber
-  const getFirstDigit = (bigNumber: bigint) => {
-    const bigNumberString = bigNumber.toString();
-    const firstDigit = parseInt(bigNumberString[0], 10);
-    return firstDigit;
-  };
+  // const getFirstDigit = (bigNumber: bigint) => {
+  //   const bigNumberString = bigNumber.toString();
+  //   const firstDigit = parseInt(bigNumberString[0], 10);
+  //   return firstDigit;
+  // };
 
   useEffect(() => {
     const fetchData = async () => {
       if (isConnected && address) {
         try {
 
-          const healthFactor = data2 ? getFirstDigit(data2) : "N/A";
+          const healthFactor = data2 ? Number(data2)*10e-19 : "N/A";
           setHealth(healthFactor);
 
-          const portFig = data ? Number(data) : 0;
+          const portFig = collateralVal ? Number(collateralVal) : 0;
           setFig(portFig);
 
           // Fetch basename
@@ -66,7 +66,7 @@ export default function DashboardPage() {
     };
 
     fetchData();
-  }, [isConnected, address, data, data2]); 
+  }, [isConnected, address, collateralVal, data2]); 
 
   return (
     <main className="max-w-[1190px] mx-auto p-4">
@@ -80,7 +80,7 @@ export default function DashboardPage() {
         <div className="flex flex-wrap gap-4 mb-14">
           <DashboardCard
             text={"Your Portfolio"}
-            figure={fig}
+            figure={`$${fig}`}
             extraCSS="portfolio-card"
             icon={
               <Image
