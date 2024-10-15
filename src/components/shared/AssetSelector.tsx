@@ -29,7 +29,7 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({
                 } else if (selectedToken.token === "LINK") {
                     balance = await getLinkBalance(userAddress);
                 }
-                setWalletBalance(balance || "0");
+                setWalletBalance(Number(balance).toFixed(3) || "0");
             }
         };
         fetchBalance();
@@ -53,7 +53,7 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({
     // Handle asset value input change and notify parent component
     const handleAssetValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        const regex = /^\d*\.?\d{0,2}$/; // Allow up to 2 decimal places
+        const regex = /^\d*\.?\d{0,3}$/; // Allow up to 3 decimal places
 
         if (regex.test(value)) {
             onAssetValueChange(value); // Update in parent
@@ -152,7 +152,7 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({
             </div>
 
             {/* Wallet balance display */}
-            <p className="text-xs text-gray-500 mb-2">Available Balance: {walletBalance || "0"} {selectedToken.token}</p>
+            <p className="text-xs text-gray-500 mb-2">Wallet Balance: {walletBalance || "0"} {selectedToken.token}</p>
 
             {/* Price and Fiat Equivalent */}
             <div className="text-black text-xs flex justify-between">

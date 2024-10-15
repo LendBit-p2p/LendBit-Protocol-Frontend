@@ -9,42 +9,60 @@ import { useRouter } from "next/navigation";
 import { ErrorWithReason } from "@/constants/types";
 import { ethers } from "ethers";
 import { ADDRESS_1, LINK_ADDRESS } from "@/constants/utils/addresses";
+import useCheckAllowance from "./useCheckAllowance";
+import { envVars } from "@/constants/envVars";
+import { MaxUint256 } from "ethers";
 
 const useCreateLoanListing = () => {
   const { chainId } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
   const router = useRouter();
+  const val = useCheckAllowance();
+
+  const handleTransactionResult = async (
+    transaction: ethers.Contract,
+    loadingToastId: string | number | undefined
+  ) => {
+    const receipt = await transaction.wait();
+    if (receipt.status) {
+      toast.success("Loan order created!", { id: loadingToastId });
+      router.push('/successful');
+    } else {
+      toast.error("Transaction failed!", { id: loadingToastId });
+    }
+  };
+
 
   return useCallback(
-    async (_amount: string, _min_amount: number, _max_amount: number, _returnDate: number, _interest: number, _loanCurrency: string) => {
-       
-      if (!isSupportedChain(chainId)) return toast.warning("SWITCH TO BASE");
-
-      let currency;
-      if (_loanCurrency == "ETH") {
-        currency = ADDRESS_1;
-      } else {
-        currency = LINK_ADDRESS;
+    async (
+      _amount: string,
+      _min_amount: number,
+      _max_amount: number,
+      _returnDate: number,
+      _interest: number,
+      _loanCurrency: string
+    ) => {
+      if (!isSupportedChain(chainId)) {
+        toast.warning("SWITCH TO BASE");
+        return; // Early return if chain is not supported
       }
 
-      console.log("_loanCurrency", _loanCurrency, _min_amount, _amount, _max_amount, _returnDate, _interest, currency);
+      const currency = _loanCurrency === "ETH" ? ADDRESS_1 : LINK_ADDRESS;
 
       const readWriteProvider = getProvider(walletProvider);
       const signer = await readWriteProvider.getSigner();
       const contract = getLendbitContract(signer);
 
-      let loadingToastId;
+      const _weiAmount = ethers.parseUnits(_amount, 18);
+      const _min_amount_wei = ethers.parseUnits(_min_amount.toString(), 18);
+      const _max_amount_wei = ethers.parseUnits(_max_amount.toString(), 18);
+
+      let loadingToastId: string | number | undefined;
 
       try {
-        const _weiAmount = ethers.parseUnits(_amount, 18);
-        const _min_amount_wei = ethers.parseUnits(_min_amount.toString(), 18);
-        const _max_amount_wei = ethers.parseUnits(_max_amount.toString(), 18);
-
-        // Start a loading toast
         loadingToastId = toast.loading("Processing order...");
 
         if (_loanCurrency === "ETH") {
-          // Handle ETH transfers without ERC20 approval
           const transaction = await contract.createLoanListing(
             _weiAmount,
             _min_amount_wei,
@@ -52,71 +70,60 @@ const useCreateLoanListing = () => {
             _returnDate,
             _interest,
             currency,
-            { value: _weiAmount } // Sends ETH with the transaction
+            { value: _weiAmount }
           );
-          const receipt = await transaction.wait();
-
-          if (receipt.status) {
-            toast.success("Loan order created with ETH!", {
-              id: loadingToastId,
-            });
-            return router.push('/successful');
-          } else {
-            toast.error("Transaction failed!", {
-              id: loadingToastId,
-            });
-          }
+          await handleTransactionResult(transaction, loadingToastId);
         } else {
-          // Handle ERC-20 transfers with approval
-          const erc20contract = getERC20Contract(signer, LINK_ADDRESS);
 
-          const allowance = await erc20contract.approve(contract.getAddress(), _weiAmount);
-          await allowance.wait();
-
-          const transaction = await contract.createLoanListing(_weiAmount, _min_amount_wei, _max_amount_wei, _returnDate, _interest, currency);
-          const receipt = await transaction.wait();
-
-          if (receipt.status) {
-            toast.success("Loan order created!", {
-              id: loadingToastId,
-            });
-            return router.push('/successful');
-          } else {
-            toast.error("Transaction failed!", {
-              id: loadingToastId,
-            });
+          if (val === 0 || val < Number(_amount)) {
+            const erc20contract = getERC20Contract(signer, LINK_ADDRESS);
+            const allowance = await erc20contract.approve(envVars.lendbitDiamondAddress, MaxUint256);
+            await allowance.wait();
+            toast.success("Approval granted!");
           }
-        }
 
+          const transaction = await contract.createLoanListing(
+            _weiAmount,
+            _min_amount_wei,
+            _max_amount_wei,
+            _returnDate,
+            _interest,
+            currency
+          );
+          await handleTransactionResult(transaction, loadingToastId);
+        }
       } catch (error: unknown) {
-        const err = error as ErrorWithReason;
-        let errorText: string;
-
-        switch (err?.reason) {
-          case "Protocol__TokenNotLoanable()":
-            errorText = "Token not loanable!";
-            break;
-          case "Protocol__InsufficientBalance()":
-            errorText = "Insufficient balance!";
-            break;
-          case "Protocol__InsufficientAllowance()":
-            errorText = "Insufficient allowance!";
-            break;
-          case "Protocol__TransferFailed":
-            errorText = "Listing action failed!";
-            break;
-          default:
-            errorText = "Trying to resolve error!";
-        }
-
-        toast.warning(`Error: ${errorText}`, {
-          id: loadingToastId,
-        });
-        console.log("ERROR", error);
+        handleError(error, loadingToastId);
       }
     },
-    [chainId, walletProvider]
+    [chainId, walletProvider, val, router]
   );
 };
+
+  
+  const handleError = (error: unknown, loadingToastId: string | number | undefined) => {
+    const err = error as ErrorWithReason;
+    let errorText: string;
+
+    switch (err?.reason) {
+      case "Protocol__TokenNotLoanable()":
+        errorText = "Token not loanable!";
+        break;
+      case "Protocol__InsufficientBalance()":
+        errorText = "Insufficient balance!";
+        break;
+      case "Protocol__InsufficientAllowance()":
+        errorText = "Insufficient allowance!";
+        break;
+      case "Protocol__TransferFailed":
+        errorText = "Listing action failed!";
+        break;
+      default:
+        errorText = "Trying to resolve error!";
+    }
+
+    toast.warning(`Error: ${errorText}`, { id: loadingToastId });
+    console.error("ERROR", error);
+  };
 
 export default useCreateLoanListing;

@@ -11,61 +11,77 @@ import { formatAddress } from "@/constants/utils/formatAddress";
 import { useEffect, useState } from "react";
 import { getBasename } from '@superdevfavour/basename'; 
 
-
 const capitalizeFirstLetter = (str: string): string => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
 export default function DashboardPage() {
   const [user, setUser] = useState("User");
-  const { data, data2 } = useGetValueAndHealth();
-  const { address, isConnected, chainId } = useWeb3ModalAccount();
+  const [health, setHealth] = useState<number | string>("N/A");
+  const [fig, setFig] = useState<number | string>(0);
+  const { address, isConnected } = useWeb3ModalAccount();
+  const { data, data2, data5 } = useGetValueAndHealth(address);
 
+  // console.log("DATAAAAA",data5);
+
+  
+  // Function to get the first digit of a BigNumber
   const getFirstDigit = (bigNumber: bigint) => {
     const bigNumberString = bigNumber.toString();
     const firstDigit = parseInt(bigNumberString[0], 10);
     return firstDigit;
   };
 
-  const healthFactor = data2 ? getFirstDigit(data2) : 0;
-
   useEffect(() => {
-    const fetchBasename = async () => {
+    const fetchData = async () => {
       if (isConnected && address) {
         try {
+
+          const healthFactor = data2 ? getFirstDigit(data2) : "N/A";
+          setHealth(healthFactor);
+
+          const portFig = data ? Number(data) : 0;
+          setFig(portFig);
+
+          // Fetch basename
           const basename = await getBasename(address);
           if (basename) {
-            setUser(basename); // Set user to basename if available
+            setUser(basename);
           } else {
-            const formattedAddress = formatAddress(address);
-            setUser(formattedAddress); // Fallback to formatted address
+            setUser(formatAddress(address)); 
           }
         } catch (error) {
-          console.error("Error fetching basename:", error);
-          const formattedAddress = formatAddress(address);
-          setUser(formattedAddress); // Fallback to formatted address on error
+          console.error("Error fetching data:", error);
+          
+          setUser(formatAddress(address));
+          setHealth("N/A");
+          setFig(0);
         }
+      } else {
+
+        setUser("User");
+        setHealth("N/A");
+        setFig(0);
       }
     };
 
-    fetchBasename();
-  }, [isConnected, address]); // Only run when isConnected or address changes
+    fetchData();
+  }, [isConnected, address, data, data2]); 
 
   return (
     <main className="max-w-[1190px] mx-auto p-4">
       <div className="w-full">
         <h3 className="mb-4 text-xl">
-  {`Welcome, `}
-          [<span className="text-[#DD4F00]">{capitalizeFirstLetter(user)}</span>]
-</h3>
-
+          {"Welcome, "}
+            [<span className="text-[#DD4F00]">{capitalizeFirstLetter(user)}</span>]
+        </h3>
 
         {/* Top section: Dashboard Cards */}
         <div className="flex flex-wrap gap-4 mb-14">
           <DashboardCard
             text={"Your Portfolio"}
-            figure={`$${data ? Number(data) : 0}`}
-            extraCSS="portfolio-card" // Add extraCSS for customization
+            figure={fig}
+            extraCSS="portfolio-card"
             icon={
               <Image
                 src="/dollar.png"
@@ -81,7 +97,7 @@ export default function DashboardPage() {
           <DashboardCard
             text={"Net Profit"}
             figure={"14.7%"}
-            extraCSS="profit-card" // Add extraCSS for customization
+            extraCSS="profit-card"
             icon={
               <Image
                 src="/percentage.png"
@@ -96,11 +112,11 @@ export default function DashboardPage() {
 
           <DashboardCard
             text={"Health Factor "}
-            figure={healthFactor}
-            extraCSS="health-card" // Add extraCSS for customization
+            figure={health}
+            extraCSS="health-card"
             icon={
               <div className="bg-white/80 shadow shadow-[#C2C2C21A] w-[24.6px] h-11 pt-1 px-[0.6px] flex place-items-end">
-                <div className={`${battryCSS(healthFactor)} w-full`}></div>
+                <div className={`${battryCSS(health)} w-full`}></div>
               </div>
             }
           />
@@ -129,7 +145,7 @@ const battryCSS = (figure: number | string) => {
 
   if (value > 1) {
     return 'above1 h-full';
-  } else if (value == 1) {
+  } else if (value === 1) {
     return 'btw051_099 h-6';
   } else if (value >= 0.51) {
     return 'below03 h-3';

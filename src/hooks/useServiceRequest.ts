@@ -1,63 +1,97 @@
 "use client";
+
 import { useCallback } from "react";
 import { useWeb3ModalAccount, useWeb3ModalProvider } from "@web3modal/ethers/react";
 import { toast } from "sonner";
 import { isSupportedChain } from "@/config/chain";
 import { getProvider } from "@/config/provider";
-import { getLendbitContract } from "@/config/contracts";
+import { getERC20Contract, getLendbitContract } from "@/config/contracts";
 import { useRouter } from "next/navigation";
 import { ErrorWithReason } from "@/constants/types";
+import useCheckAllowance from "./useCheckAllowance";
+import { LINK_ADDRESS, ADDRESS_1 } from "@/constants/utils/addresses";
+import { MaxUint256 } from "ethers";
+import { envVars } from "@/constants/envVars";
 
 const useServiceRequest = () => {
   const { chainId } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
   const router = useRouter();
+  const val = useCheckAllowance();
 
   return useCallback(
-    async (_requestId: number, _tokenAddress: string) => {
+    async (_requestId: number, _tokenAddress: string, _amount: string) => {
       if (!isSupportedChain(chainId)) return toast.warning("SWITCH TO BASE");
       const readWriteProvider = getProvider(walletProvider);
       const signer = await readWriteProvider.getSigner();
-
       const contract = getLendbitContract(signer);
 
       try {
-        const transaction = await contract.serviceRequest(_requestId, _tokenAddress);
-        const receipt = await transaction.wait();
+        // If the token address is ADDRESS_1, directly call serviceRequest
+        if (_tokenAddress === ADDRESS_1) {
+          const transaction = await contract.serviceRequest(_requestId, _tokenAddress);
+          const receipt = await transaction.wait();
 
-        if (receipt.status) {
-          toast.success("collateral deposited!");
-          return router.push('/marketplace');
+          if (receipt.status) {
+            toast.success("Borrow request serviced!");
+            return router.push('/marketplace');
+          }
+
+          return toast.error("Request failed!");
         }
 
-        toast.error("failed!");
+        // If the token address is LINK_ADDRESS, check allowance
+        if (_tokenAddress === LINK_ADDRESS) {
+          const erc20contract = getERC20Contract(signer, LINK_ADDRESS);
+
+          // Check if allowance is sufficient
+          if (val === 0 || val < Number(_amount)) {
+            const allowanceTx = await erc20contract.approve(envVars.lendbitDiamondAddress, MaxUint256);
+            const allowanceReceipt = await allowanceTx.wait();
+
+            if (!allowanceReceipt.status) {
+              return toast.error("Approval failed!");
+            }
+          }
+
+          // Proceed with servicing the request after approval check
+          const transaction = await contract.serviceRequest(_requestId, _tokenAddress);
+          const receipt = await transaction.wait();
+
+          if (receipt.status) {
+            toast.success("Borrow request serviced!");
+            return router.push('/marketplace');
+          }
+
+          return toast.error("Request failed!");
+        }
       } catch (error: unknown) {
         const err = error as ErrorWithReason;
         let errorText: string;
 
-        if (err?.reason === "Protocol__RequestNotOpen()") {
-          errorText = "deposit action failed!";
-        }
-        if (err?.reason === "Protocol__InvalidToken()") {
-          errorText = "insufficient balance!";
-        }
-        if (err?.reason === "Protocol__InsufficientCollateral()") {
-          errorText = "insufficient collateral!";
-        }
-        if (err?.reason === "Protocol__InsufficientBalance()") {
-          errorText = "insufficient balance!";
-        }
-        if (err?.reason === "Protocol__InsufficientAllowance()") {
-          errorText = "insufficient allowance!";
-        }
-        else {
-          errorText = "trying to resolve error!";
+        // Handle protocol-specific error reasons
+        switch (err?.reason) {
+          case "Protocol__RequestNotOpen()":
+            errorText = "Deposit action failed!";
+            break;
+          case "Protocol__InvalidToken()":
+          case "Protocol__InsufficientBalance()":
+            errorText = "Insufficient balance!";
+            break;
+          case "Protocol__InsufficientCollateral()":
+            errorText = "Insufficient collateral!";
+            break;
+          case "Protocol__InsufficientAllowance()":
+            errorText = "Insufficient allowance!";
+            break;
+          default:
+            errorText = "Trying to resolve error!";
         }
 
         toast.warning(`Error: ${errorText}`);
       }
     },
-    [chainId, walletProvider]
+    [chainId, walletProvider, val]
   );
 };
 

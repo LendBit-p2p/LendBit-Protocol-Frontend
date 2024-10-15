@@ -1,13 +1,19 @@
+"use client"
+
 import { Btn } from "@/components/shared/Btn";
 import { Slider } from "@radix-ui/themes";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function BorrowAllocationPage() {
+   const router = useRouter();
 
+   const handleCancel = () => {
+    router.push("/marketplace");
+   };
 
     return (
         <div className="h-screen flex items-center">
-            <div className="bg-black rounded-md p-2  text-white">
+            <div className="bg-black rounded-md py-2 px-4  text-white u-class-shadow">
                 <p className="text-base">Borrow</p>
 
                 <div className="w-96 my-6">
@@ -37,12 +43,19 @@ export default function BorrowAllocationPage() {
                     </div>
                 </div>
 
-                <Link href={"/successful"} className=" my-4 px-4 cursor-pointer">
+                <div className=" my-4 cursor-pointer">
                     <Btn
                         text={"Borow"}
                         css="text-black bg-[#FF4D00CC]/80 text-base w-full py-2 rounded flex items-center justify-center"
                     />
-                </Link>
+                </div>
+
+                <div className="cursor-pointer mb-4" onClick={handleCancel}>
+                    <Btn
+                    text={"Cancel"}
+                    css="text-black bg-[#a2a8b4]/80 text-base w-full py-2 rounded flex items-center justify-center"
+                    />
+                </div>
             </div>
        </div>
     );

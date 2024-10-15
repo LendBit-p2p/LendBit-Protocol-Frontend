@@ -4,11 +4,14 @@ import Image from "next/image";
 import { Btn } from "../shared/Btn";
 import Link from "next/link";
 import useGetValueAndHealth from "@/hooks/useGetValueAndHealth";
+import NoAssets from "./NoAssets";
+import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 
 const Balance = () => {
-  // Fetch data3 and data4 from the hook
-  const { data3, data4, collateralVal} = useGetValueAndHealth();
-  console.log("dt", data3, data4,collateralVal);
+
+  const { address, isConnected} = useWeb3ModalAccount();
+  const {data:portfolioBal, data3, data4, collateralVal} = useGetValueAndHealth(address);
+  // console.log("dt", data3, data4,collateralVal);
 
   // Initialize the array with dynamic balance and market value calculation
   const balanceData = [
@@ -41,7 +44,19 @@ const Balance = () => {
 
   // If no tokens have a non-zero balance, return null or an alternative message
   if (filteredBalanceData.length === 0) {
-    return <p className="text-white text-center py-6">No assets available</p>;
+    return (
+      <div>
+        <NoAssets />
+      </div>
+     );
+  }
+
+  if (!isConnected || !address) {
+    return (
+      <div>
+        <NoAssets />
+      </div>
+     );
   }
 
   return (
@@ -53,7 +68,7 @@ const Balance = () => {
       {/* Summary Section */}
       <div className="flex justify-between border-y text-white/50 text-xs p-1 mb-2">
         <h4 className="p-1 sm:p-0">
-          Total Bal: <span className="pl-1">{`$${collateralVal? collateralVal: 0}`}</span>
+          Total Bal: <span className="pl-1">{`$${portfolioBal? portfolioBal: 0}`}</span>
         </h4>
         <h4 className="p-1 sm:p-0 text-right sm:text-left">
           Max Withdrawal: <span className="pl-1">$2,345.67</span>
@@ -69,7 +84,7 @@ const Balance = () => {
               <th className="py-2">Balance</th>
               <th className="py-2">Value</th>
               <th className="py-2">Interest</th>
-              <th className="py-2 hidden sm:table-cell">Collateral</th> {/* Hidden on mobile */}
+              {/* <th className="py-2 hidden sm:table-cell">Collateral</th> */}
               <th className="py-2">Actions</th>
             </tr>
           </thead>
@@ -90,7 +105,7 @@ const Balance = () => {
                   {item.netProfit}
                 </td>
                 {/* Collateral Toggle (Hidden on mobile) */}
-                <td className="pt-2 hidden sm:table-cell">
+                {/* <td className="pt-2 hidden sm:table-cell">
                   <div className="flex justify-center">
                     <Image
                       src={item.collateralImg}
@@ -101,7 +116,7 @@ const Balance = () => {
                       quality={100}
                     />
                   </div>
-                </td>
+                </td> */}
                 {/* Deposit and Withdraw */}
                 <td className="pt-2">
                   <div className="flex justify-center gap-2">

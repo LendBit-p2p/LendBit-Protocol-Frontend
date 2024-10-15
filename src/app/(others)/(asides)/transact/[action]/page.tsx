@@ -99,13 +99,13 @@ export default function TransactPage({ params }: { params: { action: string } })
     );
   }
 
-  if (!isConnected) {
-    return <PleaseConnect />;
+  if (!isConnected || !address) {
+    return <PleaseConnect text={"continue transaction"} />;
   }
 
   return (
     <div className="h-screen flex items-center">
-      <div className="bg-black rounded-lg p-4 max-w-[427px] u-class-shadow">
+      <div className="bg-black rounded-lg p-4 max-w-[427px] sm:min-w-[427px] u-class-shadow">
         <p className="text-base text-white pl-2 pb-2">{actionText}</p>
 
         <AssetSelector
@@ -116,13 +116,13 @@ export default function TransactPage({ params }: { params: { action: string } })
         />
 
         <div>
-          <div className="mt-4 cursor-pointer" onClick={handleAction}>
+          <div className="my-4 cursor-pointer" onClick={handleAction}>
             <Btn
               text={actionText}
               css="text-black bg-[#FF4D00CC]/80 text-base w-full py-2 rounded flex items-center justify-center"
             />
           </div>
-          <div className="cursor-pointer mt-4" onClick={handleCancel}>
+          <div className="cursor-pointer mb-4" onClick={handleCancel}>
             <Btn
               text={"Cancel"}
               css="text-black bg-[#a2a8b4]/80 text-base w-full py-2 rounded flex items-center justify-center"

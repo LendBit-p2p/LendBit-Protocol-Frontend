@@ -3,8 +3,13 @@ import React from 'react';
 import { Btn } from './Btn';
 import { useWeb3Modal } from '@web3modal/ethers/react';
 
-const PleaseConnect = () => {
-    const { open } = useWeb3Modal();
+// Define props type for TypeScript
+interface PleaseConnectProps {
+  text: string;
+}
+
+const PleaseConnect: React.FC<PleaseConnectProps> = ({ text }) => {
+  const { open } = useWeb3Modal();
 
   return (
     <div className="h-screen flex items-center justify-center -mt-32">
@@ -28,15 +33,15 @@ const PleaseConnect = () => {
           </div>
 
           {/* Text Prompt */}
-          <div className='text-center mb-6'>
-            <p className="text-lg font-bold mb-2">
-              Please, connect your wallet
+          <div className="text-center mb-6">
+            <p className="text-lg font-bold mb-2">Please, connect your wallet</p>
+            <p className="text-white/80 font-thin">
+              Please connect your wallet to {text}.
             </p>
-            <p className='text-white/80 font-thin'>Please connect your wallet to see available orders.</p>
           </div>
 
           {/* Connect Wallet Button */}
-          <div onClick={() => open()} className='cursor-pointer'>
+          <div onClick={() => open()} className="cursor-pointer">
             <Btn
               text={"Connect Wallet"}
               css="text-black bg-[#FF4D00CC] text-xl py-2 px-10 rounded-[75px]"

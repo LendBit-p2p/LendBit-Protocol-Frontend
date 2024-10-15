@@ -79,14 +79,14 @@ const Collateral = () => {
                                     <img src={item.icon} alt={item.icon} className="w-4" />
                                     <span>{item.token}</span>
                                 </td>
-                                <td className="pt-2">{item.tokenPrice}</td>
+                                <td className="pt-2">{`${(Number(item.tokenPrice)).toFixed(3)}`}</td>
                                 <td className="pt-2">
                                     <div className="flex flex-col items-center">
                                         <Image
-                                            src={"/mark.svg"}
+                                            src={item.token === "ETH" || item.token === "LINK" ? "/mark.svg": "/toggleOff.svg" }
                                             alt="tick"
                                             width={12}
-                                            height={9}
+                                            height={10}
                                             priority
                                             quality={100}
                                         />

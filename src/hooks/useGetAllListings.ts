@@ -2,12 +2,17 @@
 import { getLendbitContract } from '@/config/contracts';
 import { readOnlyProvider } from '@/config/provider';
 import { LoanListing } from '@/constants/types';
+import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 
-
-
 const useGetAllListings = () => {
-    const [listings, setListings] = useState<LoanListing[]>([]);
+    const [listings, setListings] = useState<{
+        loadings: boolean;
+        data: LoanListing[] | undefined;
+    }>({
+        loadings: true,
+        data: [],
+    });
 
     useEffect(() => {
         (async () => {
@@ -18,40 +23,42 @@ const useGetAllListings = () => {
             while (true) {
                 try {
                     const _listing = await contract.getLoanListing(_index);
-
-                    if (_listing[0] !== 0) {  // Assuming listingId is at index 0
-                        // console.log("AAAAAxxxxxxxx", _listing);
-                        
+                    
+                    // Check if a valid listing is fetched
+                    if (_listing[0] !== 0) {  
                         const structuredListing: LoanListing = {
                             listingId: Number(_listing[0]),
                             author: _listing[1],
                             tokenAddress: _listing[2],
-                            amount: _listing[3].toString(),
-                            min_amount: _listing[4].toString(),
-                            max_amount: _listing[5].toString(),
+                            amount: String(ethers.formatEther(_listing[3].toString())),
+                            min_amount: String(ethers.formatEther(_listing[4].toString())),
+                            max_amount: String(ethers.formatEther(_listing[5].toString())),
                             returnDate: Number(_listing[6]),
                             interest: Number(_listing[7]),
-                            listingStatus: _listing[8] == 0 ? 'OPEN' : 'CLOSED', // Assuming status is an enum
+                            listingStatus: _listing[8] == 0 ? 'OPEN' : 'CLOSED',
                         };
 
-                        // Append structured listing to the array
                         fetchedListings.push(structuredListing);
                     } else {
-                        break; // Exit loop if no more listings are available
+                        break; 
                     }
                     _index += 1;
                 } catch (error) {
-                    console.error("Error fetching listings:", error);
+                    console.error("Error fetching loan listings:", error);
+                    setListings((prev) => ({ ...prev, loadings: false }));
                     break;
                 }
             }
-// console.log("AAAAAAAAAAAAAA", fetchedListings);
-            // Update state with the structured listings
-            setListings(fetchedListings);
+            
+            // Set the fetched listings and update loading state
+            setListings({
+                loadings: false,
+                data: fetchedListings,
+            });
         })();
     }, []);
 
-    return listings;
+    return { loadings: listings.loadings, listingData: listings.data };
 };
 
 export default useGetAllListings;

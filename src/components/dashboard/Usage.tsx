@@ -2,8 +2,12 @@
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { Btn } from '../shared/Btn';
+import { useRouter } from "next/navigation";
+
 
 const Usage = () => {
+  const router = useRouter();
+
   const balanceData = [
     {
       assetName: "USDC",
@@ -99,7 +103,8 @@ const Usage = () => {
         </table>
       </div>
       
-      <div className="px-6 w-4/6 m-auto mt-1">
+      <div onClick={()=>router.push("/create-order")}
+        className="px-6 w-4/6 m-auto mt-1">
         <button className="bg-[#FF4D00] text-xs rounded-xl font-normal w-full py-3 hover:scale-105">
             Create Order
         </button>

@@ -23,7 +23,7 @@ const useCreateLendingRequest = () => {
       let currency;
       if (_loanCurrency === "ETH") {
         currency = ADDRESS_1;
-        return toast.warning("PLEASE USE LINK, ETH NOT AVAILABLE AT THE MOMENT")
+        // return toast.warning("PLEASE USE LINK, ETH NOT AVAILABLE AT THE MOMENT")
       } else {
         currency = LINK_ADDRESS;
       }
@@ -69,7 +69,7 @@ const useCreateLendingRequest = () => {
             errorText = "Insufficient collateral!";
             break;
           default:
-            errorText = "Trying to resolve error!";
+            errorText = "Can't borrow more than 80% of your collateral value!";
         }
 
         toast.warning(`Error: ${errorText}`, {

@@ -4,13 +4,13 @@ import { DateInputField } from "@/components/createOrder/DateInputField";
 import { Btn } from "@/components/shared/Btn";
 import AssetSelector from "@/components/shared/AssetSelector";
 import { Slider } from "@radix-ui/themes";
-import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import useCreateLoanListing from "@/hooks/useCreateLoanListing";
 import useCreateLendingRequest from "@/hooks/useCreateLendingRequest";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export default function CreateOrderPage() {
     const [percentage, setPercentage] = useState(0);
@@ -21,6 +21,8 @@ export default function CreateOrderPage() {
     const [range, setRange] = useState([0, 0]); // Volume slider range
     const [userAddress, setUserAddress] = useState<string | null>(null); // User's wallet address
     const [activeOrderType, setActiveOrderType] = useState<"lend" | "borrow">("lend");
+    const router = useRouter();
+
     
     const [showLendTooltip, setShowLendTooltip] = useState(false);
     const [showBorrowTooltip, setShowBorrowTooltip] = useState(false);
@@ -81,6 +83,10 @@ export default function CreateOrderPage() {
     const handleSliderChange = (value: number[]) => {
         setRange(value);
     };
+
+    const handleCancel = () => {
+    router.push("/marketplace");
+   };
 
     return (
         <div className="my-12">
@@ -264,7 +270,7 @@ export default function CreateOrderPage() {
                     </div>)
                 }    
 
-               <div className="mt-4 px-4 cursor-pointer">
+               <div className="mb-3 mt-8 px-4 cursor-pointer">
                     <div
                         onClick={() => {
                             if (!dateValue) {
@@ -297,12 +303,12 @@ export default function CreateOrderPage() {
                     </div>      
                 </div>
 
-                <Link href={"/order"} className="px-4 cursor-pointer">
+                <div onClick={handleCancel} className="px-4 mb-4 cursor-pointer">
                     <Btn
                         text={"Cancel"}
                         css="text-black bg-[#a2a8b4]/80 text-base w-full py-2 rounded flex items-center justify-center"
                     />
-                </Link>
+                </div>
             </div>
         </div>
     );

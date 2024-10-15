@@ -2,11 +2,17 @@
 import { getLendbitContract } from '@/config/contracts';
 import { readOnlyProvider } from '@/config/provider';
 import { Request } from '@/constants/types';
+import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 
-
 const useGetAllRequests = () => {
-    const [requests, setRequests] = useState<Request[]>([]);
+    const [requests, setRequests] = useState<{
+        loading: boolean;
+        data: Request[] | undefined;
+    }>({
+        loading: true,
+        data: [],
+    });
 
     useEffect(() => {
         (async () => {
@@ -17,15 +23,15 @@ const useGetAllRequests = () => {
             while (true) {
                 try {
                     const _request = await contract.getRequest(_index);
-                    // console.log(_request);
-
+                    
+                    // Check if a valid request is fetched
                     if (_request[0] !== 0) {  
                         const structuredRequest: Request = {
                             requestId: Number(_request[0]),
                             author: _request[1],
-                            amount: _request[2].toString(),
+                            amount: String(ethers.formatEther(_request[2].toString())),
                             interest: Number(_request[3]),
-                            totalRepayment: _request[4].toString(),
+                            totalRepayment: String(ethers.formatEther(_request[4].toString())),
                             returnDate: Number(_request[5]),
                             lender: _request[6],
                             loanRequestAddr: _request[7],
@@ -39,17 +45,20 @@ const useGetAllRequests = () => {
                     _index += 1;
                 } catch (error) {
                     console.error("Error fetching requests:", error);
+                    setRequests((prev) => ({ ...prev, loading: false }));
                     break;
                 }
             }
-            // console.log("AAAAAAAAAAAAAA", fetchedRequests);
             
-
-            setRequests(fetchedRequests);
+            // Set the fetched requests and update loading state
+            setRequests({
+                loading: false,
+                data: fetchedRequests,
+            });
         })();
     }, []);
 
-    return requests;
+    return {loading:requests.loading, requestData: requests.data};
 };
 
 export default useGetAllRequests;

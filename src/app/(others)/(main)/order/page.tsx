@@ -28,7 +28,7 @@ export default function OrderPage() {
     }
 
     if (!isConnected && !address) {
-        return <PleaseConnect />;
+         return <PleaseConnect text={"see available orders"} />;
     }
 
     return (

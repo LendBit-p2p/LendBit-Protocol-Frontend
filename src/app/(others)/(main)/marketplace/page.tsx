@@ -25,7 +25,7 @@ export default function MarketPlacePage() {
     }
 
     if (!isConnected && !address) {
-        return <PleaseConnect />;
+        return <PleaseConnect text={"see available orders"} />;
     }
 
     return (
