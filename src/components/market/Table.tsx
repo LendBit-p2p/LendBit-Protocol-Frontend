@@ -80,9 +80,10 @@ const Table = () => {
         setIsDropdownOpen(false);
     };
 
-    const handleBorrowAllocation = () => {
-        router.push("/borrow-allocation")
-    }
+    const handleBorrowAllocation = (data: any) => {
+        const queryString = `?listingId=${data.listingId}&maxAmount=${data.max_amount}&minAmount=${data.min_amount}`;
+        router.push(`/borrow-allocation${queryString}`);
+    };
 
     return (
         <div className="w-full">
@@ -166,7 +167,7 @@ const Table = () => {
                             <p className="text-white mt-2 text-2xl">Fetching Borrow Data...</p>
                         </div>
                     ) : filteredBorrowData.length > 0 ? (
-                        filteredBorrowData.map((data, index) => (
+                        filteredBorrowData.slice().reverse().map((data, index) => (
                             <div key={index} className="w-full bg-black rounded-lg p-4 sm:p-6 mb-4 grid grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-y-2 items-center text-sm sm:text-base">
                               
                                         <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
@@ -183,14 +184,14 @@ const Table = () => {
                                             {parseFloat(data.amount)} {tokenImageMap[data.tokenAddress]?.label}
                                         </div>
                                         <div className="col-span-2 sm:col-span-1 text-right sm:text-center">{data.interest}%</div>
-                                        <div className="col-span-2 sm:col-span-1 text-right sm:text-center">${data.min_amount}</div>
-                                        <div className="col-span-2 sm:col-span-1 text-right sm:text-center">${data.max_amount}</div>
+                                        <div className="col-span-2 sm:col-span-1 text-right sm:text-center">{parseFloat(data.min_amount).toFixed(3)}</div>
+                                        <div className="col-span-2 sm:col-span-1 text-right sm:text-center">{parseFloat(data.max_amount).toFixed(3)}</div>
                                         <div className="col-span-2 sm:col-span-1 text-right sm:text-center">
                                             {Math.floor((data.returnDate - Date.now()) / (1000 * 60 * 60 * 24))} days
                                         </div>
 
                                         <div className="col-span-2 sm:col-span-1 text-right"
-                                            onClick={()=>handleBorrowAllocation()}
+                                            onClick={()=>handleBorrowAllocation(data)}
                                         >
                                             <Btn text={"Borrow"} css="text-black bg-[#FF4D00] text-sm sm:text-base px-3 py-1 rounded-md" />
                                         </div>
@@ -207,7 +208,7 @@ const Table = () => {
                             <p className="text-white mt-2 text-2xl">Fetching Lend Data...</p>
                         </div>
                     ) : filteredLendData.length > 0 ? (
-                        filteredLendData.map((data, index) => (
+                        filteredLendData.slice().reverse().map((data, index) => (
                             <div key={index} className="w-full bg-black rounded-lg p-4 sm:p-6 mb-4 grid grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-y-2 items-center text-sm sm:text-base">
                                 
                                     <div className="flex items-center gap-2 col-span-2 sm:col-span-1">

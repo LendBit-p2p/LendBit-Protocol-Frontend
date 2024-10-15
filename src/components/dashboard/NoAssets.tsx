@@ -35,7 +35,7 @@ const NoAssets = () => {
             <tr className="text-center text-[10px] sm:text-[12px]">
                 
                 <td className="pt-2">No assets available</td>
-                <td className="pt-2 hidden sm:table-cell">
+                <td className="pt-2 table-cell">
                   <div className="flex justify-center">
                     <Image
                       src={'/toggleOff.svg'}
