@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Btn } from "../shared/Btn";
+// import { Btn } from "../shared/Btn";
 import useGetAllListings from "@/hooks/useGetAllListings";
 import { formatAddress } from "@/constants/utils/formatAddress";
 import useGetAllRequests from "@/hooks/useGetAllRequests";
@@ -11,15 +11,15 @@ import { useRouter } from "next/navigation";
 import useGetValueAndHealth from "@/hooks/useGetValueAndHealth";
 
 interface BtnProps {
-    text: string;
-    css?: string;
-    onClick?: () => void;
+  text: string;
+  css?: string;
+  onClick?: () => void;
 }
 
 export const Btn: React.FC<BtnProps> = ({ text, css, onClick }) => (
-    <button className={css} onClick={onClick}>
-        {text}
-    </button>
+  <button className={css} onClick={onClick}>
+    {text}
+  </button>
 );
 
 const tokenImageMap: { [key: string]: { image: string; label: string } } = {
