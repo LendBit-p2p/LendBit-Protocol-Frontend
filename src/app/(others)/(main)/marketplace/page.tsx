@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import MktHeader from "@/components/market/MktHeader";
-import Table from "@/components/market/Table";
+import CardLayout from "@/components/market/CardLayout";
 import PleaseConnect from "@/components/shared/PleaseConnect";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { Spinner } from '@radix-ui/themes';
@@ -36,7 +36,7 @@ export default function MarketPlacePage() {
                 </div>
 
                 <div>
-                    <Table />
+                    <CardLayout />
                 </div>
             </div>
         </main>
