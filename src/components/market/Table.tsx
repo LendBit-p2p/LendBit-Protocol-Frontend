@@ -2,12 +2,13 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Btn } from "../shared/Btn";
-import useGetAllListings from "@/hooks/useGetAllListings"; // Fetch all listings
+import useGetAllListings from "@/hooks/useGetAllListings";
 import { formatAddress } from "@/constants/utils/formatAddress";
-import useGetAllRequests from "@/hooks/useGetAllRequests"; // Hook for lending requests
+import useGetAllRequests from "@/hooks/useGetAllRequests";
 import { Spinner } from "@radix-ui/themes";
 import useServiceRequest from "@/hooks/useServiceRequest";
 import { useRouter } from "next/navigation";
+import useGetValueAndHealth from "@/hooks/useGetValueAndHealth";
 
 const tokenImageMap: { [key: string]: { image: string; label: string } } = {
     "0xE4aB69C077896252FAFBD49EFD26B5D171A32410": { image: "/link.svg", label: "LINK" },
@@ -18,53 +19,51 @@ const Table = () => {
     const [activeTable, setActiveTable] = useState<"borrow" | "lend">("borrow");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [selectedToken, setSelectedToken] = useState<string>("All Tokens");
-    const [borrowTableData, setBorrowTableData] = useState<any[]>([]); // State for borrow data
-    const [lendTableData, setLendTableData] = useState<any[]>([]); // State for lend data
-    const [filteredBorrowData, setFilteredBorrowData] = useState<any[]>([]); // State for filtered borrow data
-    const [filteredLendData, setFilteredLendData] = useState<any[]>([]); // State for filtered lend data
-    const [loadingBorrow, setLoadingBorrow] = useState(true); // Separate loading state for borrow
-    const [loadingLend, setLoadingLend] = useState(true); // Separate loading state for lend
+    const [borrowTableData, setBorrowTableData] = useState<any[]>([]);
+    const [lendTableData, setLendTableData] = useState<any[]>([]);
+    const [filteredBorrowData, setFilteredBorrowData] = useState<any[]>([]);
+    const [filteredLendData, setFilteredLendData] = useState<any[]>([]);
+    const [loadingBorrow, setLoadingBorrow] = useState(true);
+    const [loadingLend, setLoadingLend] = useState(true);
     const router = useRouter();
+
+    const { collateralVal, etherPrice, linkPrice } = useGetValueAndHealth();
 
     // Fetch all listings and requests
     const { loadings: borrowLoading, listingData } = useGetAllListings();
     const { loading: lendLoading, requestData } = useGetAllRequests();
-    const service = useServiceRequest()
+    const service = useServiceRequest();
 
     useEffect(() => {
         if (listingData) {
             setBorrowTableData(listingData);
-            setLoadingBorrow(borrowLoading); 
+            setLoadingBorrow(borrowLoading);
         }
     }, [listingData]);
 
     useEffect(() => {
         if (requestData) {
             setLendTableData(requestData);
-            setLoadingLend(lendLoading); // Stop loading once data is fetched
+            setLoadingLend(lendLoading);
         }
     }, [requestData]);
 
     // Filter borrow data based on selected token
     useEffect(() => {
-        if (selectedToken === "All Tokens") {
-            setFilteredBorrowData(borrowTableData);
-        } else {
-            setFilteredBorrowData(
-                borrowTableData.filter(data => data.tokenAddress === selectedToken)
-            );
-        }
+        setFilteredBorrowData(
+            selectedToken === "All Tokens"
+                ? borrowTableData
+                : borrowTableData.filter(data => data.tokenAddress === selectedToken)
+        );
     }, [selectedToken, borrowTableData]);
 
     // Filter lend data based on selected token
     useEffect(() => {
-        if (selectedToken === "All Tokens") {
-            setFilteredLendData(lendTableData);
-        } else {
-            setFilteredLendData(
-                lendTableData.filter(data => data.loanRequestAddr === selectedToken)
-            );
-        }
+        setFilteredLendData(
+            selectedToken === "All Tokens"
+                ? lendTableData
+                : lendTableData.filter(data => data.loanRequestAddr === selectedToken)
+        );
     }, [selectedToken, lendTableData]);
 
     const handleTableChange = (table: "borrow" | "lend") => {
@@ -118,7 +117,7 @@ const Table = () => {
                                 height={30}
                             />
                         )}
-                        <div className="pl-2">{tokenImageMap[selectedToken]?.label || selectedToken}</div>
+                        <div className="pl-2">{tokenImageMap[selectedToken]?.label || "All Tokens"}</div>
                         <div className="pl-4">
                             <Image
                                 src={"/chevronDown.svg"}
@@ -151,95 +150,129 @@ const Table = () => {
                             ))}
                         </div>
                     )}
-
-                    <div className="p-2 bg-black rounded-lg">
-                        <Image src={"/filter.svg"} alt="filter" width={32} height={32} priority quality={100} />
-                    </div>
                 </div>
+
             </div>
 
-            {/* Borrow/Lend Tables */}
             <div className="px-4 sm:px-12">
                 {activeTable === "borrow" ? (
-                    loadingBorrow ? (
-                        <div className="flex items-center justify-center h-32 gap-3">
-                            <Spinner size={"3"} />
-                            <p className="text-white mt-2 text-2xl">Fetching Borrow Data...</p>
+                    <>
+                        {/* Borrow Table Headers */}
+                        <div className="grid grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-4 mb-2">
+                            <p>Asset</p>
+                            <p>Origin</p>
+                            <p>Volume</p>
+                            <p>Rate</p>
+                            <p>Min</p>
+                            <p>Max</p>
+                            <p>Duration</p>
+                            <p>Action</p>
                         </div>
-                    ) : filteredBorrowData.length > 0 ? (
-                        filteredBorrowData.slice().reverse().map((data, index) => (
-                            <div key={index} className="w-full bg-black rounded-lg p-4 sm:p-6 mb-4 grid grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-y-2 items-center text-sm sm:text-base">
-                              
-                                        <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
-                                            <Image src={tokenImageMap[data.tokenAddress]?.image} alt={data.loanRequestAddr} width={37} height={36} priority quality={100} />
-                                            <p>{tokenImageMap[data.tokenAddress]?.label}</p> {/* Display the token label */}
-                                        </div>
-
-                                        <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
-                                            <Image src={"/avatar.svg"} alt="avatar" width={17} height={16} priority quality={100} />
-                                            <p>{formatAddress(data.author)}</p> {/* Use formatAddress here */}
-                                        </div>
-
-                                        <div className="col-span-2 sm:col-span-1 text-right sm:text-center">
-                                            {parseFloat(data.amount)} {tokenImageMap[data.tokenAddress]?.label}
-                                        </div>
-                                        <div className="col-span-2 sm:col-span-1 text-right sm:text-center">{data.interest}%</div>
-                                        <div className="col-span-2 sm:col-span-1 text-right sm:text-center">{parseFloat(data.min_amount).toFixed(3)}</div>
-                                        <div className="col-span-2 sm:col-span-1 text-right sm:text-center">{parseFloat(data.max_amount).toFixed(3)}</div>
-                                        <div className="col-span-2 sm:col-span-1 text-right sm:text-center">
-                                            {Math.floor((data.returnDate - Date.now()) / (1000 * 60 * 60 * 24))} days
-                                        </div>
-
-                                        <div className="col-span-2 sm:col-span-1 text-right"
-                                            onClick={()=>handleBorrowAllocation(data)}
-                                        >
-                                            <Btn text={"Borrow"} css="text-black bg-[#FF4D00] text-sm sm:text-base px-3 py-1 rounded-md" />
-                                        </div>
+                        {loadingBorrow ? (
+                            <div className="flex items-center justify-center h-32 gap-3">
+                                <Spinner size={"3"} />
+                                <p className="text-white mt-2 text-2xl">Fetching Borrow Data...</p>
                             </div>
-                            
-                        ))
-                    ) : (
-                        <div className="text-white text-center">No borrow data available</div>
-                    )
-                ) : (
-                    loadingLend ? (
-                        <div className="flex items-center justify-center h-32 gap-3">
-                            <Spinner size={"3"} />
-                            <p className="text-white mt-2 text-2xl">Fetching Lend Data...</p>
-                        </div>
-                    ) : filteredLendData.length > 0 ? (
-                        filteredLendData.slice().reverse().map((data, index) => (
-                            <div key={index} className="w-full bg-black rounded-lg p-4 sm:p-6 mb-4 grid grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-y-2 items-center text-sm sm:text-base">
-                                
+                        ) : (
+                            filteredBorrowData.slice().reverse().map((data, index) => (
+                                <div key={index} className="w-full bg-black rounded-lg p-4 sm:p-6 mb-4 grid grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-y-2 items-center">
                                     <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
-                                        <Image src={tokenImageMap[data.loanRequestAddr]?.image} alt={data.loanRequestAddr} width={37} height={36} priority quality={100} />
-                                        <p>{tokenImageMap[data.loanRequestAddr]?.label}</p> {/* Display the token label */}
+                                        <Image src={tokenImageMap[data.tokenAddress]?.image} alt={data.loanRequestAddr} width={37} height={36} priority quality={100} />
+                                        <p>{tokenImageMap[data.tokenAddress]?.label}</p>
                                     </div>
-
                                     <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
                                         <Image src={"/avatar.svg"} alt="avatar" width={17} height={16} priority quality={100} />
-                                        <p>{formatAddress(data.author)}</p> {/* Use formatAddress here */}
+                                        <p>{formatAddress(data.author)}</p>
+                                    </div>
+                                    <div className="col-span-2 sm:col-span-1 text-right sm:text-center">
+                                        {Number(data.amount)} {tokenImageMap[data.tokenAddress]?.label} (~$
+                                        {(
+                                            Number(data.amount) *
+                                            (tokenImageMap[data.tokenAddress]?.label === "ETH" ? Number(etherPrice) : Number(linkPrice))
+                                        ).toFixed(2)})
                                     </div>
 
-                                    <div className="col-span-2 sm:col-span-1 text-right sm:text-center">
-                                    {data.amount} {tokenImageMap[data.loanRequestAddr]?.label}
-                                    </div>
                                     <div className="col-span-2 sm:col-span-1 text-right sm:text-center">{data.interest}%</div>
-                                    <div className="col-span-2 sm:col-span-1 text-right sm:text-center">{parseFloat(data.totalRepayment)}</div>
+                                    <div className="col-span-2 sm:col-span-1 text-right sm:text-center">
+                                        {Number(data.min_amount).toFixed(3)} {tokenImageMap[data.tokenAddress]?.label} (~$
+                                        {(
+                                            Number(data.min_amount) *
+                                            (tokenImageMap[data.tokenAddress]?.label === "ETH" ? Number(etherPrice) : Number(linkPrice))
+                                        ).toFixed(2)})
+                                    </div>
+                                    <div className="col-span-2 sm:col-span-1 text-right sm:text-center">
+                                        {Number(data.max_amount).toFixed(3)} {tokenImageMap[data.tokenAddress]?.label} (~$
+                                        {(
+                                            Number(data.max_amount) *
+                                            (tokenImageMap[data.tokenAddress]?.label === "ETH" ? Number(etherPrice) : Number(linkPrice))
+                                        ).toFixed(2)})
+                                    </div>
                                     <div className="col-span-2 sm:col-span-1 text-right sm:text-center">
                                         {Math.floor((data.returnDate - Date.now()) / (1000 * 60 * 60 * 24))} days
                                     </div>
+                                    <div className="col-span-2 sm:col-span-1 text-right"
+                                        onClick={() => handleBorrowAllocation(data)}>
+                                        <Btn text={"Borrow"} css="text-black bg-[#FF4D00] text-sm sm:text-base px-3 py-1 rounded-md" />
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </>
+                ) : (
+                    <>
+                        {/* Lend Table Headers */}
+                        <div className="grid grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-4 mb-2">
+                            <p>Asset</p>
+                            <p>Origin</p>
+                            <p>Loan Amount</p>
+                            <p>Rate</p>
+                            <p>Repayment Amount</p>
+                            <p>Duration</p>
+                            <p>Action</p>
+                        </div>
+                        {loadingLend ? (
+                            <div className="flex items-center justify-center h-32 gap-3">
+                                <Spinner size={"3"} />
+                                <p className="text-white mt-2 text-2xl">Fetching Lend Data...</p>
+                            </div>
+                        ) : (
+                            filteredLendData.slice().reverse().map((data, index) => (
+                                <div key={index} className="w-full bg-black rounded-lg p-4 sm:p-6 mb-4 grid grid-cols-2 sm:grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-y-2 items-center">
+                                    <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
+                                        <Image src={tokenImageMap[data.loanRequestAddr]?.image} alt={data.loanRequestAddr} width={37} height={36} priority quality={100} />
+                                        <p>{tokenImageMap[data.loanRequestAddr]?.label}</p>
+                                    </div>
+                                    <div className="flex items-center gap-2 col-span-2 sm:col-span-1">
+                                        <Image src={"/avatar.svg"} alt="avatar" width={17} height={16} priority quality={100} />
+                                        <p>{formatAddress(data.author)}</p>
+                                    </div>
+                                    <div className="col-span-2 sm:col-span-1 text-right sm:text-center">
+                                        {Number(data.amount)} {tokenImageMap[data.loanRequestAddr]?.label} (~$
+                                        {(
+                                            Number(data.amount) *
+                                            (tokenImageMap[data.loanRequestAddr]?.label === "ETH" ? Number(etherPrice) : Number(linkPrice))
+                                        ).toFixed(2)})
+                                    </div>
 
-                                <div onClick={()=>{service(data.requestId, data.loanRequestAddr, data.amount)}}
-                                    className="col-span-2 sm:col-span-1 text-right">
+                                    <div className="col-span-2 sm:col-span-1 text-right sm:text-center">{data.interest}%</div>
+                                    <div className="col-span-2 sm:col-span-1 text-right sm:text-center">
+                                        {Number(data.totalRepayment).toFixed(3)} {tokenImageMap[data.loanRequestAddr]?.label} (~$
+                                        {(
+                                            Number(data.totalRepayment) *
+                                            (tokenImageMap[data.loanRequestAddr]?.label === "ETH" ? Number(etherPrice) : Number(linkPrice))
+                                        ).toFixed(2)})
+                                    </div>
+                                    <div className="col-span-2 sm:col-span-1 text-right sm:text-center">
+                                        {Math.floor((data.returnDate - Date.now()) / (1000 * 60 * 60 * 24))} days
+                                    </div>
+                                    <div className="col-span-2 sm:col-span-1 text-right"
+                                        onClick={() => service(data.requestId, data.loanRequestAddr, data.amount)}>
                                         <Btn text={"Lend"} css="text-black bg-[#FF4D00] text-sm sm:text-base px-3 py-1 rounded-md" />
                                     </div>
                                 </div>
-                          
-                        ))
-                    ) : (
-                        <div className="text-white text-center">No lend data available</div>
-                    )
+                            ))
+                        )}
+                    </>
                 )}
             </div>
         </div>
@@ -247,5 +280,3 @@ const Table = () => {
 };
 
 export default Table;
-
-
