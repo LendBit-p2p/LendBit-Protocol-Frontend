@@ -181,7 +181,7 @@ const CardLayout = () => {
                     loadingBorrow ? (
                         <div className="flex items-center justify-center h-32 gap-3 col-span-full">
                             <Spinner size={"3"} />
-                            <p className="text-white mt-2 text-sm lg:text-xl">Fetching available pool borrow...</p>
+                            <p className="text-gray-500 mt-2 text-sm lg:text-lg">Fetching available pool for borrow...</p>
                         </div>
                     ) : filteredBorrowData.slice().reverse().map((data, index) => (
                         <div key={index} className="bg-black rounded-lg p-4 shadow-lg u-class-shadow-4">
@@ -231,7 +231,7 @@ const CardLayout = () => {
                     loadingLend ? (
                         <div className="flex items-center justify-center h-32 gap-3 col-span-full">
                             <Spinner size={"3"} />
-                            <p className="text-white mt-2 text-sm lg:text-xl">Fetching available requests...</p>
+                            <p className="text-gray-500 mt-2 text-sm lg:text-lg">Fetching available requests...</p>
                         </div>
                     ) : filteredLendData.slice().reverse().map((data, index) => (
                         <div key={index} className="bg-black rounded-lg p-4 shadow-lg u-class-shadow-4">
