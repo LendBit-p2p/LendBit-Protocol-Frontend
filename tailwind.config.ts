@@ -13,6 +13,7 @@ const config: Config = {
         foreground: "var(--foreground)",
       },
     },
+  
   },
   plugins: [],
 };

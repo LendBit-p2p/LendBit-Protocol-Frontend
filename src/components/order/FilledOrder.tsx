@@ -2,6 +2,7 @@
 import { useEffect, useState, useRef } from "react";
 import { OrderCard } from "./OrderCard";
 import { cardGradient } from "@/constants/utils/cardGradient";
+import { tokenImageMap } from "@/constants/utils/tokenImageMap";
 
 export const FilledOrder = ({orderSample}:any) => {
   const [selectedOrder, setSelectedOrder] = useState<number | null>(0);
@@ -12,12 +13,12 @@ export const FilledOrder = ({orderSample}:any) => {
   const [startY, setStartY] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
 
-  useEffect(() => {
-    if (containerRef.current) {
-      const containerHeight = containerRef.current.scrollHeight;
-      containerRef.current.scrollTop = containerHeight / 2.68;
-    }
-  }, [orderSample]);
+  // useEffect(() => {
+  //   if (containerRef.current) {
+  //     const containerHeight = containerRef.current.scrollHeight;
+  //     containerRef.current.scrollTop = containerHeight / 2.68;
+  //   }
+  // }, [orderSample]);
 
   // Handle scroll
   const handleScroll = () => {
@@ -79,19 +80,19 @@ export const FilledOrder = ({orderSample}:any) => {
           const randomGradient = cardGradient[Math.floor(Math.random() * cardGradient.length)] || "/gradients1.svg";
           return(
             <div
-              key={order.id}
+              key={index}
               ref={(el) => { cardRefs.current[index] = el; }}
               className={`py-4 transition-all duration-500 ${selectedOrder === index ? "z-10" : "filledInActive z-0"}`}
             >
               <div className="w-32 h-44 sm:w-44 sm:h-72 m-auto"> {/* Adjusted to make responsive */}
                 <OrderCard
-                  id={order.id}
+                  id={order.requestId || order.listingId}
                   type={order.type}
-                  amount={order.amount}
-                  token={order.token}
-                  date={order.date}
-                  icon1={order.icon1}
-                  icon2={order.icon2}
+                  amount={parseFloat(order.amount).toFixed(2)}
+                  token={tokenImageMap[order.tokenAddress]?.image}
+                  date={order.returnDateFormatted}
+                  icon1={"/Lock.svg"}
+                  icon2={"/Lock.svg"}
                   isSelected={selectedOrder === index}
                   cardGradient={randomGradient}
                   style={

@@ -14,6 +14,10 @@ const useGetValueAndHealth = () => {
   const [data5, setData5] = useState<any>(null)
   const [etherPrice, setEtherPrice]= useState<any>(null)
   const [linkPrice, setLinkPrice] = useState<any>(null)
+
+  const [AVA, setAVA] = useState<any>(null)
+  const [AVA2, setAVA2] = useState<any>(null)
+
   
     const { address, isConnected} = useWeb3ModalAccount();
 
@@ -31,12 +35,17 @@ const useGetValueAndHealth = () => {
         const res5 = await contract.getUserCollateralTokens(address)
         const res6 = await contract.getUsdValue(ADDRESS_1, 1, 0)
         const res7 = await contract.getUsdValue(LINK_ADDRESS, 1, 0)
+        const ava = await contract.gets_addressToAvailableBalance(address, ADDRESS_1)
+        const ava2 = await contract.gets_addressToAvailableBalance(address, LINK_ADDRESS)
+
         // const res8 = await contract.getUsdValue(USDC_ADDRESS, 1, 0)
 
-        // console.log("RESPONSE", res5);
+        // console.log("RESPONSE", res2);
         
         setData5(res5)
         
+        setAVA(ethers.formatEther(ava))
+        setAVA2(ethers.formatEther(ava2))
 
         const weiBal = ethers.formatEther(res3);
         const weiBal2 = ethers.formatEther(res4);
@@ -65,7 +74,7 @@ const useGetValueAndHealth = () => {
     fetchUserStatus();
   }, [address]); 
   
-  return { data, data2, data3, data4, collateralVal, data5, etherPrice, linkPrice };
+  return { data, data2, data3, data4, collateralVal, data5, etherPrice, linkPrice, AVA, AVA2 };
 };
 
 export default useGetValueAndHealth;

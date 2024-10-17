@@ -18,7 +18,7 @@ const useCreateLendingRequest = () => {
   return useCallback(
     async (_amount: string, _interest: number, _returnDate: number, _loanCurrency: string) => {
       if (!isSupportedChain(chainId)) return toast.warning("SWITCH TO BASE", { duration: 1000 });
-      console.log("_loanCurrency", _loanCurrency, _returnDate);
+     
 
       let currency;
       if (_loanCurrency === "ETH") {
@@ -40,7 +40,9 @@ const useCreateLendingRequest = () => {
         const _weiAmount = ethers.parseEther(_amount);
         const _basisPointInterest = _interest;
 
-        const transaction = await contract.createLendingRequest(_weiAmount, BigInt(_basisPointInterest), _returnDate, currency);
+         console.log("_loanCurrency", currency, _returnDate, _weiAmount, _basisPointInterest);
+
+        const transaction = await contract.createLendingRequest(_weiAmount, _basisPointInterest, _returnDate, currency);
         const receipt = await transaction.wait();
 
         if (receipt.status) {

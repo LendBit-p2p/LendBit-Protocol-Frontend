@@ -109,6 +109,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { OrderCard } from "./OrderCard";
 import { cardGradient } from "@/constants/utils/cardGradient";
+import { tokenImageMap } from "@/constants/utils/tokenImageMap";
 
 export const OpenOrder = ({ orderSample }: any) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -129,14 +130,14 @@ export const OpenOrder = ({ orderSample }: any) => {
   };
 
   // Initial centering of the cards on load
-  useEffect(() => {
-    if (containerRef.current && orderSample.length > 0) {
-      const containerWidth = containerRef.current.offsetWidth;
-      const cardWidth = 176;
-      const initialScroll = (cardWidth * orderSample.length - containerWidth) / 2;
-      containerRef.current.scrollLeft = initialScroll;
-    }
-  }, [orderSample]);
+  // useEffect(() => {
+  //   if (containerRef.current && orderSample.length > 0) {
+  //     const containerWidth = containerRef.current.offsetWidth;
+  //     const cardWidth = 176;
+  //     const initialScroll = (cardWidth * orderSample.length - containerWidth) / 2;
+  //     containerRef.current.scrollLeft = initialScroll;
+  //   }
+  // }, [orderSample]);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (containerRef.current) {
@@ -181,7 +182,7 @@ export const OpenOrder = ({ orderSample }: any) => {
 
   // Check if orderSample is empty
   if (!orderSample || orderSample.length === 0) {
-    return <p>No open orders available.</p>;
+    return <p className="flex justify-center items-center h-1/2">No open orders available.</p>;
   }
 
   return (
@@ -219,11 +220,11 @@ export const OpenOrder = ({ orderSample }: any) => {
               >
                 <div className="w-32 h-52 sm:w-44 sm:h-72 m-auto ml-4">
                   <OrderCard
-                    id={order.id}
+                    id={order.requestId || order.listingId}
                     type={order.type}
-                    amount={order.amount}
-                    token={order.token}
-                    date={order.date}
+                    amount={parseFloat(order.amount).toFixed(2)}
+                    token={tokenImageMap[order.tokenAddress]?.image}
+                    date={order.returnDateFormatted}
                     icon1={"/edit.svg"}
                     icon2={"/delete.svg"}
                     isSelected={currentIndex === index}

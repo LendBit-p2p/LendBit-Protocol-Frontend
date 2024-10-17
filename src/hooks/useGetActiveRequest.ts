@@ -1,10 +1,12 @@
+"use client"
+
 import { getLendbitContract } from "@/config/contracts";
 import { readOnlyProvider } from "@/config/provider";
 import { ADDRESS_1 } from "@/constants/utils/addresses";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { useEffect, useState } from "react";
 
-const useGetCollaterals = () => {
+const useGetActiveRequest = () => {
    const [data, setData] = useState<any | null>(null);
   const { address } = useWeb3ModalAccount();
 
@@ -13,8 +15,8 @@ const useGetCollaterals = () => {
     const fetchUserStatus = async () => {
       try {
         const contract = getLendbitContract(readOnlyProvider);
-        const res = await contract.gets_addressToCollateralDeposited(address, ADDRESS_1);
-        console.log("DATA 4", data);
+        const res = await contract.getUserActiveRequests(address, ADDRESS_1);
+        // console.log("DATA 4", data);
         
           setData(res);
 
@@ -31,4 +33,4 @@ const useGetCollaterals = () => {
   return data;
 };
 
-export default useGetCollaterals;
+export default useGetActiveRequest;

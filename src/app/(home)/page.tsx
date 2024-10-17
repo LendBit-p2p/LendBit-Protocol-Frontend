@@ -20,9 +20,10 @@ export default function DashboardPage() {
   const [health, setHealth] = useState<number | string>("N/A");
   const [fig, setFig] = useState<number | string>(0);
   const { address, isConnected } = useWeb3ModalAccount();
-  const { data2, data5, collateralVal} = useGetValueAndHealth();
+  const { data2, data5, collateralVal, AVA, AVA2} = useGetValueAndHealth();
 
-  // console.log("DATAAAAA",Number(data2)*(1e-19));
+  // console.log("DATAAAAA", AVA, AVA2);
+  
 
   
   // Function to get the first digit of a BigNumber
@@ -37,7 +38,7 @@ export default function DashboardPage() {
       if (isConnected && address) {
         try {
 
-          const healthFactor = data2 ? Number(data2)*10e-19 : "N/A";
+          const healthFactor = data2 ? parseFloat(String(Number(data2)*1e-19)).toFixed(3) : "N/A";
           setHealth(healthFactor);
 
           const portFig = collateralVal ? Number(collateralVal) : 0;

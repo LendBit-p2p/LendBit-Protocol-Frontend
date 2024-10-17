@@ -2,6 +2,7 @@
 import { getLendbitContract } from '@/config/contracts';
 import { readOnlyProvider } from '@/config/provider';
 import { Request } from '@/constants/types';
+import { useWeb3ModalAccount } from '@web3modal/ethers/react';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 
@@ -13,6 +14,25 @@ const useGetAllRequests = () => {
         loading: true,
         data: [],
     });
+
+    const [filteredReq, setFilteredReq] = useState<{
+        loading: boolean;
+        data: Request[] | undefined;
+    }>({
+        loading: true,
+        data: [],
+    });
+
+    const [myBorrowOrder, setMyBorrowOrder] = useState<{
+        loading: boolean;
+        data: Request[] | undefined;
+    }>({
+        loading: true,
+        data: [],
+    });
+
+    const { address } = useWeb3ModalAccount();
+
 
     useEffect(() => {
         (async () => {
@@ -34,8 +54,8 @@ const useGetAllRequests = () => {
                             totalRepayment: String(ethers.formatEther(_request[4].toString())),
                             returnDate: Number(_request[5]),
                             lender: _request[6],
-                            loanRequestAddr: _request[7],
-                            status: _request[8] == 0 ? 'OPEN' : _request[8] == 1 ? 'SERVICED' : 'CLOSED',
+                            tokenAddress: _request[7],
+                            status: _request[9] == 0 ? 'OPEN' : _request[9] == 1 ? 'SERVICED' : 'CLOSED',
                         };
 
                         fetchedRequests.push(structuredRequest);
@@ -49,16 +69,51 @@ const useGetAllRequests = () => {
                     break;
                 }
             }
+
+            const currentTime = (Date.now());
+
+            // console.log("CURRENT", currentTime);
+            
+
+            // Filter the listings based on the given conditions:
+            const filteredRequest = fetchedRequests.filter(request => 
+                request.status === 'OPEN' &&               // Exclude 'CLOSED' listings
+                request.returnDate > currentTime &&             // Exclude listings with expired returnDate
+                request.author != address
+            );
+
+              // Filter the listings based on the given conditions:
+            const myRequest = fetchedRequests.filter(request => 
+                request.author == address
+            );
+
             
             // Set the fetched requests and update loading state
             setRequests({
                 loading: false,
                 data: fetchedRequests,
             });
-        })();
-    }, []);
 
-    return {loading:requests.loading, requestData: requests.data};
+            setFilteredReq({
+                loading: false,
+                data: filteredRequest,
+            });
+
+            setMyBorrowOrder({
+                loading: false,
+                data: myRequest,
+            });
+        })();
+    }, [address]);
+
+    return {
+        loading: requests.loading,
+        requestData: requests.data,
+        loading2: filteredReq.loading,
+        requestData2: filteredReq.data,
+        loading3: myBorrowOrder.loading,
+        borrowOrder: myBorrowOrder.data,
+    };
 };
 
 export default useGetAllRequests;

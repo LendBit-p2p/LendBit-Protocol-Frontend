@@ -48,7 +48,7 @@ export interface LoanListing {
   max_amount: string;
   returnDate: number;
   interest: number;
-  listingStatus: string; 
+  status: string; 
 }
 
 export interface Request {
@@ -59,6 +59,12 @@ export interface Request {
     totalRepayment: string;
     returnDate: number;
     lender: string;
-    loanRequestAddr: string;
+    tokenAddress: string;
     status: string; // Use string to represent OPEN, SERVICED, or CLOSED
+}
+
+export interface Btn2Props {
+  text: string;
+  css?: string;
+  onClick?: () => void;
 }

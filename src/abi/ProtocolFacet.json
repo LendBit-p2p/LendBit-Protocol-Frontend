@@ -54,6 +54,19 @@
   },
   {
     "type": "function",
+    "name": "closeRequest",
+    "inputs": [
+      {
+        "name": "_requestId",
+        "type": "uint96",
+        "internalType": "uint96"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "createLendingRequest",
     "inputs": [
       {
@@ -135,6 +148,25 @@
     ],
     "outputs": [],
     "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "getAccountAvailableValue",
+    "inputs": [
+      {
+        "name": "_user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "_totalAvailableValueInUsd",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
   },
   {
     "type": "function",
@@ -394,6 +426,77 @@
         "name": "",
         "type": "tuple",
         "internalType": "struct Request",
+        "components": [
+          {
+            "name": "requestId",
+            "type": "uint96",
+            "internalType": "uint96"
+          },
+          {
+            "name": "author",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "amount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "interest",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "totalRepayment",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "returnDate",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "lender",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "loanRequestAddr",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "collateralTokens",
+            "type": "address[]",
+            "internalType": "address[]"
+          },
+          {
+            "name": "status",
+            "type": "uint8",
+            "internalType": "enum Status"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getServicedRequestByLender",
+    "inputs": [
+      {
+        "name": "_lender",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "_requests",
+        "type": "tuple[]",
+        "internalType": "struct Request[]",
         "components": [
           {
             "name": "requestId",
@@ -714,6 +817,19 @@
   },
   {
     "type": "function",
+    "name": "liquidateUserRequest",
+    "inputs": [
+      {
+        "name": "requestId",
+        "type": "uint96",
+        "internalType": "uint96"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "removeCollateralTokens",
     "inputs": [
       {
@@ -778,6 +894,32 @@
     ],
     "outputs": [],
     "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "setBotAddress",
+    "inputs": [
+      {
+        "name": "_botAddress",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "setSwapRouter",
+    "inputs": [
+      {
+        "name": "_swapRouter",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
   },
   {
     "type": "function",
@@ -954,6 +1096,31 @@
   },
   {
     "type": "event",
+    "name": "RequestLiquidated",
+    "inputs": [
+      {
+        "name": "requestId",
+        "type": "uint96",
+        "indexed": true,
+        "internalType": "uint96"
+      },
+      {
+        "name": "lenderAddress",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "totalRepayment",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "RequestServiced",
     "inputs": [
       {
@@ -1065,7 +1232,7 @@
   },
   {
     "type": "error",
-    "name": "Protocol__BreaksHealthFactor",
+    "name": "Protocol__CantFundSelf",
     "inputs": []
   },
   {
@@ -1130,6 +1297,11 @@
   },
   {
     "type": "error",
+    "name": "Protocol__OnlyBotCanAccess",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "Protocol__OrderNotOpen",
     "inputs": []
   },
@@ -1141,6 +1313,11 @@
   {
     "type": "error",
     "name": "Protocol__OwnerCreatedOrder",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "Protocol__RequestExpired",
     "inputs": []
   },
   {

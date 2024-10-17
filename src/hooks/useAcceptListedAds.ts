@@ -7,6 +7,7 @@ import { getProvider } from "@/config/provider";
 import { getLendbitContract } from "@/config/contracts";
 import { useRouter } from "next/navigation";
 import { ErrorWithReason } from "@/constants/types";
+import { ethers } from "ethers";
 
 const useAcceptListedAds = () => {
   const { chainId } = useWeb3ModalAccount();
@@ -14,15 +15,20 @@ const useAcceptListedAds = () => {
   const router = useRouter();
 
   return useCallback(
-    async (_orderId: number) => {
+    async (_orderId: number,_amount:string) => {
       if (!isSupportedChain(chainId)) return toast.warning("SWITCH TO BASE");
       const readWriteProvider = getProvider(walletProvider);
       const signer = await readWriteProvider.getSigner();
 
       const contract = getLendbitContract(signer);
+      const _weiAmount = ethers.parseUnits(_amount, 18);
+
+      console.log((_weiAmount));
+      
+
 
       try {
-        const transaction = await contract.acceptListedAds(_orderId);
+        const transaction = await contract.requestLoanFromListing(_orderId,_weiAmount);
         const receipt = await transaction.wait();
 
         if (receipt.status) {
@@ -35,20 +41,23 @@ const useAcceptListedAds = () => {
         const err = error as ErrorWithReason;
         let errorText: string;
         
-        if (err?.reason === "Protocol__OrderNotOpen()") {
+        if (err?.reason === "Protocol__ListingNotOpen()") {
           errorText = "this order is not available!";
         }
-        if (err?.reason === "Protocol__OwnerCreatedOrder()") {
+        if (err?.reason === "Protocol__OwnerCreatedListing()") {
           errorText = "can't accept your ad!";
         }
         if (err?.reason === "Protocol__InsufficientCollateral()") {
           errorText = "insufficient collateral!";
         }
+        if (err?.reason === "Protocol__InvalidAmount()") {
+          errorText = "please enter a valid amount!";
+        }
          if (err?.reason === "Protocol__TransferFailed") {
           errorText = "action failed!";
         }
         else {
-          errorText = "trying to resolve error!";
+          errorText = "Failed to accept bid!";
         }
 
         toast.warning(`Error: ${errorText}`);

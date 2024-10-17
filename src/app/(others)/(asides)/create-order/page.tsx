@@ -31,9 +31,9 @@ export default function CreateOrderPage() {
 
     const { address, isConnected } = useWeb3ModalAccount();
 
-    const createLoanOrder = useCreateLoanListing() // IF LOAN IS ACTIVE -> _amount: in wei, _min_amount: in wei, _max_amount: in wei, _returnDate: bigint, _interest: bigInt, _loanCurrency: string
-    const createBorrowOrder = useCreateLendingRequest() // IF BORROW IS ACTIVE -> _amount: in wei, _interest: in wei, _returnDate: bigInt, _loanCurrency: string
-
+    const createLoanOrder = useCreateLoanListing() 
+    const createBorrowOrder = useCreateLendingRequest() 
+    
    useEffect(() => {
         if (isConnected && address) {
             setUserAddress(address);
@@ -85,10 +85,7 @@ export default function CreateOrderPage() {
         setRange([0, updatedFiatAmount]); // Set range in fiat
     };
 
-    // useEffect(() => {
-    // console.log("Updated rangeInTokenVal:", rangeInTokenVal);
-    // }, [rangeInTokenVal]);
-    
+
     // Handle slider change
      const handleSliderChange = (value: number[]) => {
         setRange(value); // Range in fiat
@@ -99,7 +96,7 @@ export default function CreateOrderPage() {
     };
 
     const handleCancel = () => {
-    router.push("/marketplace");
+    router.push("/create-order");
    };
 
     return (

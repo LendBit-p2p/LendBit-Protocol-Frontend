@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 
 const OhNo = () => {
     return (
@@ -31,7 +32,7 @@ const OhNo = () => {
                 </div>
 
                 <div className="flex gap-4 items-center text-white mt-6">
-                    <button className="w-fit p-2 rounded-lg cursor-pointer bg-[#FF4D00] text-xs flex items-center gap-3">
+                    <Link href={"/create-order"} className="w-fit p-2 rounded-lg cursor-pointer bg-[#FF4D00] text-xs flex items-center gap-3">
                         Create Borrow Order
                         <Image
                             src={"/plusBtn.svg"}
@@ -41,9 +42,9 @@ const OhNo = () => {
                             priority
                             quality={100}
                         />
-                    </button>
+                    </Link>
 
-                    <button className="w-fit p-2 rounded-lg cursor-pointer bg-[#FF4D00] text-xs flex items-center gap-3">
+                    <Link href={"/create-order"} className="w-fit p-2 rounded-lg cursor-pointer bg-[#FF4D00] text-xs flex items-center gap-3">
                         Create Lend Order
                         <Image
                             src={"/plusBtn.svg"}
@@ -53,7 +54,7 @@ const OhNo = () => {
                             priority
                             quality={100}
                         />
-                    </button>
+                    </Link>
                 </div>
 
                 <div className="mt-6">
