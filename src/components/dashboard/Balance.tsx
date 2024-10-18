@@ -10,7 +10,7 @@ import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 const Balance = () => {
 
   const { address, isConnected} = useWeb3ModalAccount();
-  const {etherPrice, linkPrice, data3, data4, collateralVal} = useGetValueAndHealth();
+  const {etherPrice, linkPrice, data3, data4, collateralVal,availBal} = useGetValueAndHealth();
   // console.log("dt", data3, data4,collateralVal);
 
   // Initialize the array with dynamic balance and market value calculation
@@ -71,7 +71,7 @@ const Balance = () => {
           Total Bal: <span className="pl-1">{`$${collateralVal? collateralVal: 0}`}</span>
         </h4>
         <h4 className="p-1 sm:p-0 text-right sm:text-left">
-          Max Withdrawal: <span className="pl-1">$2,345.67</span>
+          Max Withdrawal: <span className="pl-1">{`$${availBal? Number(availBal) : 0}`}</span>
         </h4>
       </div>
 

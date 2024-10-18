@@ -60,7 +60,7 @@ export interface Request {
     returnDate: number;
     lender: string;
     tokenAddress: string;
-    status: string; // Use string to represent OPEN, SERVICED, or CLOSED
+    status: string; 
 }
 
 export interface Btn2Props {

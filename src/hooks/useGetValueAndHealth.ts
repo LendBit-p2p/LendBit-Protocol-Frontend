@@ -14,7 +14,7 @@ const useGetValueAndHealth = () => {
   const [data5, setData5] = useState<any>(null)
   const [etherPrice, setEtherPrice]= useState<any>(null)
   const [linkPrice, setLinkPrice] = useState<any>(null)
-
+  const [availBal, setAvailBal] = useState<any>(null)
   const [AVA, setAVA] = useState<any>(null)
   const [AVA2, setAVA2] = useState<any>(null)
 
@@ -37,6 +37,7 @@ const useGetValueAndHealth = () => {
         const res7 = await contract.getUsdValue(LINK_ADDRESS, 1, 0)
         const ava = await contract.gets_addressToAvailableBalance(address, ADDRESS_1)
         const ava2 = await contract.gets_addressToAvailableBalance(address, LINK_ADDRESS)
+        const availBalance = await contract.getAccountAvailableValue(address)
 
         // const res8 = await contract.getUsdValue(USDC_ADDRESS, 1, 0)
 
@@ -60,6 +61,8 @@ const useGetValueAndHealth = () => {
         setCollateralVal(totalValue);
         setLinkPrice(res7);
         setEtherPrice(res6);
+        setAvailBal(availBalance)
+
 
       } catch (err) {
         console.error("Error fetching user data:", err);
@@ -74,7 +77,7 @@ const useGetValueAndHealth = () => {
     fetchUserStatus();
   }, [address]); 
   
-  return { data, data2, data3, data4, collateralVal, data5, etherPrice, linkPrice, AVA, AVA2 };
+  return { data, data2, data3, data4, collateralVal, data5, etherPrice, linkPrice, AVA, AVA2, availBal };
 };
 
 export default useGetValueAndHealth;

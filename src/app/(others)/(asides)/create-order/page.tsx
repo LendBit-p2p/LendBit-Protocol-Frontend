@@ -96,7 +96,7 @@ export default function CreateOrderPage() {
     };
 
     const handleCancel = () => {
-    router.push("/create-order");
+    router.push("/order");
    };
 
     return (

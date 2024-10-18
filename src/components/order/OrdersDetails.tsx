@@ -11,7 +11,7 @@ interface Order {
 
 const OrdersDetails = ({ orderSample }: any) => {
   
-  console.log("OrderSAMPLE", orderSample);
+  // console.log("OrderSAMPLE", orderSample);
 
   const now = Date.now();
 

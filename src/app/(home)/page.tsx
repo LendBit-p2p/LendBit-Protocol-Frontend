@@ -10,6 +10,7 @@ import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { formatAddress } from "@/constants/utils/formatAddress";
 import { useEffect, useState } from "react";
 import { getBasename } from '@superdevfavour/basename'; 
+import useGetActiveRequest from "@/hooks/useGetActiveRequest";
 
 const capitalizeFirstLetter = (str: string): string => {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -17,29 +18,24 @@ const capitalizeFirstLetter = (str: string): string => {
 
 export default function DashboardPage() {
   const [user, setUser] = useState("User");
-  const [health, setHealth] = useState<number | string>("N/A");
+  const [health, setHealth] = useState<number | string>("0");
   const [fig, setFig] = useState<number | string>(0);
   const { address, isConnected } = useWeb3ModalAccount();
-  const { data2, data5, collateralVal, AVA, AVA2} = useGetValueAndHealth();
+  const { data, data2, collateralVal, } = useGetValueAndHealth();
+  const activeReq = useGetActiveRequest();
 
-  // console.log("DATAAAAA", AVA, AVA2);
-  
-
-  
-  // Function to get the first digit of a BigNumber
-  // const getFirstDigit = (bigNumber: bigint) => {
-  //   const bigNumberString = bigNumber.toString();
-  //   const firstDigit = parseInt(bigNumberString[0], 10);
-  //   return firstDigit;
-  // };
+  console.log("DATAAAAA", data2, activeReq);
 
   useEffect(() => {
     const fetchData = async () => {
       if (isConnected && address) {
         try {
-
-          const healthFactor = data2 ? parseFloat(String(Number(data2)*1e-19)).toFixed(3) : "N/A";
-          setHealth(healthFactor);
+          if (activeReq?.length === 0 && Number(data) > 0) {
+            setHealth("∞"); 
+          } else {
+            const healthFactor = parseFloat(String(Number(data2) * 1e-18)).toFixed(2);
+            setHealth(healthFactor);
+          }
 
           const portFig = collateralVal ? Number(collateralVal) : 0;
           setFig(portFig);
@@ -49,32 +45,30 @@ export default function DashboardPage() {
           if (basename) {
             setUser(basename);
           } else {
-            setUser(formatAddress(address)); 
+            setUser(formatAddress(address));
           }
         } catch (error) {
           console.error("Error fetching data:", error);
-          
           setUser(formatAddress(address));
           setHealth("N/A");
           setFig(0);
         }
       } else {
-
         setUser("User");
-        setHealth("N/A");
+        setHealth("0");
         setFig(0);
       }
     };
 
     fetchData();
-  }, [isConnected, address, collateralVal, data2]); 
+  }, [isConnected, address, collateralVal, data2, data, activeReq]);
 
   return (
     <main className="max-w-[1190px] mx-auto p-4">
       <div className="w-full">
         <h3 className="mb-4 text-xl">
           {"Welcome, "}
-            [<span className="text-[#DD4F00]">{capitalizeFirstLetter(user)}</span>]
+          <span className="text-[#DD4F00]">{capitalizeFirstLetter(user)}</span>
         </h3>
 
         {/* Top section: Dashboard Cards */}
@@ -112,7 +106,7 @@ export default function DashboardPage() {
           />
 
           <DashboardCard
-            text={"Health Factor "}
+            text={"Health Factor"}
             figure={health}
             extraCSS="health-card"
             icon={
@@ -133,7 +127,9 @@ export default function DashboardPage() {
 
           {/* Right half: Usage alone */}
           <div className="w-full">
-            <Usage />
+            <Usage activeReq={activeReq}
+                   collateralVal = {collateralVal}
+            />
           </div>
         </div>
       </div>
@@ -142,17 +138,17 @@ export default function DashboardPage() {
 }
 
 const battryCSS = (figure: number | string) => {
-  const value = typeof figure === 'string' ? parseFloat(figure) : figure;
+  const value = typeof figure === "string" ? parseFloat(figure) : figure;
 
-  if (value > 1) {
-    return 'above1 h-full';
+  if (value > 1 || figure === "∞") {
+    return "above1 h-full";
   } else if (value === 1) {
-    return 'btw051_099 h-6';
+    return "btw051_099 h-6";
   } else if (value >= 0.51) {
-    return 'below03 h-3';
+    return "below03 h-3";
   } else if (value > 0.29) {
-    return 'below03 h-2';
+    return "below03 h-2";
   } else {
-    return 'below03 h-1';
+    return "below03 h-1";
   }
 };

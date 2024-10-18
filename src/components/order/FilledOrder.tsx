@@ -63,6 +63,10 @@ export const FilledOrder = ({orderSample}:any) => {
     setIsDragging(false);
   };
 
+  if (!orderSample || orderSample.length === 0) {
+    return <p className="flex justify-center items-center h-1/2">No filled order.</p>;
+  }
+
   return (
     <div className="w-full filled-orders">
       <h3 className="text-lg font-normal mb-4">Filled Orders</h3>
