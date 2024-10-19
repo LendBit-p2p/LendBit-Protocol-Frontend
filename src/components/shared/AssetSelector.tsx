@@ -66,7 +66,7 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({
   // Handle asset value input change and notify parent component
   const handleAssetValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    const regex = /^\d*\.?\d{0,3}$/; // Allow up to 3 decimal places
+    const regex = /^\d*\.?\d{0,5}$/; // Allow up to 3 decimal places
     if (regex.test(value)) {
       onAssetValueChange(value); // Update in parent
     }

@@ -34,7 +34,7 @@ const CardLayout = () => {
 
     // console.log("listingssss ", listingData2)
     
-    // console.log("Orderssss ",requestData2)
+    console.log("Orderssss ",requestData2)
 
 
     const applyBasenameToAuthors = async (data: any[]) => {

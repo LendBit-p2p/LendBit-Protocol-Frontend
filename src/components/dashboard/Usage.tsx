@@ -1,13 +1,15 @@
 "use client";
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
-import { Btn } from '../shared/Btn';
 import { useRouter } from "next/navigation";
 import { Request } from '@/constants/types';
 import { tokenImageMap } from '@/constants/utils/tokenImageMap';
 import { ethers } from 'ethers';
 import useRepayLoan from '@/hooks/useRepayLoan';
 import { Btn2 } from '../shared/Btn2';
+import { getLendbitContract } from '@/config/contracts';
+import { readOnlyProvider } from '@/config/provider';
+import { useState, useEffect } from 'react';
 
 interface UsageProps {
   activeReq: Request[] | null;
@@ -16,13 +18,27 @@ interface UsageProps {
 
 const Usage = ({ activeReq, collateralVal }: UsageProps) => {
   const router = useRouter();
-  const repay = useRepayLoan()
+  const repay = useRepayLoan();
+  const contract = getLendbitContract(readOnlyProvider);
+  const [totalBorrowed, setTotalBorrowed] = useState(0);
 
+  // Asynchronous function to calculate total borrowed
+  const calculateTotalBorrowed = async () => {
+    if (activeReq) {
+      const values = await Promise.all(
+        activeReq.map(async (req) =>
+          contract.getUsdValue(req.tokenAddress, req.totalRepayment, 0)
+        )
+      );
+      const total = values.reduce((acc, value) => acc + value, 0);
+      setTotalBorrowed(total);
+    }
+  };
 
-  // Calculate total borrowed by summing all totalRepayment values
-  const totalBorrowed = activeReq
-    ? activeReq.reduce((acc, req) => acc + Number(ethers.formatEther(req.totalRepayment)), 0)
-    : 0;
+  // useEffect to trigger the calculation when activeReq changes
+  useEffect(() => {
+    calculateTotalBorrowed();
+  }, [activeReq]);
 
   // Calculate power left based on total borrowed and collateral value
   const powerLeft = collateralVal ? 100 - ((totalBorrowed * 100) / (collateralVal * 0.8)) : 0;
@@ -72,7 +88,7 @@ const Usage = ({ activeReq, collateralVal }: UsageProps) => {
               const tokenData = tokenImageMap[item.tokenAddress] || { image: "/Eye.svg", label: "None" };
 
               return (
-                <tr key={index} className="text-white/50">
+                <tr key={index} className="text-white/60">
                   <td className="pt-3 flex gap-1 items-center text-start text-white">
                     <img src={tokenData.image} alt={tokenData.label} className="w-4" />
                     <span>{tokenData.label}</span>
@@ -81,7 +97,7 @@ const Usage = ({ activeReq, collateralVal }: UsageProps) => {
                   <td className="pt-2">{ethers.formatEther(item.totalRepayment)}</td>
                   <td className="pt-2">{item.interest}%</td>
                   <td className="pt-2 flex justify-center">
-                    <Btn2 text="Repay" css="text-white/90 text-center"
+                    <Btn2 text="Repay" css="text-white/90 text-center bg-[#2A2A2ACC] px-2 py-[0.5px] rounded-md"
                       onClick={()=>repay(item.requestId, item.tokenAddress,item.totalRepayment)}
                     />
                   </td>

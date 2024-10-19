@@ -6,5 +6,5 @@ export const envVars = {
 
     httpRPC: process.env.NEXT_PUBLIC_HTTP_RPC,
 
-    wssRPC: process.env.NEXT_PUBLIC_WEBSOCKET_RPC,
+    wssRPC: process.env.NEXT_PUBLIC_WEBSOCKET_RPC!,
 };

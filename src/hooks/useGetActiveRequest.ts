@@ -30,7 +30,7 @@ const useGetActiveRequest = () => {
           returnDate: Number(req[5]), // Convert BigNumber to number for date
           lender: req[6],
           tokenAddress: req[7], // Assuming you meant tokenAddress from `loanRequestAddr`
-          status: parseStatus(Number(req[9])) // Map the status to a string representation
+          status: String(Number(req[9])) // Map the status to a string representation
         }));
 
         setActiveReq(formattedRequests);
