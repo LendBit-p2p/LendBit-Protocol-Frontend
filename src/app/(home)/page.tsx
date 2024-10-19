@@ -25,7 +25,7 @@ export default function DashboardPage() {
   const { data, data2, collateralVal, } = useGetValueAndHealth();
   const activeReq = useGetActiveRequest();
 
-  console.log("DATAAAAA", data2, activeReq);
+  // console.log("DATAAAAA", data2, activeReq);
 
   useEffect(() => {
     const fetchData = async () => {

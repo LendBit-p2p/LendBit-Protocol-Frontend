@@ -8,7 +8,7 @@ import { Spinner } from "@radix-ui/themes";
 import useServiceRequest from "@/hooks/useServiceRequest";
 import { useRouter } from "next/navigation";
 import useGetValueAndHealth from "@/hooks/useGetValueAndHealth";
-import { getBasename } from '@superdevfavour/basename'; 
+import { getBasename, getBasenameAvatar } from '@superdevfavour/basename'; 
 import { Btn2 } from "../shared/Btn2";
 import { tokenImageMap } from "@/constants/utils/tokenImageMap";
 
@@ -34,22 +34,31 @@ const CardLayout = () => {
 
     // console.log("listingssss ", listingData2)
     
-    console.log("Orderssss ",requestData2)
+    // console.log("Orderssss ",requestData2)
 
 
-    const applyBasenameToAuthors = async (data: any[]) => {
-        const updatedData = await Promise.all(
-            data.map(async (item) => {
-                const basename = await getBasename(item.author);
-                return {
-                    ...item,
-                    author: basename || formatAddress(item.author), // Use basename or formatted address
-                };
-            })
-        );
-        return updatedData;
-    };
+   const applyBasenameToAuthors = async (data: any[]) => {
+    const updatedData = await Promise.all(
+        data.map(async (item) => {
+            const basename = await getBasename(item.author);
+            let imgSrc = "/avatar.svg"; // default avatar
+            
+            if (basename) {
+                const img = await getBasenameAvatar(basename);
+                if (img) {
+                    imgSrc = img; // use basename avatar if exists
+                }
+            }
 
+            return {
+                ...item,
+                author: basename || formatAddress(item.author), // Use basename or formatted address
+                avatarUrl: imgSrc // add avatar URL to the object
+            };
+        })
+    );
+    return updatedData;
+}
     useEffect(() => {
         if (listingData2) {
             // Apply basenames to the authors in borrowTableData
@@ -190,7 +199,7 @@ const CardLayout = () => {
                                 <h2 className="text-lg font-semibold">{tokenImageMap[data.tokenAddress]?.label}</h2>
                             </div>
                             <div className="flex items-center gap-2 mb-2">
-                                <Image src="/avatar.svg" alt="avatar" width={24} height={24} />
+                                <img src={data.avatarUrl} alt="avatar" width={24} height={24} />
                                 <p className="text-gray-400">Origin:</p>
                                 <p className="font-semibold">{data.author}</p>
                             </div>
@@ -240,7 +249,7 @@ const CardLayout = () => {
                                 <h2 className="text-lg font-semibold">{tokenImageMap[data.tokenAddress]?.label}</h2>
                             </div>
                             <div className="flex items-center gap-2 mb-2">
-                                <Image src="/avatar.svg" alt="avatar" width={24} height={24} />
+                                <img src={data.avatarUrl} alt="avatar" width={24} height={24} />
                                 <p className="text-gray-400">Origin:</p>
                                 <p className="font-semibold">{data.author}</p>
                             </div>

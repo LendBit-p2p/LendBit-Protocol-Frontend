@@ -28,10 +28,10 @@ const useGetValueAndHealth = () => {
         const contract = getLendbitContract(readOnlyProvider);
         
         const res = await contract.getAccountCollateralValue(address);
-        console.log("Collateral value fetched:", res);
+        // console.log("Collateral value fetched:", res);
 
         const res2 = await contract.getHealthFactor(address);
-        console.log("Health factor fetched:", res2);
+        // console.log("Health factor fetched:", res2);
 
         const res3 = await contract.gets_addressToCollateralDeposited(address, ADDRESS_1);
         // console.log("Collateral deposited (ADDRESS_1):", res3);
