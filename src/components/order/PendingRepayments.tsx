@@ -8,9 +8,9 @@ import useRepayLoan from "@/hooks/useRepayLoan";
 
 const PendingRepayments = () => {
   const activeReq = useGetActiveRequest();
-  console.log("ACTIVE ",activeReq);
-  const repay = useRepayLoan()
+  const repay = useRepayLoan();
   const [countdowns, setCountdowns] = useState<string[]>([]);
+  const [totalPending, setTotalPending] = useState<number>(0); // State to track total pending payments
 
   const calculateCountdown = (timestamp: number) => {
     const now = new Date().getTime(); // Current time in milliseconds
@@ -30,6 +30,7 @@ const PendingRepayments = () => {
   useEffect(() => {
     if (!activeReq) return;
 
+    // Update countdowns for all active requests
     const updateCountdowns = () => {
       const updatedCountdowns = activeReq.map((item) => calculateCountdown(item.returnDate));
       setCountdowns(updatedCountdowns);
@@ -39,14 +40,21 @@ const PendingRepayments = () => {
 
     const interval = setInterval(() => {
       updateCountdowns();
-    }, 60000); // 1 minute
+    }, 60000); // Update every minute
 
     // Clear the interval when the component unmounts
     return () => clearInterval(interval);
   }, [activeReq]);
 
+  useEffect(() => {
+    // Calculate the total pending repayments
+    if (activeReq) {
+      const total = activeReq.reduce((acc, item) => acc + Number(ethers.formatEther(item.totalRepayment)), 0);
+      setTotalPending(total); // Update the total pending state
+    }
+  }, [activeReq]);
 
-  if (!activeReq?.length) {
+  if (!activeReq?.length || totalPending === 0) {
     return (
       <div className="bg-black py-6 w-full px-4 sm:px-6 font-[family-name:var(--font-outfit)] u-class-shadow">
         <h3 className="text-xl text-[#F6F6F6] font-medium">No Pending Repayments</h3>
@@ -86,7 +94,7 @@ const PendingRepayments = () => {
 
               {/* Repay Button */}
               <div
-                onClick={()=>repay(item.requestId, item.tokenAddress, item.totalRepayment)}
+                onClick={() => repay(item.requestId, item.tokenAddress, item.totalRepayment)}
                 className="w-full sm:w-1/5 font-normal">
                 <Btn
                   text="Repay"

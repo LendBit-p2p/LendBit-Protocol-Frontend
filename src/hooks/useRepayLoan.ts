@@ -26,10 +26,13 @@ const useRepayLoan = () => {
       const contract = getLendbitContract(signer);
 
       // const _amount = ethers.parseEther(_amount); 
-      console.log(_requestId, _tokenAddress,_amount, _amount);
+      // console.log(_requestId, _tokenAddress,_amount, _amount);
 
+      let loadingToastId: string | number | undefined;
 
       try {
+        loadingToastId = toast.loading("Please wait!... Processing repayments");
+
         // If the token address is ADDRESS_1, directly call repayLoan for native token (like ETH)
         if (_tokenAddress === ADDRESS_1) {
           const transaction = await contract.repayLoan(_requestId, _amount);
@@ -37,10 +40,14 @@ const useRepayLoan = () => {
           const receipt = await transaction.wait();
 
           if (receipt.status) {
-            return toast.success("Outstanding payed!");
+            return toast.success("Outstanding payed!", {
+              id: loadingToastId,
+            });
           }
 
-          return toast.error("Repayment failed!");
+          return toast.error("Repayment failed!", {
+              id: loadingToastId,
+            });
         }
 
         // If the token is a different ERC-20 token (e.g., LINK), check allowance first
@@ -53,7 +60,9 @@ const useRepayLoan = () => {
             const approvalReceipt = await approvalTx.wait();
 
             if (!approvalReceipt.status) {
-              return toast.error("Approval failed!");
+              return toast.error("Approval failed!", {
+              id: loadingToastId,
+            });
             }
           }
 
@@ -62,10 +71,14 @@ const useRepayLoan = () => {
           const receipt = await transaction.wait();
 
           if (receipt.status) {
-            return toast.success("Collateral deposited!");
+            return toast.success("Outstanding payed!", {
+              id: loadingToastId,
+            });
           }
 
-          return toast.error("Repayment failed!");
+          return toast.error("Repayment failed!", {
+              id: loadingToastId,
+            });
         }
       } catch (error: unknown) {
         const err = error as ErrorWithReason;
@@ -90,7 +103,9 @@ const useRepayLoan = () => {
             errorText = "Trying to resolve error!";
         }
 
-        toast.warning(`Error: ${errorText}`);
+        toast.warning(`Error: ${errorText}`, {
+              id: loadingToastId,
+            });
       }
     },
     [chainId, walletProvider, allowance]

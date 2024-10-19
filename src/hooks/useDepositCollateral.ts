@@ -31,18 +31,19 @@ const useDepositCollateral = () => {
       let toastId: string | number | undefined;
 
       try {
+         toastId = toast.loading(`Processing deposit transaction...`);
         // Check allowance before proceeding
         if (val == 0 || val < Number(_amountOfCollateral)) {
           const allowance = await erc20contract.approve(envVars.lendbitDiamondAddress, MaxUint256);
           const allReceipt = await allowance.wait();
 
           if (!allReceipt.status) {
-            return toast.error("Approval failed!");
+            return toast.error("Approval failed!", { id: toastId });
           }
         }
 
 
-        toastId = toast.loading(`Processing deposit transaction...`);
+       
         const transaction = await contract.depositCollateral(LINK_ADDRESS, _weiAmount);
         const receipt = await transaction.wait();
 

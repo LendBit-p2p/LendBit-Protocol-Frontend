@@ -6,6 +6,7 @@ import Link from "next/link";
 import useGetValueAndHealth from "@/hooks/useGetValueAndHealth";
 import NoAssets from "./NoAssets";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
+import { ethers } from "ethers";
 
 const Balance = () => {
 
@@ -19,7 +20,7 @@ const Balance = () => {
       assetName: "ETH",
       assetImg: "/eth.svg",
       balance: data3 ?? 0,
-      marketValue: `$${((data3 ?? 0) * Number(etherPrice)).toFixed(3)}`, 
+      marketValue: `$${((data3 ?? 0) * Number(etherPrice))}`, 
       netProfit: "12.30%",
       netProfitColor: "text-green-500",
       collateralImg: "/toggleOff.svg",
@@ -30,7 +31,7 @@ const Balance = () => {
       assetName: "LINK",
       assetImg: "/link.svg",
       balance: data4 ?? 0, 
-      marketValue: `$${((data4 ?? 0) * Number(linkPrice)).toFixed(3)}`, 
+      marketValue: `$${((data4 ?? 0) * Number(linkPrice))}`, 
       netProfit: "2.53%",
       netProfitColor: "text-green-500",
       collateralImg: "/toggleOn.svg",
@@ -71,7 +72,7 @@ const Balance = () => {
           Total Bal: <span className="pl-1">{`$${collateralVal? collateralVal: 0}`}</span>
         </h4>
         <h4 className="p-1 sm:p-0 text-right sm:text-left">
-          Max Withdrawal: <span className="pl-1">{`$${availBal? Number(availBal) : 0}`}</span>
+          Max Withdrawal: <span className="pl-1">{`$${availBal? Number(ethers.formatEther(String(availBal))) : 0}`}</span>
         </h4>
       </div>
 
@@ -97,7 +98,7 @@ const Balance = () => {
                   <span>{item.assetName}</span>
                 </td>
                 {/* Balance */}
-                <td className="pt-2">{item.balance.toFixed(4)}</td>
+                <td className="pt-2">{item.balance}</td>
                 {/* Market Value */}
                 <td className="pt-2">{item.marketValue}</td>
                 {/* Net Profit */}

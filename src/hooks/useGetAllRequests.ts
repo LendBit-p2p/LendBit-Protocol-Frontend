@@ -96,7 +96,7 @@ const useGetAllRequests = () => {
 
             setFilteredReq({
                 loading: false,
-                data: fetchedRequests,
+                data: filteredRequest,
             });
 
             setMyBorrowOrder({

@@ -11,10 +11,11 @@ import { formatAddress } from "@/constants/utils/formatAddress";
 import { useEffect, useState } from "react";
 import { getBasename } from '@superdevfavour/basename'; 
 import useGetActiveRequest from "@/hooks/useGetActiveRequest";
+import { ethers } from "ethers";
+import { capitalizeFirstLetter } from "@/constants/utils/capitaliseFirstUser";
+import { Request } from "@/constants/types";
 
-const capitalizeFirstLetter = (str: string): string => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-};
+
 
 export default function DashboardPage() {
   const [user, setUser] = useState("User");
@@ -30,14 +31,17 @@ export default function DashboardPage() {
     const fetchData = async () => {
       if (isConnected && address) {
         try {
-          if (activeReq?.length === 0 && Number(data) > 0) {
+          // Check if all totalRepayments are 0
+          const allRepaymentsZero = activeReq?.every((request: Request) => Number(request.totalRepayment) == 0);
+
+          if (allRepaymentsZero && Number(data) > 0) {
             setHealth("∞"); 
           } else {
             const healthFactor = parseFloat(String(Number(data2) * 1e-18)).toFixed(2);
             setHealth(healthFactor);
           }
 
-          const portFig = collateralVal ? Number(collateralVal) : 0;
+          const portFig = data ? Number(ethers.formatEther(String(data))): 0;
           setFig(portFig);
 
           // Fetch basename

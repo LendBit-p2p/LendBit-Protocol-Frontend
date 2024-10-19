@@ -26,18 +26,24 @@ const useServiceRequest = () => {
       const signer = await readWriteProvider.getSigner();
       const contract = getLendbitContract(signer);
 
+      let loadingToastId: string | number | undefined;
+
       try {
+        loadingToastId = toast.loading("Processing service request...");
         // If the token address is ADDRESS_1, directly call serviceRequest
         if (_tokenAddress === ADDRESS_1) {
           const transaction = await contract.serviceRequest(_requestId, _tokenAddress);
           const receipt = await transaction.wait();
 
           if (receipt.status) {
-            toast.success("Borrow request serviced!");
+            toast.success("Request serviced!",
+            {
+              id: loadingToastId,
+            });
             return router.push('/marketplace');
           }
 
-          return toast.error("Request failed!");
+          return toast.error("Request servicing failed!");
         }
 
         // If the token address is LINK_ADDRESS, check allowance
@@ -50,7 +56,10 @@ const useServiceRequest = () => {
             const allowanceReceipt = await allowanceTx.wait();
 
             if (!allowanceReceipt.status) {
-              return toast.error("Approval failed!");
+              return toast.error("Approval failed!",
+                {
+                id: loadingToastId,
+              });
             }
           }
 
@@ -59,11 +68,18 @@ const useServiceRequest = () => {
           const receipt = await transaction.wait();
 
           if (receipt.status) {
-            toast.success("Borrow request serviced!");
+            toast.success("Request serviced!",
+              {
+                id: loadingToastId,
+              });
             return router.push('/marketplace');
           }
 
-          return toast.error("Request failed!");
+          return toast.error("request servicing failed!",
+            {
+              id: loadingToastId,
+            }
+          );
         }
       } catch (error: unknown) {
         const err = error as ErrorWithReason;
@@ -88,7 +104,9 @@ const useServiceRequest = () => {
             errorText = "Trying to resolve error!";
         }
 
-        toast.warning(`Error: ${errorText}`);
+        toast.warning(`Error: ${errorText}`, {
+              id: loadingToastId,
+            });
       }
     },
     [chainId, walletProvider, val]

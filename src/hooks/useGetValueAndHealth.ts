@@ -63,11 +63,11 @@ const useGetValueAndHealth = () => {
         setData3(Number(ethers.formatEther(res3)));
         setData4(Number(ethers.formatEther(res4)));
         setCollateralVal(
-          ((Number(ethers.formatEther(res3)) * Number(res6)) + 
-           (Number(ethers.formatEther(res4)) * Number(res7))).toFixed(3)
+          ((Number(ethers.formatEther(res3)) * Number(ethers.formatEther(res6))) + 
+           (Number(ethers.formatEther(res4)) * Number(ethers.formatEther(res7))))
         );
-        setLinkPrice(res7);
-        setEtherPrice(res6);
+        setLinkPrice(ethers.formatEther(res7));
+        setEtherPrice(ethers.formatEther(res6));
         setAvailBal(availBalance);
         setAVA(ethers.formatEther(ava));
         setAVA2(ethers.formatEther(ava2));

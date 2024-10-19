@@ -40,18 +40,18 @@ const useCreateLendingRequest = () => {
         const _weiAmount = ethers.parseEther(_amount);
         const _basisPointInterest = _interest;
 
-         console.log("_loanCurrency", currency, _returnDate, _weiAmount, _basisPointInterest);
+        //  console.log("_loanCurrency", currency, _returnDate, _weiAmount, _basisPointInterest);
 
         const transaction = await contract.createLendingRequest(_weiAmount, _basisPointInterest, _returnDate, currency);
         const receipt = await transaction.wait();
 
         if (receipt.status) {
-          toast.success("Collateral deposited!", {
+          toast.success("Loan Pool created!", {
             id: loadingToastId,
           });
           return router.push('/successful');
         } else {
-          toast.error("Transaction failed!", {
+          toast.error("Pool creation failed!", {
             id: loadingToastId,
           });
         }

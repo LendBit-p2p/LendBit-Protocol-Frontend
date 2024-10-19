@@ -23,20 +23,22 @@ const useAcceptListedAds = () => {
       const contract = getLendbitContract(signer);
       const _weiAmount = ethers.parseUnits(_amount, 18);
 
-      console.log((_weiAmount));
+      // console.log((_weiAmount));
       
 
-
+      let loadingToastId;
       try {
+        loadingToastId = toast.loading("Processing loan request...");
+
         const transaction = await contract.requestLoanFromListing(_orderId,_weiAmount);
         const receipt = await transaction.wait();
 
         if (receipt.status) {
-          toast.success("Order Accepted!");
+          toast.success("You accepted listed ads successfully!",{ id: loadingToastId });
           return router.push('/');
         }
 
-        toast.error("failed!");
+        toast.error("failed!",{ id: loadingToastId });
       } catch (error: unknown) {
         const err = error as ErrorWithReason;
         let errorText: string;
@@ -60,7 +62,7 @@ const useAcceptListedAds = () => {
           errorText = "Failed to accept bid!";
         }
 
-        toast.warning(`Error: ${errorText}`);
+        toast.warning(`Error: ${errorText}`,{ id: loadingToastId });;
       }
     },
     [chainId, walletProvider]

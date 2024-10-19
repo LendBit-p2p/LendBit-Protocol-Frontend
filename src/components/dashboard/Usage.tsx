@@ -51,10 +51,10 @@ const Usage = ({ activeReq, collateralVal }: UsageProps) => {
       </div>
       <div className="flex justify-between items-center border-y text-white/50 text-xs p-1 mb-6">
         <h4 className="p-1">
-          Total Collateral: <span className="pl-1">{`$${collateralVal ? (collateralVal * 0.8).toFixed(2) : 0}`}</span>
+          Total Collateral: <span className="pl-1">{`$${collateralVal ? (collateralVal * 0.8) : 0}`}</span>
         </h4>
         <h4 className="p-1">
-          Total Borrowed: <span className="pl-1">{`$${totalBorrowed.toFixed(2)}`}</span>
+          Total Borrowed: <span className="pl-1">{`$${ethers.formatEther(totalBorrowed)}`}</span>
         </h4>
       </div>
 
@@ -80,33 +80,35 @@ const Usage = ({ activeReq, collateralVal }: UsageProps) => {
         </div>
       </div>
 
-      <div className="px-4 mb-2">
-        <table className="min-w-full text-[10px] text-center">
-          <thead></thead>
-          <tbody>
-            {activeReq?.map((item, index) => {
-              const tokenData = tokenImageMap[item.tokenAddress] || { image: "/Eye.svg", label: "None" };
+      {totalBorrowed > 0 && (
+        <div className="px-4 mb-2">
+          <table className="min-w-full text-[10px] text-center">
+            <thead></thead>
+            <tbody>
+              {activeReq?.map((item, index) => {
+                const tokenData = tokenImageMap[item.tokenAddress] || { image: "/Eye.svg", label: "None" };
 
-              return (
-                <tr key={index} className="text-white/60">
-                  <td className="pt-3 flex gap-1 items-center text-start text-white">
-                    <img src={tokenData.image} alt={tokenData.label} className="w-4" />
-                    <span>{tokenData.label}</span>
-                  </td>
-                  <td className="pt-2">{ethers.formatEther(item.amount)}</td>
-                  <td className="pt-2">{ethers.formatEther(item.totalRepayment)}</td>
-                  <td className="pt-2">{item.interest}%</td>
-                  <td className="pt-2 flex justify-center">
-                    <Btn2 text="Repay" css="text-white/90 text-center bg-[#2A2A2ACC] px-2 py-[0.5px] rounded-md"
-                      onClick={()=>repay(item.requestId, item.tokenAddress,item.totalRepayment)}
-                    />
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+                return (
+                  <tr key={index} className="text-white/50">
+                    <td className="pt-3 flex gap-1 items-center text-start text-white">
+                      <img src={tokenData.image} alt={tokenData.label} className="w-4" />
+                      <span>{tokenData.label}</span>
+                    </td>
+                    <td className="pt-2">{ethers.formatEther(item.amount)}</td>
+                    <td className="pt-2">{ethers.formatEther(item.totalRepayment)}</td>
+                    <td className="pt-2">{item.interest}%</td>
+                    <td className="pt-2 flex justify-center">
+                      <Btn2 text="Repay" css="text-white/90 text-center"
+                        onClick={() => repay(item.requestId, item.tokenAddress, item.totalRepayment)}
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       <div onClick={() => router.push("/create-order")} className="px-6 w-4/6 m-auto mt-5">
         <button className="bg-[#FF4D00] text-xs rounded-xl font-normal w-full py-3 hover:scale-105">

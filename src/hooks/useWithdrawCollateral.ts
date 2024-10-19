@@ -35,7 +35,7 @@ const useWithdrawCollateral = () => {
         const receipt = await transaction.wait();
 
         if (receipt.status) {
-          toast.success(`${_amountOfCollateral} successfully withdrawn as collateral!`, {
+          toast.success(`${_amountOfCollateral} successfully withdrawn!`, {
             id: toastId,
           });
           return router.push('/');

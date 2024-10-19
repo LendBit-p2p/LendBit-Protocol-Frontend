@@ -180,70 +180,75 @@ export const OpenOrder = ({ orderSample }: any) => {
     };
   }, []);
 
-  // Check if orderSample is empty
-  if (!orderSample || orderSample.length === 0) {
-    return <p className="flex justify-center items-center h-1/2">No open orders available.</p>;
-  }
-
   return (
-    <div className="relative w-full py-4 open-orders">
+    <div className="relative w-full py-4 open-orders filledInActive">
+      {/* Header always visible */}
       <h3 className="text-lg font-normal mb-4 ml-4">Open Orders</h3>
 
-      {/* Left Arrow */}
-      <button
-        onClick={() => containerRef.current?.scrollBy({ left: -200, behavior: "smooth" })}
-        className="absolute left-[-5%] top-[55%] transform -translate-y-1/2 z-20 p-2 rounded-full hidden sm:block"
-      >
-        <Image src="/Arrow-left.svg" alt="Scroll Left" width={40} height={40} />
-      </button>
-
-      <div
-        ref={containerRef}
-        className="h-80 overflow-x-auto scrollbar-hide scroll-smooth cursor-grab"
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUpOrLeave}
-        onMouseLeave={handleMouseUpOrLeave}
-        onScroll={handleScroll}
-        style={{ whiteSpace: 'nowrap' }} // Ensure the children don't wrap
-      >
-        <div className="flex gap-6"> {/* Ensure flex layout for horizontal scroll */}
-          {orderSample.map((order: any, index: number) => {
-            const randomGradient = cardGradient[Math.floor(Math.random() * cardGradient.length)] || "/gradients2.svg";
-            return (
-              <div
-                key={order.id}
-                className={`py-4 transition-all duration-500 z-10 flex-none ${index === currentIndex
-                    ? "scale-110" // Center card is bigger with shadow
-                    : "scale-100"
-                  }`}
-              >
-                <div className="w-32 h-52 sm:w-44 sm:h-72 m-auto ml-4">
-                  <OrderCard
-                    id={order.requestId || order.listingId}
-                    type={order.type}
-                    amount={parseFloat(order.amount).toFixed(2)}
-                    token={tokenImageMap[order.tokenAddress]?.image}
-                    date={order.returnDateFormatted}
-                    icon1={"/edit.svg"}
-                    icon2={"/delete.svg"}
-                    isSelected={currentIndex === index}
-                    cardGradient={randomGradient}
-                  />
-                </div>
-              </div>
-            );
-          })}
+      {/* Conditional rendering for empty orders */}
+      {!orderSample || orderSample.length === 0 ? (
+        <div className="flex justify-center items-center h-[200px]"> {/* Adjust the height to center the message */}
+          <p className="text-center text-lg">No open orders available.</p>
         </div>
-      </div>
+      ) : (
+        <>
+          {/* Left Arrow */}
+          <button
+            onClick={() => containerRef.current?.scrollBy({ left: -200, behavior: "smooth" })}
+            className="absolute left-[-5%] top-[55%] transform -translate-y-1/2 z-20 p-2 rounded-full hidden sm:block"
+          >
+            <Image src="/Arrow-left.svg" alt="Scroll Left" width={40} height={40} />
+          </button>
 
-      {/* Right Arrow */}
-      <button
-        onClick={() => containerRef.current?.scrollBy({ left: 200, behavior: "smooth" })}
-        className="absolute right-[-6%] top-[55%] transform -translate-y-1/2 z-20 p-2 rounded-full hidden sm:block"
-      >
-        <Image src="/Arrow-right.svg" alt="Scroll Right" width={40} height={40} />
-      </button>
+          <div
+            ref={containerRef}
+            className="h-80 overflow-x-auto scrollbar-hide scroll-smooth cursor-grab"
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUpOrLeave}
+            onMouseLeave={handleMouseUpOrLeave}
+            onScroll={handleScroll}
+            style={{ whiteSpace: 'nowrap' }} // Ensure the children don't wrap
+          >
+            <div className="flex gap-6"> {/* Ensure flex layout for horizontal scroll */}
+              {orderSample.map((order: any, index: number) => {
+                const randomGradient = cardGradient[Math.floor(Math.random() * cardGradient.length)] || "/gradients2.svg";
+                return (
+                  <div
+                    key={order.id}
+                    className={`py-4 transition-all duration-500 z-10 flex-none ${index === currentIndex
+                        ? "scale-110" // Center card is bigger with shadow
+                        : "scale-100"
+                      }`}
+                  >
+                    <div className="w-32 h-52 sm:w-44 sm:h-72 m-auto ml-4">
+                      <OrderCard
+                        id={order.requestId || order.listingId}
+                        type={order.type}
+                        amount={parseFloat(order.amount).toFixed(2)}
+                        token={tokenImageMap[order.tokenAddress]?.image}
+                        date={order.returnDateFormatted}
+                        icon1={"/edit.svg"}
+                        icon2={"/delete.svg"}
+                        isSelected={currentIndex === index}
+                        cardGradient={randomGradient}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Right Arrow */}
+          <button
+            onClick={() => containerRef.current?.scrollBy({ left: 200, behavior: "smooth" })}
+            className="absolute right-[-6%] top-[55%] transform -translate-y-1/2 z-20 p-2 rounded-full hidden sm:block"
+          >
+            <Image src="/Arrow-right.svg" alt="Scroll Right" width={40} height={40} />
+          </button>
+        </>
+      )}
     </div>
   );
 };
