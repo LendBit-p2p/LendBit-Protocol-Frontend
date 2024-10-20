@@ -20,7 +20,7 @@ const useRepayLoan = () => {
   return useCallback(
     async (_requestId: number, _tokenAddress: string, _amount: string) => {
       if (!isSupportedChain(chainId)) return toast.warning("SWITCH TO BASE");
-      
+
       const readWriteProvider = getProvider(walletProvider);
       const signer = await readWriteProvider.getSigner();
       const contract = getLendbitContract(signer);
@@ -35,8 +35,10 @@ const useRepayLoan = () => {
 
         // If the token address is ADDRESS_1, directly call repayLoan for native token (like ETH)
         if (_tokenAddress === ADDRESS_1) {
-          const transaction = await contract.repayLoan(_requestId, _amount);
-          
+          const transaction = await contract.repayLoan(_requestId, _amount, {
+            value: _amount,
+          });
+
           const receipt = await transaction.wait();
 
           if (receipt.status) {
@@ -46,8 +48,8 @@ const useRepayLoan = () => {
           }
 
           return toast.error("Repayment failed!", {
-              id: loadingToastId,
-            });
+            id: loadingToastId,
+          });
         }
 
         // If the token is a different ERC-20 token (e.g., LINK), check allowance first
@@ -61,8 +63,8 @@ const useRepayLoan = () => {
 
             if (!approvalReceipt.status) {
               return toast.error("Approval failed!", {
-              id: loadingToastId,
-            });
+                id: loadingToastId,
+              });
             }
           }
 
@@ -77,8 +79,8 @@ const useRepayLoan = () => {
           }
 
           return toast.error("Repayment failed!", {
-              id: loadingToastId,
-            });
+            id: loadingToastId,
+          });
         }
       } catch (error: unknown) {
         const err = error as ErrorWithReason;
@@ -96,7 +98,7 @@ const useRepayLoan = () => {
           case "Protocol__InsufficientAllowance()":
             errorText = "Insufficient allowance!";
             break;
-           case "Protocol__MustBeMoreThanZero":
+          case "Protocol__MustBeMoreThanZero":
             errorText = "No outstanding to repay!";
             break;
           default:
@@ -104,8 +106,8 @@ const useRepayLoan = () => {
         }
 
         toast.warning(`Error: ${errorText}`, {
-              id: loadingToastId,
-            });
+          id: loadingToastId,
+        });
       }
     },
     [chainId, walletProvider, allowance]
