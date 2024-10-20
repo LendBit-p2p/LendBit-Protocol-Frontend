@@ -71,7 +71,7 @@ const useCreateLendingRequest = () => {
             errorText = "Insufficient collateral!";
             break;
           default:
-            errorText = "Can't borrow more than 80% of your collateral value!";
+            errorText = "Canceled | Can't borrow more than your available balance!";
         }
 
         toast.warning(`Error: ${errorText}`, {

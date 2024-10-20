@@ -11,19 +11,24 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({
   onAssetValueChange,
   assetValue,
   userAddress,
+  actionType
 }) => {
-  const { etherPrice, linkPrice } = useGetValueAndHealth(); 
+  const { etherPrice, linkPrice, AVA, AVA2 } = useGetValueAndHealth(); 
   const [selectedToken, setSelectedToken] = useState(defaultTokenData[0]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); 
-  const [walletBalance, setWalletBalance] = useState("0"); 
+  const [walletBalance, setWalletBalance] = useState("0");
+  const [availableBal, setAvailableBalance] = useState("0")
+  
   
   // Update token prices dynamically when fetched
   useEffect(() => {
     if (etherPrice || linkPrice) {
       const updatedTokenData = defaultTokenData.map((token) => {
         if (token.token === "ETH") {
+          
           return { ...token, tokenPrice: Number(etherPrice) || 2500 };
         } else if (token.token === "LINK") {
+         
           return { ...token, tokenPrice: Number(linkPrice) || 11 };
         }
         return token;
@@ -38,8 +43,10 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({
       if (userAddress) {
         let balance;
         if (selectedToken.token === "ETH") {
+          setAvailableBalance(AVA)
           balance = await getEthBalance(userAddress);
         } else if (selectedToken.token === "LINK") {
+          setAvailableBalance(AVA2)
           balance = await getLinkBalance(userAddress);
         }
         setWalletBalance(Number(balance).toFixed(3) || "0");
@@ -73,9 +80,10 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({
   };
 
   // Handle clicking the "Max" button
-  const handleMaxClick = () => {
-    onAssetValueChange(walletBalance || "0");
+   const handleMaxClick = () => {
+    onAssetValueChange(actionType === "withdraw" || actionType === "borrow" ? availableBal : walletBalance || "0");
   };
+
 
   // Calculate fiat equivalent (Amount in USD)
   const fiatEquivalent = (parseFloat(assetValue) * selectedToken.tokenPrice).toFixed(2);
@@ -167,7 +175,8 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({
 
       {/* Wallet balance display */}
       <p className="text-xs text-gray-500 mb-2">
-        Wallet Balance: {walletBalance || "0"} {selectedToken.token}
+        {actionType === "withdraw" || actionType === "borrow" ? "Available Balance: " : "Wallet Balance: "}
+        {actionType === "withdraw" || actionType === "borrow" ? (Number(availableBal) * 0.79) : walletBalance} {selectedToken.token}
       </p>
 
       {/* Price and Fiat Equivalent */}

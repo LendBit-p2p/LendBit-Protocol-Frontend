@@ -49,10 +49,10 @@ const useGetValueAndHealth = () => {
         // console.log("LINK USD price:", res7);
 
         const ava = await contract.gets_addressToAvailableBalance(address, ADDRESS_1);
-        // console.log("Available balance (ADDRESS_1):", ava);
+        console.log("Available balance (ADDRESS_1):", ava);
 
         const ava2 = await contract.gets_addressToAvailableBalance(address, LINK_ADDRESS);
-        // console.log("Available balance (LINK_ADDRESS):", ava2);
+        console.log("Available balance (LINK_ADDRESS):", ava2);
 
         const availBalance = await contract.getAccountAvailableValue(address);
         // console.log("Available account balance:", availBalance);

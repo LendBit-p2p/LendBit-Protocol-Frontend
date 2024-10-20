@@ -37,6 +37,7 @@ export interface AssetSelectorProps {
   onAssetValueChange: (value: string) => void;
   assetValue: string; // Controlled by the parent
   userAddress?: string | null; // The user's connected wallet address
+  actionType?: string
 }
 
 export interface LoanListing {

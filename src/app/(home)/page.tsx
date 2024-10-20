@@ -95,7 +95,7 @@ export default function DashboardPage() {
 
           <DashboardCard
             text={"Net Profit"}
-            figure={"14.7%"}
+            figure={"0.00%"}
             extraCSS="profit-card"
             icon={
               <Image

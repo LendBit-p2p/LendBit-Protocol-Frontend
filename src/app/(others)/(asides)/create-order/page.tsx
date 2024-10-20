@@ -161,6 +161,7 @@ export default function CreateOrderPage() {
                     onAssetValueChange={handleAssetValueChange}
                     assetValue={assetValue}
                     userAddress={userAddress} // Pass userAddress to AssetSelector
+                    actionType={activeOrderType}
                 />
 
                 <div className="px-4 sm:px-8">

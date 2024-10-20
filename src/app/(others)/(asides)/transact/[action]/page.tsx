@@ -113,6 +113,7 @@ export default function TransactPage({ params }: { params: { action: string } })
           onAssetValueChange={handleAssetValueChange}
           assetValue={assetValue}
           userAddress={userAddress}
+          actionType={params.action}
         />
 
         <div>
