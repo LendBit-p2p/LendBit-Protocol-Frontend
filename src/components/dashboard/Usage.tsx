@@ -21,17 +21,25 @@ const Usage = ({ activeReq, collateralVal }: UsageProps) => {
   const repay = useRepayLoan();
   const contract = getLendbitContract(readOnlyProvider);
   const [totalBorrowed, setTotalBorrowed] = useState(0);
-
+  console.log("ACTIVE",activeReq);
+  
   // Asynchronous function to calculate total borrowed
   const calculateTotalBorrowed = async () => {
     if (activeReq) {
       const values = await Promise.all(
-        activeReq.map(async (req) =>
-          contract.getUsdValue(req.tokenAddress, req.totalRepayment, 0)
-        )
+         activeReq.map(async (req) => {
+          // Fetch the value in USD using contract.getUsdValue
+          const usdValue = await contract.getUsdValue(req.tokenAddress, 1, 0);
+          
+          // Convert the repayment amount from wei to ether and back to number for summing
+          const formattedRepayment = parseFloat(ethers.formatEther(req.totalRepayment));
+
+          // Return the calculated value (formatted repayment amount here)
+          return (Number(usdValue)) * formattedRepayment;
+        })
       );
-      const total = values.reduce((acc, value) => acc + value, 0);
-      setTotalBorrowed(total);
+      const total = values.reduce((acc, value) => Number(acc) + Number(value), 0);
+      setTotalBorrowed(total/ 1e18);
     }
   };
 
@@ -40,8 +48,13 @@ const Usage = ({ activeReq, collateralVal }: UsageProps) => {
     calculateTotalBorrowed();
   }, [activeReq]);
 
+   useEffect(() => {
+    console.log(totalBorrowed, "Total Borrowed Value");
+  }, [totalBorrowed]);
+
+
   // Calculate power left based on total borrowed and collateral value
-  const powerLeft = collateralVal ? 100 - ((totalBorrowed * 100) / (collateralVal * 0.8)) : 0;
+  const powerLeft = collateralVal ? (100 - ((totalBorrowed * 100)) / (collateralVal * 0.8)) : 0;
   const actualPower = isNaN(powerLeft) ? 0 : powerLeft;
 
   return (
@@ -54,7 +67,7 @@ const Usage = ({ activeReq, collateralVal }: UsageProps) => {
           Total Collateral: <span className="pl-1">{`$${collateralVal ? (collateralVal * 0.8) : 0}`}</span>
         </h4>
         <h4 className="p-1">
-          Total Borrowed: <span className="pl-1">{`$${ethers.formatEther(totalBorrowed)}`}</span>
+          Total Borrowed: <span className="pl-1">{`$${(totalBorrowed)}`}</span>
         </h4>
       </div>
 

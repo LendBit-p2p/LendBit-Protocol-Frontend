@@ -225,7 +225,7 @@ export const OpenOrder = ({ orderSample }: any) => {
                       <OrderCard
                         id={order.requestId || order.listingId}
                         type={order.type}
-                        amount={parseFloat(order.amount).toFixed(2)}
+                        amount={order.amount}
                         token={tokenImageMap[order.tokenAddress]?.image}
                         date={order.returnDateFormatted}
                         icon1={"/edit.svg"}

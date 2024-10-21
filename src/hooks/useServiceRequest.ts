@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { ErrorWithReason } from "@/constants/types";
 import useCheckAllowance from "./useCheckAllowance";
 import { LINK_ADDRESS, ADDRESS_1 } from "@/constants/utils/addresses";
-import { MaxUint256 } from "ethers";
+import { ethers, MaxUint256 } from "ethers";
 import { envVars } from "@/constants/envVars";
 
 const useServiceRequest = () => {
@@ -29,18 +29,22 @@ const useServiceRequest = () => {
       let loadingToastId: string | number | undefined;
 
       try {
+        console.log("AMOUNT", ethers.parseEther(_amount));
+        
         loadingToastId = toast.loading("Processing service request...");
         // If the token address is ADDRESS_1, directly call serviceRequest
         if (_tokenAddress === ADDRESS_1) {
-          const transaction = await contract.serviceRequest(_requestId, _tokenAddress);
+          const transaction = await contract.serviceRequest(_requestId, _tokenAddress, {
+            value: ethers.parseEther(_amount),
+          });
           const receipt = await transaction.wait();
 
           if (receipt.status) {
-            toast.success("Request serviced!",
+            return toast.success("Request serviced!",
             {
               id: loadingToastId,
             });
-            return router.push('/marketplace');
+          
           }
 
           return toast.error("Request servicing failed!");
@@ -68,11 +72,10 @@ const useServiceRequest = () => {
           const receipt = await transaction.wait();
 
           if (receipt.status) {
-            toast.success("Request serviced!",
+            return toast.success("Request serviced!",
               {
                 id: loadingToastId,
               });
-            return router.push('/marketplace');
           }
 
           return toast.error("request servicing failed!",

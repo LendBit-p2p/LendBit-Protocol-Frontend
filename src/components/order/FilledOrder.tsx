@@ -3,6 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import { OrderCard } from "./OrderCard";
 import { cardGradient } from "@/constants/utils/cardGradient";
 import { tokenImageMap } from "@/constants/utils/tokenImageMap";
+import { ethers } from "ethers";
 
 export const FilledOrder = ({ orderSample }: any) => {
   const [selectedOrder, setSelectedOrder] = useState<number | null>(0);
@@ -88,7 +89,7 @@ export const FilledOrder = ({ orderSample }: any) => {
                   <OrderCard
                     id={order.requestId || order.listingId}
                     type={order.type}
-                    amount={parseFloat(order.amount).toFixed(2)}
+                    amount={order.amount}
                     token={tokenImageMap[order.tokenAddress]?.image}
                     date={order.returnDateFormatted}
                     icon1={"/Lock.svg"}
