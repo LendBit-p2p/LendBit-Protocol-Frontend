@@ -1,10 +1,8 @@
-Here’s an updated version of your **Lendbit** frontend README, aligned with your request for **Next.js** and more concise content:
 
----
 
 # Lendbit Frontend: Decentralized P2P Lending and Borrowing Platform
 
-![Lendbit Logo](public/orange-logo-vertical.png)
+![Lendbit Logo](contracts/image/orange-logo-vertical.png)
 
 ## Overview
 
