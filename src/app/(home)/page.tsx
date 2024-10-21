@@ -9,7 +9,7 @@ import useGetValueAndHealth from "@/hooks/useGetValueAndHealth";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { formatAddress } from "@/constants/utils/formatAddress";
 import { useEffect, useState } from "react";
-import { getBasename } from '@superdevfavour/basename'; 
+import { getBasename } from '@superdevfavour/basename';
 import useGetActiveRequest from "@/hooks/useGetActiveRequest";
 import { ethers } from "ethers";
 import { capitalizeFirstLetter } from "@/constants/utils/capitaliseFirstUser";
@@ -35,13 +35,13 @@ export default function DashboardPage() {
           const allRepaymentsZero = activeReq?.every((request: Request) => Number(request.totalRepayment) == 0);
 
           if (allRepaymentsZero && Number(data) > 0) {
-            setHealth("∞"); 
+            setHealth("∞");
           } else {
             const healthFactor = parseFloat(String(Number(data2) * 1e-18)).toFixed(2);
             setHealth(healthFactor);
           }
 
-          const portFig = data ? Number(ethers.formatEther(String(data))): 0;
+          const portFig = data ? Number(ethers.formatEther(String(data))) : 0;
           setFig(portFig);
 
           // Fetch basename
@@ -132,7 +132,7 @@ export default function DashboardPage() {
           {/* Right half: Usage alone */}
           <div className="w-full">
             <Usage activeReq={activeReq}
-                   collateralVal = {collateralVal}
+              collateralVal={collateralVal}
             />
           </div>
         </div>

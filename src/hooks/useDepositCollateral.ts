@@ -31,7 +31,7 @@ const useDepositCollateral = () => {
       let toastId: string | number | undefined;
 
       try {
-         toastId = toast.loading(`Processing deposit transaction...`);
+        toastId = toast.loading(`Processing deposit transaction...`);
         // Check allowance before proceeding
         if (val == 0 || val < Number(_amountOfCollateral)) {
           const allowance = await erc20contract.approve(envVars.lendbitDiamondAddress, MaxUint256);
@@ -43,7 +43,7 @@ const useDepositCollateral = () => {
         }
 
 
-       
+
         const transaction = await contract.depositCollateral(LINK_ADDRESS, _weiAmount);
         const receipt = await transaction.wait();
 
@@ -58,8 +58,8 @@ const useDepositCollateral = () => {
         console.error(error);
 
         const err = error as ErrorWithReason;
-        let errorText: string = err?.reason === "Protocol__TransferFailed()" 
-          ? "Deposit action failed!" 
+        let errorText: string = err?.reason === "Protocol__TransferFailed()"
+          ? "Deposit action failed!"
           : "Action canceled or failed!";
 
         if (toastId) {
