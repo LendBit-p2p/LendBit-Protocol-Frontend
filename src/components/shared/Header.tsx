@@ -1,5 +1,6 @@
 "use client";
 
+import { isSupportedChain } from "@/config/chain";
 import { formatAddress } from "@/constants/utils/formatAddress";
 import { getEthBalance } from "@/constants/utils/getEthBalance";
 import { SUPPORTED_CHAIN_ID } from "@/context/web3Modal";
@@ -21,25 +22,30 @@ export const Header = () => {
     const [mounted, setMounted] = useState(false);
     const [balance, setBalance] = useState<string | null>(null);
 
+    const chains = [
+        { id: SUPPORTED_CHAIN_ID[0], name: "Base" },
+        { id: SUPPORTED_CHAIN_ID[1], name: "Optimism" },
+        { id: SUPPORTED_CHAIN_ID[2], name: "Arbitrum" },
+    ];
+
     useEffect(() => {
         setMounted(true);
     }, []);
 
-    useEffect(() => {
-        const fetchBalance = async () => {
-            if (isConnected && address) {
-                try {
-                    const bal = await getEthBalance(address); 
-                    setBalance(bal);
-                } catch (error) {
-                    console.error("Error fetching balance:", error);
-                }
+   useEffect(() => {
+    const fetchBalance = async () => {
+        if (isConnected && address && chainId) { // Ensure chainId is available
+            try {
+                const bal = await getEthBalance(address, chainId); // Pass chainId here
+                setBalance(bal);
+            } catch (error) {
+                console.error("Error fetching balance:", error);
             }
-        };
-        fetchBalance();
-    }, [isConnected, address]);
-
-
+        }
+    };
+    fetchBalance();
+   }, [isConnected, address, chainId]);
+    
     const isActive = (path: string) => {
         return pathname === path ? "active-link active" : "active-link";
     };
@@ -53,16 +59,15 @@ export const Header = () => {
         open();
     };
 
-    const walletConnect = () => {
+    const walletConnect = (id: any) => {
         if (!isConnected) {
             open();
-        } else if (isConnected && chainId !== SUPPORTED_CHAIN_ID) {
-            switchNetwork(SUPPORTED_CHAIN_ID);
-        } else {
+        }
+        else {
             setIsOpen(!isOpen);
         }
     };
-// font-[family-name:var(--font-outfit)]
+
     return (
         <header className="bg-black md:p-6 p-4 w-full top-0 left-0 relative custom-corner-header">
             <div className="flex justify-between items-center w-full">
@@ -75,7 +80,6 @@ export const Header = () => {
                         priority
                         quality={100}
                         className="w-10 md:w-[50px] md:h-[42px]"
-                        // layout="responsive"
                     />
                     <Image
                         src="/white-word.png"
@@ -89,10 +93,7 @@ export const Header = () => {
                 </Link>
 
                 {/* Hamburger icon for mobile */}
-                <button
-                    className="text-white block lg:hidden focus:outline-none"
-                    onClick={toggleMenu}
-                >
+                <button className="text-white block lg:hidden focus:outline-none" onClick={toggleMenu}>
                     {isMenuOpen ? (
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -118,14 +119,7 @@ export const Header = () => {
                 </nav>
 
                 <div className="flex items-center gap-2">
-                    <Image
-                        src="/notifications.svg"
-                        alt="notifications"
-                        width={20}
-                        height={20}
-                        priority
-                        quality={100}
-                    />
+                    <Image src="/notifications.svg" alt="notifications" width={20} height={20} priority quality={100} />
 
                     {/* Wallet Connect Section */}
                     <div>
@@ -134,36 +128,45 @@ export const Header = () => {
                                 <Spinner />
                             </div>
                         ) : (
-                            <div onClick={walletConnect} className="flex items-center gap-2 cursor-pointer">
-                                <Image
-                                    src="/User.svg"
-                                    alt="User icon"
-                                    width={20}
-                                    height={20}
-                                    priority
-                                    quality={100}
-                                />
+                            <div onClick={() => walletConnect(chainId)} className="flex items-center gap-2 cursor-pointer">
+                                <Image src="/User.svg" alt="User icon" width={20} height={20} priority quality={100} />
                                 <div className="text-xs md:text-sm text-[#ff4d00] flex items-center gap-3 rounded-md bg-[#2a2a2a] md:p-3 px-3 py-2">
                                     {!isConnected ? (
                                         <p className="uppercase">Connect Wallet</p>
                                     ) : (
                                         <>
-                                            {chainId !== SUPPORTED_CHAIN_ID ? (
-                                                <p className="text-red-500 uppercase leading-tight">Switch to Base</p>
+                                            {!isSupportedChain(chainId) ? (
+                                                <p className="text-red-500 uppercase leading-tight">Switch Network</p>
                                             ) : (
-                                                <p className="">{address ? formatAddress(address) : "Address"}</p>)
-                                            }
-
-                                            <Image
-                                                src="/chevronOrange.svg"
-                                                alt="chevron icon"
-                                                width={8}
-                                                height={5}
-                                                priority
-                                                quality={100}
-                                            />
+                                                <p>{address ? formatAddress(address) : "Address"}</p>
+                                            )}
+                                            <Image src="/chevronOrange.svg" alt="chevron icon" width={8} height={5} priority quality={100} />
                                         </>
                                     )}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Wallet and Chain Dropdown */}
+                        {isOpen && (
+                            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-md text-black rounded-lg z-50">
+                                {/* Wallet Info Section */}
+                                <div className="p-4 flex flex-col items-center gap-2 border-b">
+                                    <img src={walletInfo?.icon || "/"} alt="Wallet Icon" className="w-6 h-6 object-cover" />
+                                    <span className="text-black text-xs md:text-sm">{address ? formatAddress(address) : "Address"}</span>
+                                    <span className="text-black text-xs md:text-sm">{balance ? `${balance} ETH` : "wallet balance..."}</span>
+                                    <button className="w-full bg-[#FF4D00]/70 text-white py-2 rounded-md hover:bg-[#FF4D00] transition-colors text-xs md:text-sm" onClick={handleSignout}>
+                                        Wallet Actions
+                                    </button>
+                                </div>
+
+                                {/* Chain Switch Section */}
+                                <div className="py-2">
+                                    {chains.map((chain) => (
+                                        <button key={chain.id} className={`w-full text-left px-4 py-2 hover:bg-gray-100 ${chainId === chain.id ? "font-bold text-[#ff4d00]" : ""}`} onClick={() => switchNetwork(chain.id)}>
+                                            {chain.name} {chainId === chain.id && "✓"}
+                                        </button>
+                                    ))}
                                 </div>
                             </div>
                         )}
@@ -184,27 +187,6 @@ export const Header = () => {
                         Marketplace
                     </Link>
                 </nav>
-            )}
-
-            {/* Wallet Dropdown */}
-            {isOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-md text-black rounded-lg z-50">
-                    <div className="p-4 flex flex-col items-center gap-2">
-                        <img
-                            src={walletInfo?.icon || "/"}
-                            alt="Wallet Icon"
-                            className="w-6 h-6 object-cover"
-                        />
-                        <span className="text-black text-xs md:text-sm">{address ? formatAddress(address) : "Address"}</span>
-                        <span className="text-black text-xs md:text-sm">{balance ? `${balance} ETH` : "wallet balance..."}</span> 
-                        <button
-                            className="w-full bg-[#FF4D00]/70 text-white py-2 rounded-md hover:bg-[#FF4D00] transition-colors text-xs md:text-sm"
-                            onClick={handleSignout}
-                        >
-                            Wallet Actions
-                        </button>
-                    </div>
-                </div>
             )}
         </header>
     );

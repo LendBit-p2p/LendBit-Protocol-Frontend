@@ -5,7 +5,12 @@ import { ethers } from "ethers";
 export const readOnlyProvider = new ethers.JsonRpcProvider(
     envVars.httpRPC
 );
-
+export const readOnlyProviderOP = new ethers.JsonRpcProvider(
+    envVars.httpRPCop
+);
+export const readOnlyProviderARB = new ethers.JsonRpcProvider(
+    envVars.httpRPCarb
+);
 // read/write provider, that allows you to read data and also sign transaction on whatever chain it's pointing to
 export const getProvider = (provider: any) => new ethers.BrowserProvider(provider);
 

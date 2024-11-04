@@ -4,13 +4,15 @@ import { useWeb3ModalAccount, useWeb3ModalProvider } from "@web3modal/ethers/rea
 import { toast } from "sonner";
 import { isSupportedChain } from "@/config/chain";
 import { getProvider } from "@/config/provider";
-import { getLendbitContract, getERC20Contract } from "@/config/contracts";
+import { getLendbitContract, getERC20Contract, getLendbitSpokeARB, getLendbitSpokeOP } from "@/config/contracts";
 import { useRouter } from "next/navigation";
 import { ErrorWithReason } from "@/constants/types";
 import { ethers, MaxUint256 } from "ethers";
-import { LINK_ADDRESS } from "@/constants/utils/addresses";
+// import { USDC_ADDRESS, USDC_ADDRESS_ARB, USDC_ADDRESS_OP } from "@/constants/utils/addresses";
 import useCheckAllowance from "./useCheckAllowance";
 import { envVars } from "@/constants/envVars";
+import { getContractByChainId } from "@/config/getContractByChain";
+import { getUsdcAddressByChainId } from "@/constants/utils/getUsdcBalance";
 
 const useDepositCollateral = () => {
   const { chainId } = useWeb3ModalAccount();
@@ -18,15 +20,18 @@ const useDepositCollateral = () => {
   const router = useRouter();
   const val = useCheckAllowance();
 
+
+
   return useCallback(
     async (_amountOfCollateral: string) => {
-      if (!isSupportedChain(chainId)) return toast.warning("SWITCH TO BASE");
+      if (!isSupportedChain(chainId)) return toast.warning("SWITCH NETWORK");
 
       const readWriteProvider = getProvider(walletProvider);
       const signer = await readWriteProvider.getSigner();
+      const usdcAddress = getUsdcAddressByChainId(chainId);
 
-      const erc20contract = getERC20Contract(signer, LINK_ADDRESS);
-      const contract = getLendbitContract(signer);
+      const erc20contract = getERC20Contract(signer, usdcAddress);
+      const contract =   getContractByChainId(signer, chainId);
       const _weiAmount = ethers.parseUnits(_amountOfCollateral, 18);
       let toastId: string | number | undefined;
 
@@ -44,21 +49,21 @@ const useDepositCollateral = () => {
 
 
 
-        const transaction = await contract.depositCollateral(LINK_ADDRESS, _weiAmount);
+        const transaction = await contract.depositCollateral(usdcAddress, _weiAmount);
         const receipt = await transaction.wait();
 
         if (receipt.status) {
-          toast.success(`${_amountOfCollateral} LINK successfully deposited as collateral!`, { id: toastId });
+          toast.success(`${_amountOfCollateral} USDC successfully deposited as collateral!`, { id: toastId });
           return router.push('/');
         } else {
-          toast.error(`Failed to deposit ${_amountOfCollateral} LINK as collateral.`, { id: toastId });
+          toast.error(`Failed to deposit ${_amountOfCollateral} USDC as collateral.`, { id: toastId });
         }
 
       } catch (error: unknown) {
         console.error(error);
 
         const err = error as ErrorWithReason;
-        let errorText: string = err?.reason === "Protocol__TransferFailed()"
+        let errorText: string = err?.reason === "Protocol__TransferFailed"
           ? "Deposit action failed!"
           : "Action canceled or failed!";
 

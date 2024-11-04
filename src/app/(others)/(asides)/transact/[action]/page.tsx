@@ -64,7 +64,7 @@ export default function TransactPage({ params }: { params: { action: string } })
 
           await depositNative(assetValue);
 
-        } else if (selectedToken === "LINK" && userAddress) {
+        } else if (selectedToken === "USDC" && userAddress) {
           await depositFx(assetValue);
 
         } else {

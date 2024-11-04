@@ -1,6 +1,6 @@
 import { getLendbitContract } from "@/config/contracts";
 import { readOnlyProvider } from "@/config/provider";
-import { ADDRESS_1, LINK_ADDRESS } from "@/constants/utils/addresses";
+import { ADDRESS_1, LINK_ADDRESS, USDC_ADDRESS } from "@/constants/utils/addresses";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
@@ -33,10 +33,10 @@ const useGetValueAndHealth = () => {
         const res2 = await contract.getHealthFactor(address);
         // console.log("Health factor fetched:", res2);
 
-        const res3 = await contract.gets_addressToCollateralDeposited(address, ADDRESS_1);
+        const res3 = await contract.getAddressToCollateralDeposited(address, ADDRESS_1);
         // console.log("Collateral deposited (ADDRESS_1):", res3);
 
-        const res4 = await contract.gets_addressToCollateralDeposited(address, LINK_ADDRESS);
+        const res4 = await contract.getAddressToCollateralDeposited(address, USDC_ADDRESS);
         // console.log("Collateral deposited (LINK_ADDRESS):", res4);
 
         const res5 = await contract.getUserCollateralTokens(address);
@@ -45,13 +45,13 @@ const useGetValueAndHealth = () => {
         const res6 = await contract.getUsdValue(ADDRESS_1, 1, 0);
         // console.log("ETH USD price:", res6);
 
-        const res7 = await contract.getUsdValue(LINK_ADDRESS, 1, 0);
+        const res7 = await contract.getUsdValue(USDC_ADDRESS, 1, 0);
         // console.log("LINK USD price:", res7);
 
-        const ava = await contract.gets_addressToAvailableBalance(address, ADDRESS_1);
+        const ava = await contract.getAddressToAvailableBalance(address, ADDRESS_1);
         console.log("Available balance (ADDRESS_1):", ava);
 
-        const ava2 = await contract.gets_addressToAvailableBalance(address, LINK_ADDRESS);
+        const ava2 = await contract.getAddressToAvailableBalance(address, USDC_ADDRESS);
         console.log("Available balance (LINK_ADDRESS):", ava2);
 
         const availBalance = await contract.getAccountAvailableValue(address);

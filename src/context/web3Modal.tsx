@@ -1,7 +1,10 @@
 'use client'
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers/react'
 
-export const SUPPORTED_CHAIN_ID = 84532;
+// export const SUPPORTED_CHAIN_ID = 84532;
+
+export const SUPPORTED_CHAIN_ID = [84532, 11155420,421614];
+
 
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID
 
@@ -13,6 +16,23 @@ const baseSepolia = {
     explorerUrl: 'https://sepolia.basescan.org/',
     rpcUrl: `${process.env.NEXT_PUBLIC_HTTP_RPC}`
 }
+
+const optimismSepolia = {
+    chainId: 11155420,
+    name: 'OP Sepolia',
+    currency: 'ETH',
+    explorerUrl: 'https://sepolia-optimistic.etherscan.io/',
+    rpcUrl: `${process.env.NEXT_PUBLIC_HTTP_RPC_OP}`
+}
+
+const arbitrum = {
+    chainId: 421614,
+    name: 'Arbitrum Sepolia',
+    currency: 'ETH',
+    explorerUrl: 'https://sepolia.arbiscan.io/',
+    rpcUrl: `${process.env.NEXT_PUBLIC_HTTP_RPC_ARB}`
+}
+
 
 const metadata = {
     name: 'Lendbit | P2P Lending',
@@ -36,7 +56,7 @@ const ethersConfig = defaultConfig({
 // 5. Create a Web3Modal instance
 createWeb3Modal({
     ethersConfig,
-    chains: [baseSepolia],
+    chains: [baseSepolia,optimismSepolia,arbitrum],
     projectId: `${projectId}`,
     enableAnalytics: true, // Optional - defaults to your Cloud configuration
     enableOnramp: true // Optional - false as default

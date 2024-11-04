@@ -8,14 +8,9 @@ export const tokenData2 = [
         tokenPrice: "0", 
     },
     {
-        token: "LINK",
-        icon: "/link.svg",
-        tokenPrice: "0",
-    },
-    {
       token: "USDC",
       icon: "/USDC.svg",
-      tokenPrice: "N/A",
+      tokenPrice: "0",
     },
     {
       token: "USDT",
@@ -26,5 +21,11 @@ export const tokenData2 = [
       token: "DAI",
       icon: "/dai.svg",
       tokenPrice: "N/A",
-    },
+  },
+  {
+      token: "LINK",
+  
+      icon: "/link.svg",
+      tokenPrice: "N/A",
+  },
 ];

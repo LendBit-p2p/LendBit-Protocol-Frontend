@@ -1,1353 +1,1469 @@
 [
   {
-    "type": "fallback",
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "addCollateralTokens",
-    "inputs": [
-      {
-        "name": "_tokens",
-        "type": "address[]",
-        "internalType": "address[]"
-      },
-      {
-        "name": "_priceFeeds",
-        "type": "address[]",
-        "internalType": "address[]"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "addLoanableToken",
-    "inputs": [
-      {
-        "name": "_token",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "_priceFeed",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "closeListingAd",
-    "inputs": [
-      {
-        "name": "_listingId",
-        "type": "uint96",
-        "internalType": "uint96"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "closeRequest",
-    "inputs": [
-      {
-        "name": "_requestId",
-        "type": "uint96",
-        "internalType": "uint96"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "createLendingRequest",
-    "inputs": [
-      {
-        "name": "_amount",
-        "type": "uint128",
-        "internalType": "uint128"
-      },
-      {
-        "name": "_interest",
-        "type": "uint16",
-        "internalType": "uint16"
-      },
-      {
-        "name": "_returnDate",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "_loanCurrency",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "createLoanListing",
-    "inputs": [
-      {
-        "name": "_amount",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "_min_amount",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "_max_amount",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "_returnDate",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "_interest",
-        "type": "uint16",
-        "internalType": "uint16"
-      },
-      {
-        "name": "_loanCurrency",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "payable"
-  },
-  {
-    "type": "function",
-    "name": "depositCollateral",
-    "inputs": [
-      {
-        "name": "_tokenCollateralAddress",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "_amountOfCollateral",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "payable"
-  },
-  {
-    "type": "function",
-    "name": "getAccountAvailableValue",
-    "inputs": [
-      {
-        "name": "_user",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "_totalAvailableValueInUsd",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "getAccountCollateralValue",
-    "inputs": [
-      {
-        "name": "_user",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "_totalCollateralValueInUsd",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "getAllCollateralToken",
     "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "address[]",
-        "internalType": "address[]"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "getAllRequest",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "",
-        "type": "tuple[]",
-        "internalType": "struct Request[]",
-        "components": [
-          {
-            "name": "requestId",
-            "type": "uint96",
-            "internalType": "uint96"
-          },
-          {
-            "name": "author",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "amount",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "interest",
-            "type": "uint16",
-            "internalType": "uint16"
-          },
-          {
-            "name": "totalRepayment",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "returnDate",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "lender",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "loanRequestAddr",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "collateralTokens",
-            "type": "address[]",
-            "internalType": "address[]"
-          },
-          {
-            "name": "status",
-            "type": "uint8",
-            "internalType": "enum Status"
-          }
-        ]
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "getConvertValue",
-    "inputs": [
-      {
-        "name": "_from",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "_to",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "_amount",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "value",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "getHealthFactor",
-    "inputs": [
-      {
-        "name": "_user",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "getLoanCollectedInUsd",
-    "inputs": [
-      {
-        "name": "_user",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "_value",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "getLoanListing",
-    "inputs": [
-      {
-        "name": "_listingId",
-        "type": "uint96",
-        "internalType": "uint96"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "tuple",
-        "internalType": "struct LoanListing",
-        "components": [
-          {
-            "name": "listingId",
-            "type": "uint96",
-            "internalType": "uint96"
-          },
-          {
-            "name": "author",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "tokenAddress",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "amount",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "min_amount",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "max_amount",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "returnDate",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "interest",
-            "type": "uint16",
-            "internalType": "uint16"
-          },
-          {
-            "name": "listingStatus",
-            "type": "uint8",
-            "internalType": "enum ListingStatus"
-          }
-        ]
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "getLoanableAssets",
-    "inputs": [],
-    "outputs": [
-      {
-        "name": "_assets",
-        "type": "address[]",
-        "internalType": "address[]"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "getRequest",
-    "inputs": [
-      {
-        "name": "_requestId",
-        "type": "uint96",
-        "internalType": "uint96"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "tuple",
-        "internalType": "struct Request",
-        "components": [
-          {
-            "name": "requestId",
-            "type": "uint96",
-            "internalType": "uint96"
-          },
-          {
-            "name": "author",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "amount",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "interest",
-            "type": "uint16",
-            "internalType": "uint16"
-          },
-          {
-            "name": "totalRepayment",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "returnDate",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "lender",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "loanRequestAddr",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "collateralTokens",
-            "type": "address[]",
-            "internalType": "address[]"
-          },
-          {
-            "name": "status",
-            "type": "uint8",
-            "internalType": "enum Status"
-          }
-        ]
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "getServicedRequestByLender",
-    "inputs": [
-      {
-        "name": "_lender",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "_requests",
-        "type": "tuple[]",
-        "internalType": "struct Request[]",
-        "components": [
-          {
-            "name": "requestId",
-            "type": "uint96",
-            "internalType": "uint96"
-          },
-          {
-            "name": "author",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "amount",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "interest",
-            "type": "uint16",
-            "internalType": "uint16"
-          },
-          {
-            "name": "totalRepayment",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "returnDate",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "lender",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "loanRequestAddr",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "collateralTokens",
-            "type": "address[]",
-            "internalType": "address[]"
-          },
-          {
-            "name": "status",
-            "type": "uint8",
-            "internalType": "enum Status"
-          }
-        ]
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "getUsdValue",
-    "inputs": [
-      {
-        "name": "_token",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "_amount",
-        "type": "uint256",
-        "internalType": "uint256"
-      },
-      {
-        "name": "_decimal",
-        "type": "uint8",
-        "internalType": "uint8"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "getUserActiveRequests",
-    "inputs": [
-      {
-        "name": "_user",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "_requests",
-        "type": "tuple[]",
-        "internalType": "struct Request[]",
-        "components": [
-          {
-            "name": "requestId",
-            "type": "uint96",
-            "internalType": "uint96"
-          },
-          {
-            "name": "author",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "amount",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "interest",
-            "type": "uint16",
-            "internalType": "uint16"
-          },
-          {
-            "name": "totalRepayment",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "returnDate",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "lender",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "loanRequestAddr",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "collateralTokens",
-            "type": "address[]",
-            "internalType": "address[]"
-          },
-          {
-            "name": "status",
-            "type": "uint8",
-            "internalType": "enum Status"
-          }
-        ]
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "getUserCollateralTokens",
-    "inputs": [
-      {
-        "name": "_user",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "_collaterals",
-        "type": "address[]",
-        "internalType": "address[]"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "getUserRequest",
-    "inputs": [
-      {
-        "name": "_user",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "_requestId",
-        "type": "uint96",
-        "internalType": "uint96"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "tuple",
-        "internalType": "struct Request",
-        "components": [
-          {
-            "name": "requestId",
-            "type": "uint96",
-            "internalType": "uint96"
-          },
-          {
-            "name": "author",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "amount",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "interest",
-            "type": "uint16",
-            "internalType": "uint16"
-          },
-          {
-            "name": "totalRepayment",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "returnDate",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "lender",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "loanRequestAddr",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "collateralTokens",
-            "type": "address[]",
-            "internalType": "address[]"
-          },
-          {
-            "name": "status",
-            "type": "uint8",
-            "internalType": "enum Status"
-          }
-        ]
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "get_gitCoinPoint",
-    "inputs": [
-      {
-        "name": "_user",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "_score",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "gets_addressToAvailableBalance",
-    "inputs": [
-      {
-        "name": "_sender",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "_tokenAddr",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "gets_addressToCollateralDeposited",
-    "inputs": [
-      {
-        "name": "_sender",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "_tokenAddr",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "liquidateUserRequest",
-    "inputs": [
-      {
-        "name": "requestId",
-        "type": "uint96",
-        "internalType": "uint96"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "removeCollateralTokens",
-    "inputs": [
-      {
-        "name": "_tokens",
-        "type": "address[]",
-        "internalType": "address[]"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "repayLoan",
-    "inputs": [
-      {
-        "name": "_requestId",
-        "type": "uint96",
-        "internalType": "uint96"
-      },
-      {
-        "name": "_amount",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "payable"
-  },
-  {
-    "type": "function",
-    "name": "requestLoanFromListing",
-    "inputs": [
-      {
-        "name": "_listingId",
-        "type": "uint96",
-        "internalType": "uint96"
-      },
-      {
-        "name": "_amount",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "serviceRequest",
-    "inputs": [
-      {
-        "name": "_requestId",
-        "type": "uint96",
-        "internalType": "uint96"
-      },
-      {
-        "name": "_tokenAddress",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "payable"
-  },
-  {
-    "type": "function",
-    "name": "setBotAddress",
-    "inputs": [
-      {
-        "name": "_botAddress",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "setSwapRouter",
-    "inputs": [
-      {
-        "name": "_swapRouter",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "updateGPScore",
-    "inputs": [
-      {
-        "name": "_user",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "_score",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "withdrawCollateral",
-    "inputs": [
-      {
-        "name": "_tokenCollateralAddress",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "_amount",
-        "type": "uint128",
-        "internalType": "uint128"
-      }
-    ],
-    "outputs": [],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "event",
-    "name": "CollateralDeposited",
-    "inputs": [
-      {
-        "name": "_sender",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "_token",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "_value",
-        "type": "uint256",
-        "indexed": false,
-        "internalType": "uint256"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "CollateralWithdrawn",
-    "inputs": [
-      {
-        "name": "sender",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "_tokenCollateralAddress",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "_amount",
-        "type": "uint256",
-        "indexed": false,
-        "internalType": "uint256"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "LoanListingCreated",
-    "inputs": [
-      {
-        "name": "listingId",
-        "type": "uint96",
-        "indexed": true,
-        "internalType": "uint96"
-      },
-      {
-        "name": "sender",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "tokenAddress",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "amount",
-        "type": "uint256",
-        "indexed": false,
-        "internalType": "uint256"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "LoanRepayment",
-    "inputs": [
-      {
-        "name": "sender",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "id",
-        "type": "uint96",
-        "indexed": false,
-        "internalType": "uint96"
-      },
-      {
-        "name": "amount",
-        "type": "uint256",
-        "indexed": false,
-        "internalType": "uint256"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "RequestCreated",
-    "inputs": [
-      {
-        "name": "_borrower",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "requestId",
-        "type": "uint96",
-        "indexed": true,
-        "internalType": "uint96"
-      },
-      {
-        "name": "_amount",
-        "type": "uint256",
-        "indexed": false,
-        "internalType": "uint256"
-      },
-      {
-        "name": "_interest",
-        "type": "uint16",
-        "indexed": false,
-        "internalType": "uint16"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "RequestLiquidated",
-    "inputs": [
-      {
-        "name": "requestId",
-        "type": "uint96",
-        "indexed": true,
-        "internalType": "uint96"
-      },
-      {
-        "name": "lenderAddress",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "totalRepayment",
-        "type": "uint256",
-        "indexed": true,
-        "internalType": "uint256"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "RequestServiced",
-    "inputs": [
-      {
-        "name": "_requestId",
-        "type": "uint96",
-        "indexed": true,
-        "internalType": "uint96"
-      },
-      {
-        "name": "_lender",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "_borrower",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "_amount",
-        "type": "uint256",
-        "indexed": false,
-        "internalType": "uint256"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "UpdateLoanableToken",
-    "inputs": [
-      {
-        "name": "_token",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "_priceFeed",
-        "type": "address",
-        "indexed": false,
-        "internalType": "address"
-      },
-      {
-        "name": "sender",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "UpdatedCollateralTokens",
-    "inputs": [
-      {
-        "name": "sender",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "newTokensCount",
-        "type": "uint8",
-        "indexed": false,
-        "internalType": "uint8"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "event",
-    "name": "withdrawnAdsToken",
-    "inputs": [
-      {
-        "name": "sender",
-        "type": "address",
-        "indexed": true,
-        "internalType": "address"
-      },
-      {
-        "name": "_orderId",
-        "type": "uint96",
-        "indexed": true,
-        "internalType": "uint96"
-      },
-      {
-        "name": "orderStatus",
-        "type": "uint8",
-        "indexed": true,
-        "internalType": "uint8"
-      },
-      {
-        "name": "_amount",
-        "type": "uint256",
-        "indexed": false,
-        "internalType": "uint256"
-      }
-    ],
-    "anonymous": false
-  },
-  {
-    "type": "error",
     "name": "NotDiamondOwner",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__CantFundSelf",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__DateMustBeInFuture",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__IdNotExist",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__InsufficientAllowance",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__InsufficientAmount",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__InsufficientBalance",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__InsufficientCollateral",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__InsufficientCollateralDeposited",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__InvalidAmount",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__InvalidToken",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__ListingNotOpen",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__MustBeMoreThanZero",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__NotOwner",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__OnlyBotCanAccess",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__OrderNotOpen",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__OwnerCreatedListing",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__OwnerCreatedOrder",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__RequestExpired",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__RequestNotOpen",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__RequestNotServiced",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__TokenNotAllowed",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__TokenNotLoanable",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__TransferFailed",
-    "inputs": []
+    "type": "error"
   },
   {
-    "type": "error",
+    "inputs": [],
     "name": "Protocol__tokensAndPriceFeedsArrayMustBeSameLength",
-    "inputs": []
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      }
+    ],
+    "name": "SafeERC20FailedOperation",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_sender",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_token",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_value",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint16",
+        "name": "_chainId",
+        "type": "uint16"
+      }
+    ],
+    "name": "CollateralDeposited",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_tokenCollateralAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint16",
+        "name": "_chainId",
+        "type": "uint16"
+      }
+    ],
+    "name": "CollateralWithdrawn",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint96",
+        "name": "listingId",
+        "type": "uint96"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "tokenAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint16",
+        "name": "chainId",
+        "type": "uint16"
+      }
+    ],
+    "name": "LoanListingCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint96",
+        "name": "id",
+        "type": "uint96"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint16",
+        "name": "chainId",
+        "type": "uint16"
+      }
+    ],
+    "name": "LoanRepayment",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint96",
+        "name": "_requestId",
+        "type": "uint96"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_borrower",
+        "type": "address"
+      }
+    ],
+    "name": "RequestClosed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_borrower",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint96",
+        "name": "requestId",
+        "type": "uint96"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint16",
+        "name": "_interest",
+        "type": "uint16"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint16",
+        "name": "_chainId",
+        "type": "uint16"
+      }
+    ],
+    "name": "RequestCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint96",
+        "name": "requestId",
+        "type": "uint96"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "lenderAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "totalRepayment",
+        "type": "uint256"
+      }
+    ],
+    "name": "RequestLiquidated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint96",
+        "name": "_requestId",
+        "type": "uint96"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_lender",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_borrower",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint16",
+        "name": "_chainId",
+        "type": "uint16"
+      }
+    ],
+    "name": "RequestServiced",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_token",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "_priceFeed",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "UpdateLoanableToken",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "newTokensCount",
+        "type": "uint8"
+      }
+    ],
+    "name": "UpdatedCollateralTokens",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint96",
+        "name": "_orderId",
+        "type": "uint96"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint8",
+        "name": "orderStatus",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "withdrawnAdsToken",
+    "type": "event"
+  },
+  {
+    "stateMutability": "nonpayable",
+    "type": "fallback"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "_tokens",
+        "type": "address[]"
+      },
+      {
+        "internalType": "address[]",
+        "name": "_priceFeeds",
+        "type": "address[]"
+      }
+    ],
+    "name": "addCollateralTokens",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_token",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_priceFeed",
+        "type": "address"
+      }
+    ],
+    "name": "addLoanableToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint96",
+        "name": "_listingId",
+        "type": "uint96"
+      }
+    ],
+    "name": "closeListingAd",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint96",
+        "name": "_requestId",
+        "type": "uint96"
+      }
+    ],
+    "name": "closeRequest",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint128",
+        "name": "_amount",
+        "type": "uint128"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_interest",
+        "type": "uint16"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_returnDate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_loanCurrency",
+        "type": "address"
+      }
+    ],
+    "name": "createLendingRequest",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_min_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_max_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_returnDate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_interest",
+        "type": "uint16"
+      },
+      {
+        "internalType": "address",
+        "name": "_loanCurrency",
+        "type": "address"
+      }
+    ],
+    "name": "createLoanListing",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_tokenCollateralAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amountOfCollateral",
+        "type": "uint256"
+      }
+    ],
+    "name": "depositCollateral",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }
+    ],
+    "name": "getAccountAvailableValue",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "_totalAvailableValueInUsd",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }
+    ],
+    "name": "getAccountCollateralValue",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "_totalCollateralValueInUsd",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_sender",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_tokenAddr",
+        "type": "address"
+      }
+    ],
+    "name": "getAddressToAvailableBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_sender",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_tokenAddr",
+        "type": "address"
+      }
+    ],
+    "name": "getAddressToCollateralDeposited",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAllCollateralToken",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "_tokens",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAllRequest",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint96",
+            "name": "requestId",
+            "type": "uint96"
+          },
+          {
+            "internalType": "address",
+            "name": "author",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint16",
+            "name": "interest",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalRepayment",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "returnDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "lender",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "loanRequestAddr",
+            "type": "address"
+          },
+          {
+            "internalType": "address[]",
+            "name": "collateralTokens",
+            "type": "address[]"
+          },
+          {
+            "internalType": "enum Status",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint16",
+            "name": "chainId",
+            "type": "uint16"
+          }
+        ],
+        "internalType": "struct Request[]",
+        "name": "_requests",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_from",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_to",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "getConvertValue",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }
+    ],
+    "name": "getHealthFactor",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }
+    ],
+    "name": "getLoanCollectedInUsd",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint96",
+        "name": "_listingId",
+        "type": "uint96"
+      }
+    ],
+    "name": "getLoanListing",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint96",
+            "name": "listingId",
+            "type": "uint96"
+          },
+          {
+            "internalType": "address",
+            "name": "author",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "tokenAddress",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "min_amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "max_amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "returnDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint16",
+            "name": "interest",
+            "type": "uint16"
+          },
+          {
+            "internalType": "enum ListingStatus",
+            "name": "listingStatus",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint16",
+            "name": "chainId",
+            "type": "uint16"
+          }
+        ],
+        "internalType": "struct LoanListing",
+        "name": "_listing",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getLoanableAssets",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "_assets",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint96",
+        "name": "_requestId",
+        "type": "uint96"
+      }
+    ],
+    "name": "getRequest",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint96",
+            "name": "requestId",
+            "type": "uint96"
+          },
+          {
+            "internalType": "address",
+            "name": "author",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint16",
+            "name": "interest",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalRepayment",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "returnDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "lender",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "loanRequestAddr",
+            "type": "address"
+          },
+          {
+            "internalType": "address[]",
+            "name": "collateralTokens",
+            "type": "address[]"
+          },
+          {
+            "internalType": "enum Status",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint16",
+            "name": "chainId",
+            "type": "uint16"
+          }
+        ],
+        "internalType": "struct Request",
+        "name": "_request",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint96",
+        "name": "_requestId",
+        "type": "uint96"
+      },
+      {
+        "internalType": "address",
+        "name": "_token",
+        "type": "address"
+      }
+    ],
+    "name": "getRequestToCollateral",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_lender",
+        "type": "address"
+      }
+    ],
+    "name": "getServicedRequestByLender",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint96",
+            "name": "requestId",
+            "type": "uint96"
+          },
+          {
+            "internalType": "address",
+            "name": "author",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint16",
+            "name": "interest",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalRepayment",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "returnDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "lender",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "loanRequestAddr",
+            "type": "address"
+          },
+          {
+            "internalType": "address[]",
+            "name": "collateralTokens",
+            "type": "address[]"
+          },
+          {
+            "internalType": "enum Status",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint16",
+            "name": "chainId",
+            "type": "uint16"
+          }
+        ],
+        "internalType": "struct Request[]",
+        "name": "_requests",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_token",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_decimal",
+        "type": "uint8"
+      }
+    ],
+    "name": "getUsdValue",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }
+    ],
+    "name": "getUserActiveRequests",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint96",
+            "name": "requestId",
+            "type": "uint96"
+          },
+          {
+            "internalType": "address",
+            "name": "author",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint16",
+            "name": "interest",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalRepayment",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "returnDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "lender",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "loanRequestAddr",
+            "type": "address"
+          },
+          {
+            "internalType": "address[]",
+            "name": "collateralTokens",
+            "type": "address[]"
+          },
+          {
+            "internalType": "enum Status",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint16",
+            "name": "chainId",
+            "type": "uint16"
+          }
+        ],
+        "internalType": "struct Request[]",
+        "name": "_requests",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }
+    ],
+    "name": "getUserCollateralTokens",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "_collaterals",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      },
+      {
+        "internalType": "uint96",
+        "name": "_requestId",
+        "type": "uint96"
+      }
+    ],
+    "name": "getUserRequest",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint96",
+            "name": "requestId",
+            "type": "uint96"
+          },
+          {
+            "internalType": "address",
+            "name": "author",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint16",
+            "name": "interest",
+            "type": "uint16"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalRepayment",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "returnDate",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "lender",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "loanRequestAddr",
+            "type": "address"
+          },
+          {
+            "internalType": "address[]",
+            "name": "collateralTokens",
+            "type": "address[]"
+          },
+          {
+            "internalType": "enum Status",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint16",
+            "name": "chainId",
+            "type": "uint16"
+          }
+        ],
+        "internalType": "struct Request",
+        "name": "_request",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint96",
+        "name": "requestId",
+        "type": "uint96"
+      }
+    ],
+    "name": "liquidateUserRequest",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "_tokens",
+        "type": "address[]"
+      }
+    ],
+    "name": "removeCollateralTokens",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint96",
+        "name": "_requestId",
+        "type": "uint96"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "repayLoan",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint96",
+        "name": "_listingId",
+        "type": "uint96"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "requestLoanFromListing",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint96",
+        "name": "_requestId",
+        "type": "uint96"
+      },
+      {
+        "internalType": "address",
+        "name": "_tokenAddress",
+        "type": "address"
+      }
+    ],
+    "name": "serviceRequest",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_botAddress",
+        "type": "address"
+      }
+    ],
+    "name": "setBotAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_swapRouter",
+        "type": "address"
+      }
+    ],
+    "name": "setSwapRouter",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "collateralToken",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "collateralAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "loanCurrency",
+        "type": "address"
+      }
+    ],
+    "name": "swapToLoanCurrency",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "loanCurrencyAmount",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_tokenCollateralAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint128",
+        "name": "_amount",
+        "type": "uint128"
+      }
+    ],
+    "name": "withdrawCollateral",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "receive"
   }
 ]

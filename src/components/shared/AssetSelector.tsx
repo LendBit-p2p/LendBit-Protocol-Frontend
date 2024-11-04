@@ -5,6 +5,8 @@ import { getEthBalance } from "@/constants/utils/getEthBalance";
 import { getLinkBalance } from "@/constants/utils/getLinkBalance";
 import useGetValueAndHealth from "@/hooks/useGetValueAndHealth";
 import { tokenData as defaultTokenData } from "@/constants/utils/tokenData"; 
+import { useWeb3ModalAccount } from "@web3modal/ethers/react";
+import { getUsdcBalance } from "@/constants/utils/getUsdcBalance";
 
 const AssetSelector: React.FC<AssetSelectorProps> = ({
   onTokenSelect,
@@ -18,24 +20,25 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); 
   const [walletBalance, setWalletBalance] = useState("0");
   const [availableBal, setAvailableBalance] = useState("0")
+  const { address, isConnected, chainId } = useWeb3ModalAccount();
+
   
-  
-  // Update token prices dynamically when fetched
-  useEffect(() => {
-    if (etherPrice || linkPrice) {
-      const updatedTokenData = defaultTokenData.map((token) => {
-        if (token.token === "ETH") {
-          
-          return { ...token, tokenPrice: Number(etherPrice) || 2500 };
-        } else if (token.token === "LINK") {
-         
-          return { ...token, tokenPrice: Number(linkPrice) || 11 };
-        }
-        return token;
-      });
-      setSelectedToken(updatedTokenData[0]); // Update token data with fetched prices
+useEffect(() => {
+  if (etherPrice || linkPrice ) {
+    defaultTokenData.forEach((token) => {
+      if (token.token === "ETH") {
+        token.tokenPrice = Number(etherPrice) || 2500;
+      } else if (token.token === "LINK") {
+        token.tokenPrice = Number(linkPrice) || 11;
+      } 
+    });
+    const updatedSelectedToken = defaultTokenData.find((token) => token.token === selectedToken.token);
+    if (updatedSelectedToken) {
+      setSelectedToken({ ...updatedSelectedToken });
     }
-  }, [etherPrice, linkPrice]);
+  }
+}, [etherPrice, linkPrice]);
+  
 
   // Fetch wallet balance based on the selected token
   useEffect(() => {
@@ -44,10 +47,10 @@ const AssetSelector: React.FC<AssetSelectorProps> = ({
         let balance;
         if (selectedToken.token === "ETH") {
           setAvailableBalance(AVA)
-          balance = await getEthBalance(userAddress);
-        } else if (selectedToken.token === "LINK") {
+          balance = await getEthBalance(userAddress,chainId );
+        } else if (selectedToken.token === "USDC") {
           setAvailableBalance(AVA2)
-          balance = await getLinkBalance(userAddress);
+          balance = await getUsdcBalance(userAddress,chainId);
         }
         setWalletBalance(Number(balance).toFixed(3) || "0");
       }

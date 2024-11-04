@@ -6,10 +6,10 @@ import { tokenData2 } from "@/constants/utils/tokenData2";
 import { useEffect, useState } from "react";
 import { getEthBalance } from "@/constants/utils/getEthBalance";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
-import { getLinkBalance } from "@/constants/utils/getLinkBalance";
-import { SUPPORTED_CHAIN_ID } from "@/context/web3Modal";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { isSupportedChain } from "@/config/chain";
+import { getUsdcBalance } from "@/constants/utils/getUsdcBalance";
 
 const Collateral = () => {
     const [updatedTokenData, setUpdatedTokenData] = useState(tokenData2);
@@ -18,15 +18,15 @@ const Collateral = () => {
 
     useEffect(() => {
         const fetchBalance = async () => {
-            if (isConnected && address && (chainId === SUPPORTED_CHAIN_ID)) {
+            if (isConnected && address && (isSupportedChain(chainId))) {
                 try {
-                    const ethbal = await getEthBalance(address);
-                    const linkbal = await getLinkBalance(address);
+                    const ethbal = await getEthBalance(address, chainId);
+                    const usdcBal = await getUsdcBalance(address, chainId);
                     const updatedData = tokenData2.map((item) => {
                         if (item.token === "ETH") {
                             return { ...item, tokenPrice: ethbal };
-                        } else if (item.token === "LINK") {
-                            return { ...item, tokenPrice: linkbal };
+                        } else if (item.token === "USDC") {
+                            return { ...item, tokenPrice: usdcBal };
                         } else {
                             return { ...item, tokenPrice: "N/A" };
                         }
@@ -38,7 +38,7 @@ const Collateral = () => {
                 }
             } else {
                 const resetData = tokenData2.map((item) => {
-                    if (item.token === "ETH" || item.token === "LINK") {
+                    if (item.token === "ETH" || item.token === "USDC") {
                         return { ...item, tokenPrice: "0" };
                     } else {
                         return item;
@@ -51,7 +51,7 @@ const Collateral = () => {
     }, [isConnected, address, chainId]);
 
     const handleDepositClick = (token:string) => {
-        if (token === "ETH" || token === "LINK") {
+        if (token === "ETH" || token === "USDC") {
             router.push("/transact/deposit");
         } else {
             toast.warning(`${token} support not available on the testnet.`,{ duration: 1000 });
@@ -83,7 +83,7 @@ const Collateral = () => {
                                 <td className="pt-2">
                                     <div className="flex flex-col items-center">
                                         <Image
-                                            src={item.token === "ETH" || item.token === "LINK" ? "/mark.svg": "/toggleOff.svg" }
+                                            src={item.token === "ETH" || item.token === "USDC" ? "/mark.svg": "/toggleOff.svg" }
                                             alt="tick"
                                             width={12}
                                             height={10}
