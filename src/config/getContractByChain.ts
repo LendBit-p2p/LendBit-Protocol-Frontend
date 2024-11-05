@@ -13,12 +13,12 @@ export const getContractByChainId = (signer:any, chainId:any) => {
       case SUPPORTED_CHAIN_ID[1]:
         return getLendbitSpokeOP(signer); 
       default:
-        throw new Error("Unsupported chain ID");
+        return getLendbitContract(signer); 
     }
 };
   
 
-export const getAddressesByChainId = (chainId:any) => {
+export const getContractAddressesByChainId = (chainId:any) => {
     switch (chainId) {
       case SUPPORTED_CHAIN_ID[0]: 
         return envVars.lendbitDiamondAddress; 
@@ -27,6 +27,6 @@ export const getAddressesByChainId = (chainId:any) => {
       case SUPPORTED_CHAIN_ID[1]:
         return envVars.lendbitSpokeOPAddress; 
       default:
-        throw new Error("Unsupported chain ID");
+        return envVars.lendbitDiamondAddress;
     }
 };

@@ -7,7 +7,7 @@ import {
     USDC_ADDRESS_OP 
 } from "./addresses";
 
-const getProviderByChainId = (chainId: any) => {
+export const getProviderByChainId = (chainId: any) => {
     switch (chainId) {
         case SUPPORTED_CHAIN_ID[0]: 
             return readOnlyProvider;
@@ -16,7 +16,7 @@ const getProviderByChainId = (chainId: any) => {
         case SUPPORTED_CHAIN_ID[2]: 
             return readOnlyProviderARB;
         default:
-            return;
+            return readOnlyProvider;
     }
 };
 

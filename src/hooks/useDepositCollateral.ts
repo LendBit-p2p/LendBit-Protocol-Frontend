@@ -11,7 +11,7 @@ import { ethers, MaxUint256 } from "ethers";
 // import { USDC_ADDRESS, USDC_ADDRESS_ARB, USDC_ADDRESS_OP } from "@/constants/utils/addresses";
 import useCheckAllowance from "./useCheckAllowance";
 import { envVars } from "@/constants/envVars";
-import { getContractByChainId } from "@/config/getContractByChain";
+import { getContractAddressesByChainId, getContractByChainId } from "@/config/getContractByChain";
 import { getUsdcAddressByChainId } from "@/constants/utils/getUsdcBalance";
 
 const useDepositCollateral = () => {
@@ -29,6 +29,8 @@ const useDepositCollateral = () => {
       const readWriteProvider = getProvider(walletProvider);
       const signer = await readWriteProvider.getSigner();
       const usdcAddress = getUsdcAddressByChainId(chainId);
+      const destination = getContractAddressesByChainId(chainId)
+
 
       const erc20contract = getERC20Contract(signer, usdcAddress);
       const contract =   getContractByChainId(signer, chainId);
@@ -39,7 +41,7 @@ const useDepositCollateral = () => {
         toastId = toast.loading(`Processing deposit transaction...`);
         // Check allowance before proceeding
         if (val == 0 || val < Number(_amountOfCollateral)) {
-          const allowance = await erc20contract.approve(envVars.lendbitDiamondAddress, MaxUint256);
+          const allowance = await erc20contract.approve(destination, MaxUint256);
           const allReceipt = await allowance.wait();
 
           if (!allReceipt.status) {
