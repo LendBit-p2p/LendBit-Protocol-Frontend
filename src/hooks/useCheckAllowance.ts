@@ -1,7 +1,6 @@
 "use client"
 import { useState, useEffect } from "react";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
-import { readOnlyProvider } from "@/config/provider";
 import { getERC20Contract } from "@/config/contracts";
 import { getProviderByChainId, getUsdcAddressByChainId } from "@/constants/utils/getUsdcBalance";
 import { getContractAddressesByChainId } from "@/config/getContractByChain";
@@ -17,8 +16,8 @@ const useCheckAllowance = () => {
         const usdcAddress = getUsdcAddressByChainId(chainId);
         const provider = getProviderByChainId(chainId)
         const destination = getContractAddressesByChainId(chainId)
-        console.log("DESTINATION", destination);
-        console.log("usdcAddress", usdcAddress);
+        // console.log("DESTINATION", destination);
+        // console.log("usdcAddress", usdcAddress);
 
         
         const contract = getERC20Contract(provider, usdcAddress);

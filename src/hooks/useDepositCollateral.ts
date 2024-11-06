@@ -13,13 +13,13 @@ import useCheckAllowance from "./useCheckAllowance";
 import { envVars } from "@/constants/envVars";
 import { getContractAddressesByChainId, getContractByChainId } from "@/config/getContractByChain";
 import { getUsdcAddressByChainId } from "@/constants/utils/getUsdcBalance";
+import { SUPPORTED_CHAIN_ID } from "@/context/web3Modal";
 
 const useDepositCollateral = () => {
   const { chainId } = useWeb3ModalAccount();
   const { walletProvider } = useWeb3ModalProvider();
   const router = useRouter();
   const val = useCheckAllowance();
-
 
 
   return useCallback(
@@ -34,13 +34,18 @@ const useDepositCollateral = () => {
 
       const erc20contract = getERC20Contract(signer, usdcAddress);
       const contract =   getContractByChainId(signer, chainId);
-      const _weiAmount = ethers.parseUnits(_amountOfCollateral, 18);
+      const _weiAmount = ethers.parseUnits(_amountOfCollateral, 6);
       let toastId: string | number | undefined;
+
+      // console.log("val", val);
+
 
       try {
         toastId = toast.loading(`Processing deposit transaction...`);
         // Check allowance before proceeding
         if (val == 0 || val < Number(_amountOfCollateral)) {
+          // console.log("destination", destination);
+
           const allowance = await erc20contract.approve(destination, MaxUint256);
           const allReceipt = await allowance.wait();
 
@@ -49,16 +54,39 @@ const useDepositCollateral = () => {
           }
         }
 
+        let transaction;
+
+        // console.log("_weiAmount", _weiAmount);
 
 
-        const transaction = await contract.depositCollateral(usdcAddress, _weiAmount);
-        const receipt = await transaction.wait();
-
-        if (receipt.status) {
-          toast.success(`${_amountOfCollateral} USDC successfully deposited as collateral!`, { id: toastId });
-          return router.push('/');
+        if (SUPPORTED_CHAIN_ID[0] === chainId) {
+          transaction = await contract.depositCollateral(usdcAddress, _weiAmount);
+          
         } else {
-          toast.error(`Failed to deposit ${_amountOfCollateral} USDC as collateral.`, { id: toastId });
+          const gasFee = await contract.quoteCrossChainCost(10004);
+
+          // console.log("GAS", gasFee);
+          
+
+          transaction = await contract.depositCollateral(usdcAddress, _weiAmount, {
+          value: gasFee,
+        });
+        }
+        
+        const receipt = await transaction.wait();
+      
+        if (receipt.status) {
+          toast.success(`${_amountOfCollateral} USDC successfully deposited as collateral!`, {
+            id: toastId,
+          });
+          if (chainId !== SUPPORTED_CHAIN_ID[0]) {
+            toast.message(`Kindly wait for few minutes for your deposited ${_amountOfCollateral} USDC to go cross-chain!`)
+          }
+          router.push('/');
+        } else {
+          toast.error("Transaction failed!", {
+            id: toastId,
+          });   
         }
 
       } catch (error: unknown) {
