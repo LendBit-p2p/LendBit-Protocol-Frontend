@@ -46,13 +46,13 @@ const useGetValueAndHealth = () => {
         // console.log("ETH USD price:", res6);
 
         const res7 = await contract.getUsdValue(USDC_ADDRESS, 1, 0);
-        // console.log("LINK USD price:", res7);
+        // console.log(" USD price:", res7);
 
         const ava = await contract.getAddressToAvailableBalance(address, ADDRESS_1);
-        console.log("Available balance (ADDRESS_1):", ava);
+        // console.log("Available balance (ADDRESS_1):", ava);
 
         const ava2 = await contract.getAddressToAvailableBalance(address, USDC_ADDRESS);
-        console.log("Available balance (LINK_ADDRESS):", ava2);
+        // console.log("Available balance (USDC_ADDRESS):", ava2);
 
         const availBalance = await contract.getAccountAvailableValue(address);
         // console.log("Available account balance:", availBalance);
@@ -61,10 +61,10 @@ const useGetValueAndHealth = () => {
         setData(res);
         setData2(res2);
         setData3(Number(ethers.formatEther(res3)));
-        setData4(Number(ethers.formatEther(res4)));
+        setData4(Number(ethers.formatUnits(res4, 6)));
         setCollateralVal(
           ((Number(ethers.formatEther(res3)) * Number(ethers.formatEther(res6))) + 
-           (Number(ethers.formatEther(res4)) * Number(ethers.formatEther(res7))))
+           (Number(ethers.formatUnits(res4, 6)) * Number(ethers.formatEther(res7))))
         );
         setLinkPrice(ethers.formatEther(res7));
         setEtherPrice(ethers.formatEther(res6));

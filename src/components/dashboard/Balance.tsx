@@ -28,8 +28,8 @@ const Balance = () => {
       tokenPrice: 11, 
     },
     {
-      assetName: "LINK",
-      assetImg: "/link.svg",
+      assetName: "USDC",
+      assetImg: "/USDC.svg",
       balance: data4 ?? 0, 
       marketValue: `$${((data4 ?? 0) * Number(linkPrice))}`, 
       netProfit: "2.53%",
