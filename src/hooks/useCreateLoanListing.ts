@@ -8,7 +8,7 @@ import { getERC20Contract, getLendbitContract } from "@/config/contracts";
 import { useRouter } from "next/navigation";
 import { ErrorWithReason } from "@/constants/types";
 import { ethers } from "ethers";
-import { ADDRESS_1, LINK_ADDRESS } from "@/constants/utils/addresses";
+import { ADDRESS_1 } from "@/constants/utils/addresses";
 import useCheckAllowance from "./useCheckAllowance";
 import { MaxUint256 } from "ethers";
 import { getUsdcAddressByChainId } from "@/constants/utils/getUsdcBalance";

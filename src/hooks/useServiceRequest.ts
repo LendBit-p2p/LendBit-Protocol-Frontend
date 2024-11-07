@@ -52,7 +52,7 @@ const useServiceRequest = () => {
           return toast.error("Request servicing failed!");
         }
 
-        // If the token address is LINK_ADDRESS, check allowance
+        // If the token address is USDC, check allowance
         if (_tokenAddress !== ADDRESS_1) {
           const erc20contract = getERC20Contract(signer, usdcAddress);
 

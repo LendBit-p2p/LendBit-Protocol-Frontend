@@ -3,7 +3,8 @@
 import AssetSelector from "@/components/shared/AssetSelector";
 import { Btn } from "@/components/shared/Btn";
 import PleaseConnect from "@/components/shared/PleaseConnect";
-import { ADDRESS_1, LINK_ADDRESS } from "@/constants/utils/addresses";
+import { ADDRESS_1 } from "@/constants/utils/addresses";
+import { getUsdcAddressByChainId } from "@/constants/utils/getUsdcBalance";
 import useDepositCollateral from "@/hooks/useDepositCollateral";
 import useDepositNativeColateral from "@/hooks/useDepositNativeColateral";
 import useWithdrawCollateral from "@/hooks/useWithdrawCollateral";
@@ -18,7 +19,7 @@ export default function TransactPage({ params }: { params: { action: string } })
   const [assetValue, setAssetValue] = useState("0.00");
   const [selectedToken, setSelectedToken] = useState<string | null>("ETH"); // To track selected token
   const [userAddress, setUserAddress] = useState<string | null>(null);
-  const { address, isConnected } = useWeb3ModalAccount();
+  const { address, isConnected, chainId } = useWeb3ModalAccount();
   const [isClient, setIsClient] = useState(false);
   const router = useRouter();
 
@@ -36,7 +37,7 @@ export default function TransactPage({ params }: { params: { action: string } })
     } else {
       setUserAddress(null);
     }
-  }, [address, isConnected]);
+  }, [address, isConnected,chainId]);
 
   const handleTokenSelect = (token: string, price: number) => {
     setSelectedToken(token);
@@ -76,8 +77,9 @@ export default function TransactPage({ params }: { params: { action: string } })
           await withdrawTx(ADDRESS_1,  assetValue);
 
         }
-        if (selectedToken === "LINK" && userAddress) {
-          await withdrawTx(LINK_ADDRESS,  assetValue);
+        if (selectedToken === "USDC" && userAddress) {
+          const usdcAddress = getUsdcAddressByChainId(chainId);
+          await withdrawTx(usdcAddress,  assetValue);
         } else {
           // toast.error("Token not supported for withdrawal.");
         }

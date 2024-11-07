@@ -1,6 +1,6 @@
 import { getLendbitContract } from "@/config/contracts";
 import { readOnlyProvider } from "@/config/provider";
-import { ADDRESS_1, LINK_ADDRESS, USDC_ADDRESS } from "@/constants/utils/addresses";
+import { ADDRESS_1, USDC_ADDRESS } from "@/constants/utils/addresses";
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";

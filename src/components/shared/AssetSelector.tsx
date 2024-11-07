@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { AssetSelectorProps } from "@/constants/types";
 import { getEthBalance } from "@/constants/utils/getEthBalance";
-import { getLinkBalance } from "@/constants/utils/getLinkBalance";
 import useGetValueAndHealth from "@/hooks/useGetValueAndHealth";
 import { tokenData as defaultTokenData } from "@/constants/utils/tokenData"; 
 import { useWeb3ModalAccount } from "@web3modal/ethers/react";
@@ -28,7 +27,7 @@ useEffect(() => {
     defaultTokenData.forEach((token) => {
       if (token.token === "ETH") {
         token.tokenPrice = Number(etherPrice) || 2500;
-      } else if (token.token === "LINK") {
+      } else if (token.token === "USDC") {
         token.tokenPrice = Number(linkPrice) || 11;
       } 
     });
