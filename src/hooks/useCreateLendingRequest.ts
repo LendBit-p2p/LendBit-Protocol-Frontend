@@ -4,11 +4,13 @@ import { useWeb3ModalAccount, useWeb3ModalProvider } from "@web3modal/ethers/rea
 import { toast } from "sonner";
 import { isSupportedChain } from "@/config/chain";
 import { getProvider } from "@/config/provider";
-import { getLendbitContract } from "@/config/contracts";
 import { useRouter } from "next/navigation";
 import { ErrorWithReason } from "@/constants/types";
 import { ethers } from "ethers";
-import { ADDRESS_1, LINK_ADDRESS } from "@/constants/utils/addresses";
+import { ADDRESS_1 } from "@/constants/utils/addresses";
+import { getContractByChainId } from "@/config/getContractByChain";
+import { getUsdcAddressByChainId } from "@/constants/utils/getUsdcBalance";
+import { SUPPORTED_CHAIN_ID } from "@/context/web3Modal";
 
 const useCreateLendingRequest = () => {
   const { chainId } = useWeb3ModalAccount();
@@ -17,39 +19,50 @@ const useCreateLendingRequest = () => {
 
   return useCallback(
     async (_amount: string, _interest: number, _returnDate: number, _loanCurrency: string) => {
-      if (!isSupportedChain(chainId)) return toast.warning("SWITCH TO BASE", { duration: 1000 });
+      if (!isSupportedChain(chainId)) return toast.warning("SWITCH NETWORK", { duration: 1000 });
      
-
+      let _weiAmount;
       let currency;
       if (_loanCurrency === "ETH") {
         currency = ADDRESS_1;
+        _weiAmount = ethers.parseEther(_amount);
+
         // return toast.warning("PLEASE USE LINK, ETH NOT AVAILABLE AT THE MOMENT")
       } else {
-        currency = LINK_ADDRESS;
+        const usdcAddress = getUsdcAddressByChainId(chainId);
+        
+        currency = usdcAddress;
+        _weiAmount = ethers.parseUnits(_amount, 6);
       }
 
       const readWriteProvider = getProvider(walletProvider);
       const signer = await readWriteProvider.getSigner();
-      const contract = getLendbitContract(signer);
+      const contract =   getContractByChainId(signer, chainId);
+
 
       let loadingToastId;
       
       try {
         loadingToastId = toast.loading("Processing borrowing request...");
 
-        const _weiAmount = ethers.parseEther(_amount);
         const _basisPointInterest = _interest;
 
-        //  console.log("_loanCurrency", currency, _returnDate, _weiAmount, _basisPointInterest);
+        console.log("_loanCurrency", _weiAmount,);
 
         const transaction = await contract.createLendingRequest(_weiAmount, _basisPointInterest, _returnDate, currency);
         const receipt = await transaction.wait();
 
-        if (receipt.status) {
+        if (receipt.status && SUPPORTED_CHAIN_ID[0] == chainId) {
           toast.success("Loan Pool created!", {
             id: loadingToastId,
           });
           return router.push('/successful');
+        } else if (receipt.status && (SUPPORTED_CHAIN_ID[0] != chainId)) {
+          toast.success("Loan Pool created, kindly wait for few minutes!", {
+            id: loadingToastId,
+          });
+          return router.push('/successful');
+
         } else {
           toast.error("Pool creation failed!", {
             id: loadingToastId,

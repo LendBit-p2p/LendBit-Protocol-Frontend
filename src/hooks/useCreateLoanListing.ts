@@ -12,6 +12,8 @@ import { ADDRESS_1, LINK_ADDRESS } from "@/constants/utils/addresses";
 import useCheckAllowance from "./useCheckAllowance";
 import { envVars } from "@/constants/envVars";
 import { MaxUint256 } from "ethers";
+import { getUsdcAddressByChainId } from "@/constants/utils/getUsdcBalance";
+import { getContractAddressesByChainId, getContractByChainId } from "@/config/getContractByChain";
 
 const useCreateLoanListing = () => {
   const { chainId } = useWeb3ModalAccount();
@@ -43,19 +45,38 @@ const useCreateLoanListing = () => {
       _loanCurrency: string
     ) => {
       if (!isSupportedChain(chainId)) {
-        toast.warning("SWITCH TO BASE");
+        toast.warning("SWITCH NETWORK");
         return; // Early return if chain is not supported
       }
 
-      const currency = _loanCurrency === "ETH" ? ADDRESS_1 : LINK_ADDRESS;
+      // const currency = _loanCurrency === "ETH" ? ADDRESS_1 : LINK_ADDRESS;
+      let _weiAmount;
+      let currency;
+      let _min_amount_wei;
+      let _max_amount_wei;
+
+      if (_loanCurrency === "ETH") {
+        currency = ADDRESS_1;
+        _weiAmount = ethers.parseUnits(_amount, 18);
+        _min_amount_wei = ethers.parseUnits(_min_amount.toString(), 18);
+       _max_amount_wei = ethers.parseUnits(_max_amount.toString(), 18);
+
+      } else {
+        const usdcAddress = getUsdcAddressByChainId(chainId);
+        
+        currency = usdcAddress;
+        _weiAmount = ethers.parseUnits(_amount, 6);
+        _min_amount_wei = ethers.parseUnits(_min_amount.toString(), 6);
+       _max_amount_wei = ethers.parseUnits(_max_amount.toString(), 6);
+
+      }
 
       const readWriteProvider = getProvider(walletProvider);
       const signer = await readWriteProvider.getSigner();
-      const contract = getLendbitContract(signer);
+      const contract = getContractByChainId(signer, chainId);
+      const destination = getContractAddressesByChainId(chainId)
 
-      const _weiAmount = ethers.parseUnits(_amount, 18);
-      const _min_amount_wei = ethers.parseUnits(_min_amount.toString(), 18);
-      const _max_amount_wei = ethers.parseUnits(_max_amount.toString(), 18);
+
 
       let loadingToastId: string | number | undefined;
 
@@ -76,8 +97,8 @@ const useCreateLoanListing = () => {
         } else {
 
           if (val === 0 || val < Number(_amount)) {
-            const erc20contract = getERC20Contract(signer, LINK_ADDRESS);
-            const allowance = await erc20contract.approve(envVars.lendbitDiamondAddress, MaxUint256);
+            const erc20contract = getERC20Contract(signer, currency);
+            const allowance = await erc20contract.approve(destination, MaxUint256);
             await allowance.wait();
             toast.success("Approval granted!");
           }
@@ -106,13 +127,13 @@ const useCreateLoanListing = () => {
     let errorText: string;
 
     switch (err?.reason) {
-      case "Protocol__TokenNotLoanable()":
+      case "Protocol__TokenNotLoanable":
         errorText = "Token not loanable!";
         break;
-      case "Protocol__InsufficientBalance()":
+      case "Protocol__InsufficientBalance":
         errorText = "Insufficient balance!";
         break;
-      case "Protocol__InsufficientAllowance()":
+      case "Protocol__InsufficientAllowance":
         errorText = "Insufficient allowance!";
         break;
       case "Protocol__TransferFailed":
