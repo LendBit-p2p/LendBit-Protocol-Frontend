@@ -196,7 +196,7 @@ const CardLayout = () => {
                         <div key={index} className="bg-black rounded-lg p-4 shadow-lg u-class-shadow-4">
                             <div className="flex items-center gap-2 mb-4">
                                 <Image src={tokenImageMap[data.tokenAddress]?.image || "/Eye.svg"} alt={tokenImageMap[data.tokenAddress]?.label} width={37} height={36} priority quality={100} />
-                                <h2 className="text-lg font-semibold">{tokenImageMap[data.tokenAddress]?.label}</h2>
+                                <h2 className="text-lg font-semibold">{tokenImageMap[data.tokenAddress]?.label || "Not Available"}</h2>
                             </div>
                             <div className="flex items-center gap-2 mb-2 flex-wrap">
                                 <img src={data.avatarUrl} alt="avatar" width={24} height={24} />
@@ -246,7 +246,7 @@ const CardLayout = () => {
                         <div key={index} className="bg-black rounded-lg p-4 shadow-lg u-class-shadow-4">
                             <div className="flex items-center gap-2 mb-4">
                                 <Image src={tokenImageMap[data.tokenAddress]?.image || "/Eye.svg"} alt={tokenImageMap[data.tokenAddress]?.label} width={37} height={36} priority quality={100} />
-                                <h2 className="text-lg font-semibold">{tokenImageMap[data.tokenAddress]?.label}</h2>
+                                <h2 className="text-lg font-semibold">{tokenImageMap[data.tokenAddress]?.label || "Not Available"}</h2>
                             </div>
                             <div className="flex items-center gap-2 mb-2 flex-wrap">
                                 <img src={data.avatarUrl} alt="avatar" width={24} height={24} />
