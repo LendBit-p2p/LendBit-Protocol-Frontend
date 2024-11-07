@@ -8,6 +8,7 @@ import { getLendbitContract } from "@/config/contracts";
 import { useRouter } from "next/navigation";
 import { ErrorWithReason } from "@/constants/types";
 import { ethers } from "ethers";
+import { getContractByChainId } from "@/config/getContractByChain";
 
 const useAcceptListedAds = () => {
   const { chainId } = useWeb3ModalAccount();
@@ -15,14 +16,21 @@ const useAcceptListedAds = () => {
   const router = useRouter();
 
   return useCallback(
-    async (_orderId: number,_amount:string) => {
+    async (_orderId: number,_amount:string, tokenType: string | any) => {
       if (!isSupportedChain(chainId)) return toast.warning("SWITCH TO BASE");
       const readWriteProvider = getProvider(walletProvider);
       const signer = await readWriteProvider.getSigner();
 
-      const contract = getLendbitContract(signer);
-      const _weiAmount = ethers.parseUnits(_amount, 18);
+      const contract = getContractByChainId(signer, chainId);
+      
+      let _weiAmount;
+        if(tokenType === "ETH") {
+          _weiAmount = ethers.parseUnits(_amount, 18);
 
+        } else {
+          _weiAmount = ethers.parseUnits(_amount, 6);
+        }
+        
       // console.log((_weiAmount));
       
 
@@ -43,16 +51,16 @@ const useAcceptListedAds = () => {
         const err = error as ErrorWithReason;
         let errorText: string;
         
-        if (err?.reason === "Protocol__ListingNotOpen()") {
+        if (err?.reason === "Protocol__ListingNotOpen") {
           errorText = "this order is not available!";
         }
-        if (err?.reason === "Protocol__OwnerCreatedListing()") {
+        if (err?.reason === "Protocol__OwnerCreatedListing") {
           errorText = "can't accept your ad!";
         }
-        if (err?.reason === "Protocol__InsufficientCollateral()") {
+        if (err?.reason === "Protocol__InsufficientCollateral") {
           errorText = "insufficient collateral!";
         }
-        if (err?.reason === "Protocol__InvalidAmount()") {
+        if (err?.reason === "Protocol__InvalidAmount") {
           errorText = "please enter a valid amount!";
         }
          if (err?.reason === "Protocol__TransferFailed") {

@@ -44,7 +44,7 @@ export default function BorrowAllocationPage() {
         if (Number(borrowAmount) < minAmount) return toast.warning(`Can't take less than ${minAmount} ${tokenType}`)
         if (Number(borrowAmount) > maxAmount) return toast.warning(`Can't take more than ${maxAmount} ${tokenType}`)
         
-        acceptAds(Number(listingId), borrowAmount)
+        acceptAds(Number(listingId), borrowAmount, tokenType)
     }
 
     return (
