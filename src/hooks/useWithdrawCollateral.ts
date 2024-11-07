@@ -4,10 +4,11 @@ import { useWeb3ModalAccount, useWeb3ModalProvider } from "@web3modal/ethers/rea
 import { toast } from "sonner";
 import { isSupportedChain } from "@/config/chain";
 import { getProvider } from "@/config/provider";
-import { getLendbitContract, getERC20Contract } from "@/config/contracts";
 import { useRouter } from "next/navigation";
 import { ErrorWithReason } from "@/constants/types";
 import { ethers } from "ethers";
+import { getContractByChainId } from "@/config/getContractByChain";
+import { ADDRESS_1 } from "@/constants/utils/addresses";
 
 const useWithdrawCollateral = () => {
   const { chainId } = useWeb3ModalAccount();
@@ -16,17 +17,22 @@ const useWithdrawCollateral = () => {
 
   return useCallback(
     async (_tokenCollateralAddress: string, _amountOfCollateral: string) => {
-      if (!isSupportedChain(chainId)) return toast.warning("SWITCH TO BASE");
+      if (!isSupportedChain(chainId)) return toast.warning("SWITCH NETWORK");
 
       const readWriteProvider = getProvider(walletProvider);
       const signer = await readWriteProvider.getSigner();
-      const erc20contract = getERC20Contract(signer, _tokenCollateralAddress);
-      const contract = getLendbitContract(signer);
+      const contract = getContractByChainId(signer, chainId);
 
       let toastId: string |number | undefined;
 
       try {
-        const _weiAmount = ethers.parseUnits(_amountOfCollateral, 18);
+        let _weiAmount;
+        if(_tokenCollateralAddress === ADDRESS_1) {
+          _weiAmount = ethers.parseUnits(_amountOfCollateral, 18);
+
+        } else {
+          _weiAmount = ethers.parseUnits(_amountOfCollateral, 6);
+        }
         
         // Show loading toast when the withdraw transaction is initiated
         toastId = toast.loading(`Signing tx... Withdrawing collateral...`);
@@ -49,7 +55,7 @@ const useWithdrawCollateral = () => {
         const err = error as ErrorWithReason;
         let errorText: string;
 
-        if (err?.reason === "Protocol__InsufficientCollateralDeposited()") {
+        if (err?.reason === "Protocol__InsufficientCollateralDeposited") {
           errorText = "Insufficient collateral!";
         } else if (err?.reason === "Protocol__TransferFailed") {
           errorText = "Transaction failed!";

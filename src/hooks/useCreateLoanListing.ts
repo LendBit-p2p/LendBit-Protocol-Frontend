@@ -10,7 +10,6 @@ import { ErrorWithReason } from "@/constants/types";
 import { ethers } from "ethers";
 import { ADDRESS_1, LINK_ADDRESS } from "@/constants/utils/addresses";
 import useCheckAllowance from "./useCheckAllowance";
-import { envVars } from "@/constants/envVars";
 import { MaxUint256 } from "ethers";
 import { getUsdcAddressByChainId } from "@/constants/utils/getUsdcBalance";
 import { getContractAddressesByChainId, getContractByChainId } from "@/config/getContractByChain";

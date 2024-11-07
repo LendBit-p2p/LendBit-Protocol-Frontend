@@ -8,9 +8,10 @@ import { getProvider } from "@/config/provider";
 import { getERC20Contract, getLendbitContract } from "@/config/contracts";
 import { ErrorWithReason } from "@/constants/types";
 import useCheckAllowance from "./useCheckAllowance";
-import { LINK_ADDRESS, ADDRESS_1 } from "@/constants/utils/addresses";
+import { ADDRESS_1 } from "@/constants/utils/addresses";
 import { MaxUint256 } from "ethers";
-import { envVars } from "@/constants/envVars";
+import { getContractAddressesByChainId, getContractByChainId } from "@/config/getContractByChain";
+import { getUsdcAddressByChainId } from "@/constants/utils/getUsdcBalance";
 
 const useRepayLoan = () => {
   const { chainId } = useWeb3ModalAccount();
@@ -19,11 +20,15 @@ const useRepayLoan = () => {
 
   return useCallback(
     async (_requestId: number, _tokenAddress: string, _amount: string) => {
-      if (!isSupportedChain(chainId)) return toast.warning("SWITCH TO BASE");
+      if (!isSupportedChain(chainId)) return toast.warning("SWITCH NETWORK");
 
       const readWriteProvider = getProvider(walletProvider);
       const signer = await readWriteProvider.getSigner();
-      const contract = getLendbitContract(signer);
+      const contract = getContractByChainId(signer, chainId);
+      const destination = getContractAddressesByChainId(chainId)
+      const usdcAddress = getUsdcAddressByChainId(chainId);
+
+
 
       // const _amount = ethers.parseEther(_amount); 
       // console.log(_requestId, _tokenAddress,_amount, _amount);
@@ -52,13 +57,13 @@ const useRepayLoan = () => {
           });
         }
 
-        // If the token is a different ERC-20 token (e.g., LINK), check allowance first
-        if (_tokenAddress === LINK_ADDRESS || _tokenAddress !== ADDRESS_1) {
-          const erc20Contract = getERC20Contract(signer, _tokenAddress);
+        // If the token is a different ERC-20 token (e.g., USDC), check allowance first
+        if (_tokenAddress !== ADDRESS_1) {
+          const erc20Contract = getERC20Contract(signer, usdcAddress);
 
           // Check if allowance is sufficient
           if (allowance === 0 || allowance < Number(_amount)) {
-            const approvalTx = await erc20Contract.approve(envVars.lendbitDiamondAddress, MaxUint256);
+            const approvalTx = await erc20Contract.approve(destination, MaxUint256);
             const approvalReceipt = await approvalTx.wait();
 
             if (!approvalReceipt.status) {
@@ -88,14 +93,14 @@ const useRepayLoan = () => {
 
         // Handle different error reasons from the protocol
         switch (err?.reason) {
-          case "Protocol__RequestNotServiced()":
+          case "Protocol__RequestNotServiced":
             errorText = "Repayment action failed!";
             break;
-          case "Protocol__InvalidToken()":
-          case "Protocol__InsufficientBalance()":
+          case "Protocol__InvalidToken":
+          case "Protocol__InsufficientBalance":
             errorText = "Insufficient balance!";
             break;
-          case "Protocol__InsufficientAllowance()":
+          case "Protocol__InsufficientAllowance":
             errorText = "Insufficient allowance!";
             break;
           case "Protocol__MustBeMoreThanZero":

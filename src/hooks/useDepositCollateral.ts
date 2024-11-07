@@ -4,13 +4,11 @@ import { useWeb3ModalAccount, useWeb3ModalProvider } from "@web3modal/ethers/rea
 import { toast } from "sonner";
 import { isSupportedChain } from "@/config/chain";
 import { getProvider } from "@/config/provider";
-import { getLendbitContract, getERC20Contract, getLendbitSpokeARB, getLendbitSpokeOP } from "@/config/contracts";
+import { getERC20Contract, } from "@/config/contracts";
 import { useRouter } from "next/navigation";
 import { ErrorWithReason } from "@/constants/types";
 import { ethers, MaxUint256 } from "ethers";
-// import { USDC_ADDRESS, USDC_ADDRESS_ARB, USDC_ADDRESS_OP } from "@/constants/utils/addresses";
 import useCheckAllowance from "./useCheckAllowance";
-import { envVars } from "@/constants/envVars";
 import { getContractAddressesByChainId, getContractByChainId } from "@/config/getContractByChain";
 import { getUsdcAddressByChainId } from "@/constants/utils/getUsdcBalance";
 import { SUPPORTED_CHAIN_ID } from "@/context/web3Modal";
