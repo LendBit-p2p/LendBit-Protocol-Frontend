@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { ErrorWithReason } from "@/constants/types";
 import { ethers } from "ethers";
 import { getContractByChainId } from "@/config/getContractByChain";
+import { SUPPORTED_CHAIN_ID } from "@/context/web3Modal";
 
 const useAcceptListedAds = () => {
   const { chainId } = useWeb3ModalAccount();
@@ -17,7 +18,7 @@ const useAcceptListedAds = () => {
 
   return useCallback(
     async (_orderId: number,_amount:string, tokenType: string | any) => {
-      if (!isSupportedChain(chainId)) return toast.warning("SWITCH TO BASE");
+      if (!isSupportedChain(chainId)) return toast.warning("SWITCH NETWORK");
       const readWriteProvider = getProvider(walletProvider);
       const signer = await readWriteProvider.getSigner();
 
@@ -38,7 +39,19 @@ const useAcceptListedAds = () => {
       try {
         loadingToastId = toast.loading("Processing loan request...");
 
-        const transaction = await contract.requestLoanFromListing(_orderId,_weiAmount);
+        let transaction;
+        if (SUPPORTED_CHAIN_ID[0] === chainId) {
+          transaction = await contract.requestLoanFromListing(_orderId,_weiAmount);
+          
+        } else {
+          const gasFee = await contract.quoteCrossChainCost(10004);
+
+          // console.log("GAS", gasFee)
+         transaction = await contract.requestLoanFromListing(_orderId,_weiAmount, {
+            value: gasFee,
+          });
+        }
+
         const receipt = await transaction.wait();
 
         if (receipt.status) {

@@ -13,6 +13,7 @@ import { ADDRESS_1 } from "@/constants/utils/addresses";
 import { ethers, MaxUint256 } from "ethers";
 import { getContractAddressesByChainId, getContractByChainId } from "@/config/getContractByChain";
 import { getUsdcAddressByChainId } from "@/constants/utils/getUsdcBalance";
+import { SUPPORTED_CHAIN_ID } from "@/context/web3Modal";
 
 const useServiceRequest = () => {
   const { chainId } = useWeb3ModalAccount();
@@ -36,9 +37,23 @@ const useServiceRequest = () => {
         loadingToastId = toast.loading("Processing service request...");
         // If the token address is ADDRESS_1, directly call serviceRequest
         if (_tokenAddress === ADDRESS_1) {
-          const transaction = await contract.serviceRequest(_requestId, _tokenAddress, {
-            value: ethers.parseEther(_amount),
-          });
+
+          let transaction;
+          if (SUPPORTED_CHAIN_ID[0] === chainId) {
+            transaction = await contract.serviceRequest(_requestId, _tokenAddress, {
+              value: ethers.parseEther(_amount),
+            });
+              
+          } else {
+            const gasFee = await contract.quoteCrossChainCost(10004);
+
+              // console.log("GAS", gasFee)
+            transaction = await contract.serviceRequest(_requestId, _tokenAddress, {
+              value: ethers.parseEther(_amount) + gasFee,
+            });
+          }    
+
+
           const receipt = await transaction.wait();
 
           if (receipt.status) {
@@ -69,8 +84,21 @@ const useServiceRequest = () => {
             }
           }
 
-          // Proceed with servicing the request after approval check
-          const transaction = await contract.serviceRequest(_requestId, _tokenAddress);
+           // Proceed with repayment after approval check
+          let transaction;
+          if (SUPPORTED_CHAIN_ID[0] === chainId) {
+            await contract.serviceRequest(_requestId, _tokenAddress);
+              
+            } else {
+              const gasFee = await contract.quoteCrossChainCost(10004);
+
+              // console.log("GAS", gasFee)
+              transaction = await contract.repayLoan(_requestId, _tokenAddress, {
+                value: gasFee,
+              });
+          }    
+
+
           const receipt = await transaction.wait();
 
           if (receipt.status) {

@@ -47,9 +47,22 @@ const useCreateLendingRequest = () => {
 
         const _basisPointInterest = _interest;
 
-        console.log("_loanCurrency", _weiAmount,);
+        // console.log("_loanCurrency", _weiAmount,);
 
-        const transaction = await contract.createLendingRequest(_weiAmount, _basisPointInterest, _returnDate, currency);
+         let transaction;
+        if (SUPPORTED_CHAIN_ID[0] === chainId) {
+          transaction = await contract.createLendingRequest(_weiAmount, _basisPointInterest, _returnDate, currency);
+          
+        } else {
+          const gasFee = await contract.quoteCrossChainCost(10004);
+
+          // console.log("GAS", gasFee)
+         transaction = await contract.createLendingRequest(_weiAmount, _basisPointInterest, _returnDate, currency, {
+            value: gasFee,
+          });
+        }
+
+        
         const receipt = await transaction.wait();
 
         if (receipt.status && SUPPORTED_CHAIN_ID[0] == chainId) {
@@ -57,7 +70,7 @@ const useCreateLendingRequest = () => {
             id: loadingToastId,
           });
           return router.push('/successful');
-        } else if (receipt.status && (SUPPORTED_CHAIN_ID[0] != chainId)) {
+        } else if (receipt.status && (chainId !== SUPPORTED_CHAIN_ID[0])) {
           toast.success("Loan Pool created, kindly wait for few minutes!", {
             id: loadingToastId,
           });

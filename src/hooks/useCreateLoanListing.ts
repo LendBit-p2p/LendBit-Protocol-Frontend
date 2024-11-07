@@ -13,6 +13,7 @@ import useCheckAllowance from "./useCheckAllowance";
 import { MaxUint256 } from "ethers";
 import { getUsdcAddressByChainId } from "@/constants/utils/getUsdcBalance";
 import { getContractAddressesByChainId, getContractByChainId } from "@/config/getContractByChain";
+import { SUPPORTED_CHAIN_ID } from "@/context/web3Modal";
 
 const useCreateLoanListing = () => {
   const { chainId } = useWeb3ModalAccount();
@@ -83,16 +84,35 @@ const useCreateLoanListing = () => {
         loadingToastId = toast.loading("Processing order...");
 
         if (_loanCurrency === "ETH") {
-          const transaction = await contract.createLoanListing(
-            _weiAmount,
-            _min_amount_wei,
-            _max_amount_wei,
-            _returnDate,
-            _interest,
-            currency,
-            { value: _weiAmount }
-          );
+          let transaction;
+          if (SUPPORTED_CHAIN_ID[0] === chainId) {
+            transaction = await contract.createLoanListing(
+              _weiAmount,
+              _min_amount_wei,
+              _max_amount_wei,
+              _returnDate,
+              _interest,
+              currency,
+              { value: _weiAmount }
+            );
+            
+          } else {
+            const gasFee = await contract.quoteCrossChainCost(10004);
+
+            transaction = await contract.createLoanListing(
+              _weiAmount,
+              _min_amount_wei,
+              _max_amount_wei,
+              _returnDate,
+              _interest,
+              currency,
+              { value: _weiAmount + gasFee }
+            );
+      
+          }
+
           await handleTransactionResult(transaction, loadingToastId);
+
         } else {
 
           if (val === 0 || val < Number(_amount)) {
@@ -102,14 +122,32 @@ const useCreateLoanListing = () => {
             toast.success("Approval granted!");
           }
 
-          const transaction = await contract.createLoanListing(
-            _weiAmount,
-            _min_amount_wei,
-            _max_amount_wei,
-            _returnDate,
-            _interest,
-            currency
-          );
+           let transaction;
+          if (SUPPORTED_CHAIN_ID[0] == chainId) {
+            transaction = await contract.createLoanListing(
+              _weiAmount,
+              _min_amount_wei,
+              _max_amount_wei,
+              _returnDate,
+              _interest,
+              currency,
+            );
+            
+          } else {
+            const gasFee = await contract.quoteCrossChainCost(10004);
+
+            transaction = await contract.createLoanListing(
+              _weiAmount,
+              _min_amount_wei,
+              _max_amount_wei,
+              _returnDate,
+              _interest,
+              currency,
+              { value: gasFee }
+            );
+      
+          }
+
           await handleTransactionResult(transaction, loadingToastId);
         }
       } catch (error: unknown) {

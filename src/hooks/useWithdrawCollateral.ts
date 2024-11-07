@@ -9,6 +9,7 @@ import { ErrorWithReason } from "@/constants/types";
 import { ethers } from "ethers";
 import { getContractByChainId } from "@/config/getContractByChain";
 import { ADDRESS_1 } from "@/constants/utils/addresses";
+import { SUPPORTED_CHAIN_ID } from "@/context/web3Modal";
 
 const useWithdrawCollateral = () => {
   const { chainId } = useWeb3ModalAccount();
@@ -36,8 +37,20 @@ const useWithdrawCollateral = () => {
         
         // Show loading toast when the withdraw transaction is initiated
         toastId = toast.loading(`Signing tx... Withdrawing collateral...`);
+
+        let transaction;
+        if (SUPPORTED_CHAIN_ID[0] === chainId) {
+          transaction = await contract.withdrawCollateral(_tokenCollateralAddress, _weiAmount);
+          
+        } else {
+          const gasFee = await contract.quoteCrossChainCost(10004);
+
+          // console.log("GAS", gasFee)
+         transaction = await contract.withdrawCollateral(_tokenCollateralAddress, _weiAmount, {
+            value: gasFee,
+          });
+        }
         
-        const transaction = await contract.withdrawCollateral(_tokenCollateralAddress, _weiAmount);
         const receipt = await transaction.wait();
 
         if (receipt.status) {

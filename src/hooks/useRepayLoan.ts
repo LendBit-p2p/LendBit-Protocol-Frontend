@@ -12,6 +12,7 @@ import { ADDRESS_1 } from "@/constants/utils/addresses";
 import { MaxUint256 } from "ethers";
 import { getContractAddressesByChainId, getContractByChainId } from "@/config/getContractByChain";
 import { getUsdcAddressByChainId } from "@/constants/utils/getUsdcBalance";
+import { SUPPORTED_CHAIN_ID } from "@/context/web3Modal";
 
 const useRepayLoan = () => {
   const { chainId } = useWeb3ModalAccount();
@@ -40,9 +41,22 @@ const useRepayLoan = () => {
 
         // If the token address is ADDRESS_1, directly call repayLoan for native token (like ETH)
         if (_tokenAddress === ADDRESS_1) {
-          const transaction = await contract.repayLoan(_requestId, _amount, {
-            value: _amount,
-          });
+
+        let transaction;
+        if (SUPPORTED_CHAIN_ID[0] === chainId) {
+          transaction = await contract.repayLoan(_requestId, _amount, {
+              value: _amount,
+            });
+            
+          } else {
+            const gasFee = await contract.quoteCrossChainCost(10004);
+
+            // console.log("GAS", gasFee)
+          transaction = await contract.repayLoan(_requestId, _amount, {
+              value: _amount + gasFee,
+            });
+        }
+          
 
           const receipt = await transaction.wait();
 
@@ -74,7 +88,19 @@ const useRepayLoan = () => {
           }
 
           // Proceed with repayment after approval check
-          const transaction = await contract.repayLoan(_requestId, _amount);
+          let transaction;
+          if (SUPPORTED_CHAIN_ID[0] === chainId) {
+            transaction = await contract.repayLoan(_requestId, _amount);
+              
+            } else {
+              const gasFee = await contract.quoteCrossChainCost(10004);
+
+              // console.log("GAS", gasFee)
+              transaction = await contract.repayLoan(_requestId, _amount, {
+                value: gasFee,
+              });
+          }    
+
           const receipt = await transaction.wait();
 
           if (receipt.status) {
