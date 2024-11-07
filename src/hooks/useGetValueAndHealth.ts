@@ -70,7 +70,7 @@ const useGetValueAndHealth = () => {
         setEtherPrice(ethers.formatEther(res6));
         setAvailBal(availBalance);
         setAVA(ethers.formatEther(ava));
-        setAVA2(ethers.formatEther(ava2));
+        setAVA2(ethers.formatUnits(ava2, 6));
 
       } catch (err) {
         console.error("Error fetching user data:", err);
