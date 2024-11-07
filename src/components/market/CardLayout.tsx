@@ -195,7 +195,7 @@ const CardLayout = () => {
                     ) : filteredBorrowData.slice().reverse().map((data, index) => (
                         <div key={index} className="bg-black rounded-lg p-4 shadow-lg u-class-shadow-4">
                             <div className="flex items-center gap-2 mb-4">
-                                <Image src={tokenImageMap[data.tokenAddress]?.image} alt={data.tokenAddress} width={37} height={36} priority quality={100} />
+                                <Image src={tokenImageMap[data.tokenAddress]?.image || "/Eye.svg"} alt={tokenImageMap[data.tokenAddress]?.label} width={37} height={36} priority quality={100} />
                                 <h2 className="text-lg font-semibold">{tokenImageMap[data.tokenAddress]?.label}</h2>
                             </div>
                             <div className="flex items-center gap-2 mb-2 flex-wrap">
@@ -245,7 +245,7 @@ const CardLayout = () => {
                     ) : filteredLendData.slice().reverse().map((data, index) => (
                         <div key={index} className="bg-black rounded-lg p-4 shadow-lg u-class-shadow-4">
                             <div className="flex items-center gap-2 mb-4">
-                                <Image src={tokenImageMap[data.tokenAddress]?.image} alt={data.tokenAddress} width={37} height={36} priority quality={100} />
+                                <Image src={tokenImageMap[data.tokenAddress]?.image || "/Eye.svg"} alt={tokenImageMap[data.tokenAddress]?.label} width={37} height={36} priority quality={100} />
                                 <h2 className="text-lg font-semibold">{tokenImageMap[data.tokenAddress]?.label}</h2>
                             </div>
                             <div className="flex items-center gap-2 mb-2 flex-wrap">
